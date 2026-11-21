@@ -16,16 +16,20 @@ ASSETS = os.path.join(OUT_DIR, "assets")
 os.makedirs(ASSETS, exist_ok=True)
 
 # --- geometry (viewBox 0 0 120 120) ---
-# Rounded square: 10..110, radius 24. W polyline, white, stroke 11, round joins.
-W_PTS = [(30.0, 40.0), (43.0, 80.0), (60.0, 50.0), (77.0, 80.0), (90.0, 40.0)]
+# Rounded square: 10..110, radius 24. Custom W: white stroked polyline whose
+# middle peak is a right-pointing play triangle (Winter + Play in one mark).
+W_PTS = [(30.0, 40.0), (43.0, 80.0), (60.0, 52.0), (77.0, 80.0), (90.0, 40.0)]
+TRI = [(50.0, 38.0), (50.0, 70.0), (78.0, 54.0)]
 
 def f(v):
     return f"{v:.2f}"
 
 pts_str = " ".join(f"{f(x)},{f(y)}" for x, y in W_PTS)
+tri_str = " ".join(f"{f(x)},{f(y)}" for x, y in TRI)
 svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">']
 svg.append('<rect x="10" y="10" width="100" height="100" rx="24" fill="#16A34A"/>')
 svg.append(f'<polyline points="{pts_str}" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>')
+svg.append(f'<polygon points="{tri_str}" fill="#FFFFFF"/>')
 svg.append('</svg>')
 
 svg_path = os.path.join(ASSETS, "logo.svg")
@@ -43,6 +47,7 @@ d = ImageDraw.Draw(mark)
 # rounded square
 d.rounded_rectangle([10 * S, 10 * S, 110 * S, 110 * S], radius=24 * S, fill=PINK + (255,))
 d.line([scale(p) for p in W_PTS], fill=WHITE + (255,), width=int(11 * S), joint="curve")
+d.polygon([scale(p) for p in TRI], fill=WHITE + (255,))
 
 # lockup preview: off-white canvas, mark left + "Winterplay" wordmark
 W, H = 1400, 560
