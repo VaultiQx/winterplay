@@ -987,6 +987,7 @@
   };
   var fbUser = null, fbDb = null;
   var fbApplyingMerge = false;
+  var fbMergeInFlight = false; /* true for the whole async sign-in merge window */
   var fbPendingUnlocks = {};
   var fullSyncTimer = null, unlockSyncTimer = null;
   var localUpdatedAtMs = 0; /* last local save this session, for the settings merge */
@@ -1015,11 +1016,11 @@
   }
   /* full current game doc to Firestore, debounced ~500 ms, merge write */
   function scheduleFullCloudSync(){
-    if(fbApplyingMerge || !fbUser || !fbDb) return;
+    if(fbApplyingMerge || fbMergeInFlight || !fbUser || !fbDb) return;
     if(fullSyncTimer) clearTimeout(fullSyncTimer);
     fullSyncTimer = setTimeout(function(){
       fullSyncTimer = null;
-      if(!fbUser || !fbDb) return;
+      if(fbMergeInFlight || !fbUser || !fbDb) return; /* a merge in flight writes the full fresh state itself */
       var ref = fbDocRef(); if(!ref) return;
       var snap = fbSnapshot();
       var payload = { best: snap.best, unlocked: snap.unlocked, settings: snap.settings, updatedAt: fbTs() };
@@ -1034,6 +1035,7 @@
     if(!id) return;
     if(!fbUser || !fbDb) return; /* signed out: the sign-in merge migrates it with earnedAt null */
     fbPendingUnlocks[id] = true;
+    if(fbMergeInFlight) return; /* merge in flight: stay queued — the merge re-reads live state, so this unlock is in its payload, and the queue flushes when the merge settles */
     if(unlockSyncTimer) clearTimeout(unlockSyncTimer);
     unlockSyncTimer = setTimeout(function(){
       unlockSyncTimer = null;
@@ -1054,8 +1056,16 @@
   function fbApplyMerged(merged){
     fbApplyingMerge = true;
     try{
-      if(typeof merged.best === 'number') best = merged.best;
-      unlocked = merged.unlocked || {};
+      if(typeof merged.best === 'number') best = Math.max((typeof best === 'number' ? best : 0), merged.best);
+      /* achievements merge additively: union the merged keys into the
+         live unlocked set, never wholesale-replace it, so an unlock
+         recorded after the merge snapshot was taken survives */
+      var mu = {}, mk;
+      for(mk in unlocked){ if(Object.prototype.hasOwnProperty.call(unlocked, mk) && unlocked[mk]) mu[mk] = true; }
+      if(merged.unlocked && typeof merged.unlocked === 'object'){
+        for(mk in merged.unlocked){ if(Object.prototype.hasOwnProperty.call(merged.unlocked, mk) && merged.unlocked[mk]) mu[mk] = true; }
+      }
+      unlocked = mu;
       if(merged.settings){
         muted = !!merged.settings.muted;
         if(typeof merged.settings.soundVol === 'number') soundVolVal = merged.settings.soundVol / 100;
@@ -1091,27 +1101,38 @@
     }catch(e){}
     fbApplyingMerge = false;
   }
-  /* on sign-in: merge local + cloud, write the merged doc back, load it */
-  function fbMergeOnSignIn(){
-    var ref = fbDocRef(); if(!ref) return;
-    var local = fbSnapshot();
+  /* the freshest local state: live in-memory state unioned with the
+     persisted localStorage save (either one may be ahead) */
+  function fbLiveLocal(){
+    var live = fbSnapshot();
     try{
       var raw = window.localStorage.getItem(SAVE_KEY);
       if(raw){
         var p = JSON.parse(raw) || {};
-        local = {
-          best: (typeof p.best === 'number' ? p.best : 0),
-          unlocked: (p.unlocked && typeof p.unlocked === 'object') ? p.unlocked : {},
-          settings: {
-            muted: !!p.muted,
-            soundVol: (typeof p.soundVol === 'number' ? p.soundVol : 80),
-            musicVol: (typeof p.musicVol === 'number' ? p.musicVol : 55),
-            tipsOn: p.tipsOn !== false
-          }
-        };
+        if(typeof p.best === 'number') live.best = Math.max(live.best || 0, p.best);
+        if(p.unlocked && typeof p.unlocked === 'object'){
+          for(var k in p.unlocked){ if(Object.prototype.hasOwnProperty.call(p.unlocked, k) && p.unlocked[k]) live.unlocked[k] = true; }
+        }
       }
     }catch(e){}
+    return live;
+  }
+  /* unlock writes queued while a merge is in flight, retried once it settles */
+  function fbFlushPendingUnlocks(){
+    var ids = Object.keys(fbPendingUnlocks);
+    for(var i = 0; i < ids.length; i++) scheduleUnlockCloudSync(ids[i]);
+  }
+  /* on sign-in: merge local + cloud, write the merged doc back, load it.
+     The local side is re-read when the cloud read resolves, not when the
+     merge starts, so an achievement unlocked or a best set while the
+     read was in flight is never erased by the merge. The merged state
+     is applied locally only after the cloud write succeeds. */
+  function fbMergeOnSignIn(){
+    if(fbMergeInFlight) return;
+    var ref = fbDocRef(); if(!ref) return;
+    fbMergeInFlight = true;
     ref.get().then(function(snapDoc){
+      var local = fbLiveLocal();
       var cloud = (snapDoc && snapDoc.exists) ? (snapDoc.data() || {}) : null;
       var mergedBest = Math.max(local.best || 0, (cloud && typeof cloud.best === 'number') ? cloud.best : 0);
       var mergedUnlocked = {}, k;
@@ -1147,12 +1168,28 @@
       }
       var merged = { best: mergedBest, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings };
       var payload = { best: mergedBest, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings, migratedFromLocal: true, updatedAt: fbTs() };
-      var done = function(){ fbApplyMerged(merged); };
+      var finish = function(){ fbMergeInFlight = false; fbFlushPendingUnlocks(); };
       try{
         var wp = ref.set(payload, { merge: true });
-        if(wp && typeof wp.then === 'function') wp.then(done, done); else done();
-      }catch(e){ done(); }
-    }).catch(function(){ /* offline: keep the local save; retried on next sign-in */ });
+        if(wp && typeof wp.then === 'function'){
+          wp.then(function(){ fbApplyMerged(merged); finish(); }, function(err){
+            /* write failed: do not apply the merged state locally — the
+               local save still holds everything, and unlock writes
+               queued during the merge flush on their own */
+            try{ console.error('[lofi-climb] sign-in merge write failed', err); }catch(e){}
+            finish();
+          });
+        } else { fbApplyMerged(merged); finish(); }
+      }catch(e){
+        try{ console.error('[lofi-climb] sign-in merge write failed', e); }catch(e2){}
+        finish();
+      }
+    }).catch(function(err){
+      /* read failed: keep the local save untouched; retried on next sign-in */
+      try{ console.error('[lofi-climb] sign-in merge read failed', err); }catch(e){}
+      fbMergeInFlight = false;
+      fbFlushPendingUnlocks();
+    });
   }
   try{
     if(typeof firebase !== 'undefined' && firebase){
@@ -1165,6 +1202,7 @@
         } else {
           /* sign-out: stop Firestore writes; localStorage play continues */
           fbUser = null;
+          fbMergeInFlight = false;
           if(fullSyncTimer){ clearTimeout(fullSyncTimer); fullSyncTimer = null; }
           if(unlockSyncTimer){ clearTimeout(unlockSyncTimer); unlockSyncTimer = null; }
           fbPendingUnlocks = {};

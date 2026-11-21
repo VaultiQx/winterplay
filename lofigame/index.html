@@ -112,6 +112,22 @@
   .wallet-pill.show{display:inline-flex}
   .wallet-pill .dot{width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#2b9bf0,#0b5fa5);display:inline-flex;align-items:center;justify-content:center;flex:none}
   .wallet-pill .dot svg{width:11px;height:11px}
+  /* ---------- nav auth pending state: shown until Firebase confirms the session,
+       so a signed-in user never sees the signed-out "Sign in" button flash on reload ---------- */
+  .nav-pending{
+    display:none;align-items:center;gap:8px;
+    font-size:13px;font-weight:600;color:var(--ink-faint);
+    background:#fff;border:1.5px solid var(--border-light);
+    padding:6px 14px;border-radius:980px;min-height:32px;margin-left:8px;white-space:nowrap;
+  }
+  body.auth-pending .nav-pending{display:inline-flex}
+  body.auth-pending #signin-open{display:none}
+  .nav-pending .spin{
+    width:13px;height:13px;flex:none;border-radius:50%;
+    border:2px solid var(--ice-deep);border-top-color:var(--blue);
+    animation:nav-spin .8s linear infinite;
+  }
+  @keyframes nav-spin{to{transform:rotate(360deg)}}
   @media (max-width:640px){
     .nav{gap:12px;padding:0 16px}
     .wrap{padding:0 16px}
@@ -119,7 +135,7 @@
     .nav-links a{padding:8px 6px;font-size:13px;white-space:nowrap}
     .nav-links a.hide-sm{display:none}
     .btn-nav{display:none}
-    .btn-signin,.wallet-pill{margin-left:2px;padding-left:11px;padding-right:11px}
+    .btn-signin,.wallet-pill,.nav-pending{margin-left:2px;padding-left:11px;padding-right:11px}
   }
 
   /* ---------- sign-in modal: same ice theme ---------- */
@@ -556,6 +572,7 @@
     html{scroll-behavior:auto}
     .btn,.ach-chev,.rail a{transition:none}
     .mist,.vapor i{animation:none}
+    .nav-pending .spin{animation:none}
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -563,7 +580,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 </head>
-<body>
+<body class="auth-pending">
 
 <div class="vapor" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
@@ -591,6 +608,7 @@
       <a href="#about">About</a>
     </div>
     <a class="btn btn-primary btn-nav" href="#games">Play</a>
+    <span class="nav-pending" id="nav-pending" role="status"><span class="spin" aria-hidden="true"></span>Loading</span>
     <button class="btn-signin" id="signin-open" type="button" aria-haspopup="dialog">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c2.8 3.6 5.5 6.9 5.5 10.1A5.5 5.5 0 0 1 12 18.6a5.5 5.5 0 0 1-5.5-5.5C6.5 9.9 9.2 6.6 12 3Z" fill="#0f7fd0"/></svg>
       Sign in
@@ -2004,9 +2022,18 @@
     }).catch(function(){ setStatus("username-status", "The username could not be saved. Try again.", "err"); });
   });
 
-  /* ================= Auth state ================= */
+  /* ================= Auth state =================
+     The nav starts pending (body.auth-pending): the Sign in button stays
+     hidden behind a neutral loading pill until Firebase confirms whether
+     a session exists, so a signed-in user never sees a signed-out nav
+     flash on reload. The first onAuthStateChanged resolves it; when the
+     SDK did not load there is nothing to wait for, so it resolves at
+     once and the normal signed-out nav shows. Nothing here treats the
+     pending state as proof of a session. */
+  function resolveAuthPending(){ document.body.classList.remove("auth-pending"); }
   if (FB) {
     auth.onAuthStateChanged(function(user){
+      resolveAuthPending();
       state.user = user;
       state.chalHistory = null;
       clearSubs();
@@ -2019,6 +2046,7 @@
       renderAuthUI(); renderPlayer(); renderStickers(); renderProfile(); renderChallenges();
     });
   } else {
+    resolveAuthPending();
     renderPlayer(); renderStickers(); renderProfile(); renderChallenges();
   }
   applyRoute();

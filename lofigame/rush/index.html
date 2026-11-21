@@ -2778,10 +2778,12 @@
     if(!ref) return;
     ref.set(fbBuildDoc(), { merge: true }).then(function(){
       fbMarkStamped();
-    }).catch(function(){
+    }).catch(function(err){
       /* Offline or a transient failure: the local save is
          intact and the next save / unlock / sign-in retries
-         with the full current state. Play is never blocked. */
+         with the full current state. Play is never blocked,
+         but the failure is logged, never silent. */
+      console.error('[Lofi Rush] Cloud save failed; progress kept locally and retried on the next save.', err);
     });
   }
   function fbScheduleSave(){
@@ -2806,12 +2808,13 @@
     });
     ref.update(updates).then(function(){
       ids.forEach(function(aid){ delete fbPendingStamps[aid]; fbStamped[aid] = true; });
-    }).catch(function(){
+    }).catch(function(err){
       /* The doc may not exist yet (first unlock landing
          before the sign-in merge write): fall back to the
          full-doc write, which carries the pending stamps
          too. Any other failure keeps the stamps pending
          for the next retry. */
+      console.error('[Lofi Rush] Cloud unlock stamp failed; falling back to a full save.', err);
       fbFlushSave();
     });
   }
@@ -2826,9 +2829,22 @@
      controls repainted, then persisted through the game's
      own saveProgress(). */
   function fbApplyMerged(mergedBest, mergedUnlocked, settings){
-    best = mergedBest;
+    /* The merged set was frozen when the sign-in get()
+       resolved, but this runs only after the merged set()
+       resolves too: re-read the live local state now and
+       fold it back in, so an unlock or a new best earned
+       during that window survives. Applying is additive
+       only: ids are never removed from the live unlocked
+       set and best only ever rises, so the saveProgress()
+       below can never write stale progress back over the
+       newer local state (or, via the debounced flush, over
+       the cloud doc). */
+    var live = fbReadLocal();
     var id;
-    for(id in unlocked) delete unlocked[id];
+    for(id in live.unlocked){ if(live.unlocked[id]) mergedUnlocked[id] = true; }
+    for(id in unlocked){ if(unlocked[id]) mergedUnlocked[id] = true; }
+    best = Math.max(mergedBest, live.best,
+      (typeof best === 'number' && isFinite(best)) ? Math.floor(best) : 0);
     for(id in mergedUnlocked){ if(mergedUnlocked[id]) unlocked[id] = true; }
     muted = settings.muted === true;
     soundVolVal = settings.soundVol / 100;
@@ -2875,7 +2891,14 @@
         if(!Object.prototype.hasOwnProperty.call(mergedEarned, id)) mergedEarned[id] = null;
       }
       fbEarnedAt = mergedEarned;
-      fbPendingStamps = {};
+      /* fbPendingStamps is deliberately NOT cleared here:
+         those ids were unlocked while signed in and their
+         cloud earnedAt stamps are not confirmed until the
+         merged write below lands. Clearing them now would
+         strand a late unlock at earnedAt null and stop its
+         pending fbFlushUnlocks() stamp from ever running;
+         the flush / fbMarkStamped() retire them once the
+         write is confirmed. */
       fbStamped = {};
       var cloudMs = 0;
       if(cloud && cloud.updatedAt && typeof cloud.updatedAt.toMillis === 'function'){
@@ -2896,16 +2919,18 @@
       ref.set(data, { merge: true }).then(function(){
         if(!fbUser || fbUser.uid !== user.uid) return;
         fbApplyMerged(mergedBest, mergedUnlocked, chosen);
-      }).catch(function(){
+      }).catch(function(err){
         /* The write failed (offline): still load the merged
            state locally; the next save already carries the
            full state back to Firestore. */
+        console.error('[Lofi Rush] Sign-in merge write failed; merged state loaded locally, full state retried on the next save.', err);
         if(fbUser && fbUser.uid === user.uid) fbApplyMerged(mergedBest, mergedUnlocked, chosen);
       });
-    }).catch(function(){
+    }).catch(function(err){
       /* Read failed (offline): the game keeps running on the
          local save exactly as before; sync retries on the
          next save or sign-in. */
+      console.error('[Lofi Rush] Sign-in cloud read failed; continuing on the local save.', err);
     });
   }
   function fbHandleSignOut(){
@@ -2930,6 +2955,7 @@
   }catch(e){
     /* Firebase unreachable (blocked CDN or offline): the game
        runs on localStorage only, exactly as before. */
+    console.error('[Lofi Rush] Firebase failed to initialise; running on the local save only.', e);
     fbAuth = null; fbDb = null; fbUser = null;
   }
 })();

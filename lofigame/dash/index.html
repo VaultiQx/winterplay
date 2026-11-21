@@ -984,43 +984,47 @@
         });
       }
       /* Offline / failure: keep the local save; the next save or
-         sign-in retries with the full current state. Never block. */
+         sign-in retries with the full current state. Never block,
+         but never fail silently either — log the write failure. */
       var p = ref.set(data, { merge: true });
-      if(p && typeof p.catch === 'function') p.catch(function(){});
-    }catch(e){}
+      if(p && typeof p.catch === 'function') p.catch(function(err){ if(window.console && console.warn) console.warn('[Lofi Dash] Firestore sync write failed; local save kept.', err); });
+    }catch(e){ if(window.console && console.warn) console.warn('[Lofi Dash] Firestore sync write failed; local save kept.', e); }
   }
   function handleSignInMerge(user){
     if(typeof firebase === 'undefined' || !firebase.firestore || !firebase.firestore.FieldValue) return;
     var ref = fbGameDocRef();
     if(!ref) return;
-    /* Snapshot local state at sign-in time. */
-    var localBest = (typeof best === 'number' && isFinite(best)) ? best : 0;
-    var localUnlocked = fbCurrentUnlocked();
-    var localSettings = fbCurrentSettings();
-    var hasLocalSave = !!savedData;
-    try{
-      if(window.localStorage){
-        var rawNow = window.localStorage.getItem(SAVE_KEY);
-        if(rawNow){
-          var parsedNow = JSON.parse(rawNow);
-          if(parsedNow){
-            hasLocalSave = true;
-            if(typeof parsedNow.best === 'number' && isFinite(parsedNow.best)) localBest = Math.floor(parsedNow.best);
-            if(parsedNow.unlocked && typeof parsedNow.unlocked === 'object'){
-              localUnlocked = {};
-              Object.keys(parsedNow.unlocked).forEach(function(k){ if(parsedNow.unlocked[k]) localUnlocked[k] = true; });
+    /* Do NOT snapshot local state here. ref.get() is async, and a run
+       can unlock an achievement while the read is in flight; a snapshot
+       taken at entry would be stale by merge time and its write-back
+       would erase the in-flight unlock locally and in the cloud. The
+       live local state is re-read inside the .then() callback below,
+       at merge time. */
+    ref.get().then(function(snap){
+      /* Re-read the LIVE local state at merge time: the current
+         in-memory best/unlocked/settings, anything queued in
+         fbPendingUnlocks, and the freshest localStorage save —
+         unioned together, never replacing the live unlocked set. */
+      var localBest = (typeof best === 'number' && isFinite(best)) ? best : 0;
+      var localUnlocked = fbCurrentUnlocked();
+      Object.keys(fbPendingUnlocks).forEach(function(k){ if(fbPendingUnlocks[k]) localUnlocked[k] = true; });
+      var localSettings = fbCurrentSettings();
+      var hasLocalSave = !!savedData;
+      try{
+        if(window.localStorage){
+          var rawNow = window.localStorage.getItem(SAVE_KEY);
+          if(rawNow){
+            var parsedNow = JSON.parse(rawNow);
+            if(parsedNow){
+              hasLocalSave = true;
+              if(typeof parsedNow.best === 'number' && isFinite(parsedNow.best)) localBest = Math.max(localBest, Math.floor(parsedNow.best));
+              if(parsedNow.unlocked && typeof parsedNow.unlocked === 'object'){
+                Object.keys(parsedNow.unlocked).forEach(function(k){ if(parsedNow.unlocked[k]) localUnlocked[k] = true; });
+              }
             }
-            localSettings = {
-              muted: typeof parsedNow.muted === 'boolean' ? parsedNow.muted : localSettings.muted,
-              soundVol: (typeof parsedNow.soundVol === 'number' && isFinite(parsedNow.soundVol)) ? Math.min(1, Math.max(0, parsedNow.soundVol)) : localSettings.soundVol,
-              musicVol: (typeof parsedNow.musicVol === 'number' && isFinite(parsedNow.musicVol)) ? Math.min(1, Math.max(0, parsedNow.musicVol)) : localSettings.musicVol,
-              tipsOn: typeof parsedNow.tipsOn === 'boolean' ? parsedNow.tipsOn : localSettings.tipsOn
-            };
           }
         }
-      }
-    }catch(e){}
-    ref.get().then(function(snap){
+      }catch(e){}
       var cloud = (snap && snap.exists) ? (snap.data() || {}) : null;
       var cloudBest = (cloud && typeof cloud.best === 'number' && isFinite(cloud.best)) ? cloud.best : 0;
       var cloudUnlocked = (cloud && cloud.unlocked && typeof cloud.unlocked === 'object') ? cloud.unlocked : {};
@@ -1031,12 +1035,19 @@
       var mergedUnlocked = {};
       Object.keys(localUnlocked).forEach(function(k){ if(localUnlocked[k]) mergedUnlocked[k] = true; });
       Object.keys(cloudUnlocked).forEach(function(k){ if(cloudUnlocked[k]) mergedUnlocked[k] = true; });
+      /* Re-union anything unlocked while the read was in flight:
+         the live unlocked object and fbPendingUnlocks may have gained
+         entries since localUnlocked was read at the top of this
+         callback, and those must survive the merge. */
+      Object.keys(unlocked).forEach(function(k){ if(unlocked[k]) mergedUnlocked[k] = true; });
+      Object.keys(fbPendingUnlocks).forEach(function(k){ if(fbPendingUnlocks[k]) mergedUnlocked[k] = true; });
+      if(typeof best === 'number' && isFinite(best)) mergedBest = Math.max(mergedBest, best);
       /* earnedAt: keep cloud values; add null for locally-unlocked
          IDs missing from cloud (never invent unlock dates). Only the
          null additions are written — merge:true preserves cloud's. */
       var earnedAtAdd = {};
       Object.keys(mergedUnlocked).forEach(function(id){
-        if(!(id in cloudEarnedAt) && localUnlocked[id]) earnedAtAdd[id] = null;
+        if(!(id in cloudEarnedAt) && (localUnlocked[id] || unlocked[id] || fbPendingUnlocks[id])) earnedAtAdd[id] = null;
       });
       /* Settings: prefer the most recently updated. The local save
          carries no timestamp, so when in doubt keep local; use cloud
@@ -1061,8 +1072,14 @@
         };
         if(Object.keys(earnedAtAdd).length) mergedDoc.earnedAt = earnedAtAdd;
         var wp = ref.set(mergedDoc, { merge: true });
-        if(wp && typeof wp.catch === 'function') wp.catch(function(){});
-      }catch(e){}
+        if(wp && typeof wp.catch === 'function') wp.catch(function(err){ if(window.console && console.warn) console.warn('[Lofi Dash] Firestore merge write failed; local save kept.', err); });
+      }catch(e){ if(window.console && console.warn) console.warn('[Lofi Dash] Firestore merge write failed; local save kept.', e); }
+      /* Final re-union right before overwriting live state, so an
+         unlock earned at any point during the merge survives being
+         loaded back into the game and persisted to localStorage. */
+      Object.keys(unlocked).forEach(function(k){ if(unlocked[k]) mergedUnlocked[k] = true; });
+      Object.keys(fbPendingUnlocks).forEach(function(k){ if(fbPendingUnlocks[k]) mergedUnlocked[k] = true; });
+      if(typeof best === 'number' && isFinite(best) && best > mergedBest) mergedBest = best;
       /* Load the merged state into the game, exactly as the local
          load does: best, unlocked, and settings into live state. */
       best = mergedBest;
@@ -1102,9 +1119,11 @@
         if(typeof updateHud === 'function') updateHud();
       }catch(e){}
       renderAch();
-    }).catch(function(){
+    }).catch(function(err){
       /* Offline / read failure: keep playing on the local save;
-         the merge retries on the next sign-in. */
+         the merge retries on the next sign-in. Log it so a failed
+         merge is never silent. */
+      if(window.console && console.warn) console.warn('[Lofi Dash] Firestore sign-in merge read failed; local save kept.', err);
     });
   }
   function initFirebaseSync(){
