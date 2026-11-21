@@ -1636,7 +1636,11 @@
     if (!FB) { noService("google-status"); return; }
     var provider = new firebase.auth.GoogleAuthProvider();
     setStatus("google-status", "Opening Google sign-in…");
-    var done = function(){ setStatus("google-status", "Signed in with Google.", "ok"); };
+    var done = function(){
+      setStatus("google-status", "Signed in with Google.", "ok");
+      $("signin-overlay").classList.remove("open");
+      document.body.classList.remove("modal-open");
+    };
     if (state.user && state.user.isAnonymous) {
       state.user.linkWithPopup(provider).then(done, function(err){
         if (err && err.code === "auth/credential-already-in-use") {
@@ -2027,6 +2031,8 @@
       state.chalHistory = null;
       clearSubs();
       if (user) {
+        $("signin-overlay").classList.remove("open");
+        document.body.classList.remove("modal-open");
         ensureProfile(user).then(function(){ subscribeUser(user.uid); renderAuthUI(); });
       } else {
         state.profile = null;
