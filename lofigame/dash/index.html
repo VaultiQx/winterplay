@@ -134,8 +134,8 @@
     position:absolute; left:-8px; right:-8px; z-index:3; pointer-events:none;
     background-repeat:no-repeat; background-size:100% 100%;
   }
-  .snow-edge-top{ top:-56px; height:58px; background-image:url(../assets/snow-86cf839d.webp); }
-  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(../assets/snow-22495d8e.webp); }
+  .snow-edge-top{ top:-56px; height:58px; background-image:url(assets/snow-86cf839d.webp); }
+  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(assets/snow-22495d8e.webp); }
   /* ice rocks off the supplied sheet, piled at the frame's bottom corners */
   .stage-rock{
     position:absolute; bottom:-62px; z-index:3; pointer-events:none;
@@ -190,7 +190,7 @@
   /* snow-icicle strip laid across a panel's top edge */
   .panel-snow{
     position:absolute; top:-17px; left:-10px; right:-10px; height:38px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   /* primary button (Run again, Resume, …): pixel ice */
@@ -283,7 +283,7 @@
   }
   .guide::before, .ach::before{
     content:""; position:absolute; top:-15px; left:12px; right:12px; height:26px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   .guide h2{ margin:0 0 4px; font-size:20px; font-weight:800; letter-spacing:-.01em; }
@@ -750,6 +750,11 @@
     .profile-pill img{ width:27px; height:27px; }
   }
 </style>
+<style>/* Light entrance animation (repo-only patch, re-applied after each re-export) */
+@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body{animation:lofi-fade-in .45s ease-out both}
+@media (prefers-reduced-motion:reduce){body{animation:none}}
+</style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -760,17 +765,17 @@
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 4.5 7 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Back
     </a>
-    <a class="site-brand" href="/lofigame/"><img src="../assets/yeti-ca776e9d.webp" alt="" /><span>Lofi Games</span></a>
+    <a class="site-brand" href="/lofigame/"><img src="assets/yeti-ca776e9d.webp" alt="" /><span>Lofi Games</span></a>
     <span class="spacer" aria-hidden="true"></span>
     <a class="profile-pill" id="profilePill" href="/lofigame/" aria-label="Sign in on Lofi Games">
-      <img id="pillAvatar" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <img id="pillAvatar" src="assets/yeti-ca776e9d.webp" alt="" referrerpolicy="no-referrer" />
       <span class="pill-name" id="pillName">Sign in</span>
     </a>
   </header>
 
   <div class="head">
     <div>
-      <h1><img class="logo" src="../assets/logo-89908ca7.webp" alt="Lofi Dash" /></h1>
+      <h1><img class="logo" src="assets/logo-89908ca7.webp" alt="Lofi Dash" /></h1>
       <p>Jump the stickers. Grab the coins. Go far.</p>
     </div>
     <div class="head-actions">
@@ -798,7 +803,7 @@
   </div>
 
   <div class="stage-wrap">
-  <div class="peek" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+  <div class="peek" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
   <div class="snow-edge snow-edge-top" aria-hidden="true"></div>
   <div class="stage">
     <canvas id="game" width="1280" height="572" aria-label="Lofi Dash game. Lofi the yeti runs along a pixel-brick road. Control with all four arrow keys or with W A D Z: up or W to jump, right or D to move forward and dash in the air, left or A to move back, down or Z to duck. Jump over the big sticker blockers on the road."></canvas>
@@ -817,7 +822,7 @@
 
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
-        <img class="start-logo" src="../assets/start-logo-1bbb7cb1.webp" alt="Lofi Dash" />
+        <img class="start-logo" src="assets/start-logo-1bbb7cb1.webp" alt="Lofi Dash" />
         <button class="play-pill pix" id="startBtn" type="button" aria-label="Start run"><span class="play-tri" aria-hidden="true"></span>PLAY</button>
       </div>
     </div>
@@ -835,7 +840,7 @@
     <div class="overlay" id="overOverlay" hidden>
       <div class="panel over-panel ice-panel">
         <div class="panel-snow" aria-hidden="true"></div>
-        <div class="over-avatar" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+        <div class="over-avatar" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
         <h2>Game Over</h2>
         <p class="over-sub">Lofi took a tumble in the snow.</p>
         <p class="newbest" id="newBest">🏆 New best run!</p>
@@ -845,17 +850,17 @@
           <div><small>Best</small><strong><span id="resBest">0</span> <span class="unit">m</span></strong></div>
         </div>
         <div class="over-actions">
-          <img class="mini-rock" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Run again</button>
-          <img class="mini-rock flip" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock flip" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
         </div>
         <p class="over-hint">or press Enter</p>
       </div>
     </div>
   </div>
   <div class="snow-edge snow-edge-bottom" aria-hidden="true"></div>
-  <img class="stage-rock rock-bl" src="../assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
-  <img class="stage-rock rock-br" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-bl" src="assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-br" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
   </div>
 
   <div class="touch" aria-label="Touch controls">
@@ -971,11 +976,25 @@
     if(user){
       var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
       pillName.textContent = name;
-      pillAvatar.src = user.photoURL || '../assets/yeti-ca776e9d.webp';
+      /* Google profile photo, matching the hub: the signed-in user's
+         photoURL (firebase.auth().currentUser.photoURL) is the pill
+         avatar when one exists; otherwise the preset avatar, exactly
+         as before. */
+      var photo = null;
+      try{
+        if(typeof firebase !== 'undefined' && firebase.auth){
+          var cu = firebase.auth().currentUser;
+          if(cu && cu.photoURL) photo = cu.photoURL;
+        }
+      }catch(e){}
+      if(!photo && user.photoURL) photo = user.photoURL;
+      pillAvatar.referrerPolicy = 'no-referrer';
+      pillAvatar.src = photo || 'assets/yeti-ca776e9d.webp';
       profilePill.setAttribute('aria-label', 'Signed in as ' + name + '. Go to Lofi Games.');
     }else{
       pillName.textContent = 'Sign in';
-      pillAvatar.src = '../assets/yeti-ca776e9d.webp';
+      pillAvatar.referrerPolicy = 'no-referrer';
+      pillAvatar.src = 'assets/yeti-ca776e9d.webp';
       profilePill.setAttribute('aria-label', 'Sign in on Lofi Games');
     }
   }
@@ -1431,15 +1450,15 @@
   }
 
   /* Lofi: the user's own yeti art, kept whole in its original shape */
-  var yetiSticker = loadSticker('../assets/yeti-ca776e9d.webp');
+  var yetiSticker = loadSticker('assets/yeti-ca776e9d.webp');
 
   /* road blockers: the user's own pictures, shrunk into small stickers
      that sit flat on the road surface and must be jumped over */
   var blockerArt = [
-    loadSticker('../assets/blocker-9ee138bf.webp'),
-    loadSticker('../assets/blocker-67795ea2.webp'),
-    loadSticker('../assets/blocker-92dd01de.webp'),
-    loadSticker('../assets/blocker-f86e25fc.webp')
+    loadSticker('assets/blocker-9ee138bf.webp'),
+    loadSticker('assets/blocker-67795ea2.webp'),
+    loadSticker('assets/blocker-92dd01de.webp'),
+    loadSticker('assets/blocker-f86e25fc.webp')
   ];
 
   /* ---------- sound effects (synthesised, no audio files) ---------- */

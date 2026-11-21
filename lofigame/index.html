@@ -565,6 +565,73 @@
   .account-line{display:flex;align-items:center;gap:10px}
   .btn-ghost.danger{color:#b3261e;border-color:#eec9c6}
 
+  /* ---------- header profile dropdown ---------- */
+  .nav{position:relative}
+  .user-menu{
+    position:absolute;top:calc(100% + 8px);right:22px;z-index:60;min-width:212px;
+    background:#fff;border:1.5px solid var(--border);border-radius:14px;
+    box-shadow:0 18px 44px rgba(12,42,68,.22);padding:6px;
+  }
+  .user-menu[hidden]{display:none}
+  .user-menu a,.user-menu button{
+    display:flex;align-items:center;width:100%;text-align:left;cursor:pointer;font:inherit;
+    font-size:14.5px;font-weight:600;color:var(--ink);text-decoration:none;
+    background:none;border:none;border-radius:9px;padding:10px 12px;min-height:42px;
+  }
+  .user-menu a:hover,.user-menu button:hover{background:var(--ice)}
+  .user-menu button{color:#b3261e}
+  @media (max-width:640px){ .user-menu{right:16px} }
+
+  /* ---------- help / your data documents ---------- */
+  .doc-list{display:flex;flex-direction:column;gap:14px;max-width:720px;margin:0 auto}
+  .doc-card{background:linear-gradient(180deg,#f7fcff,#eef8ff);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px 24px}
+  .doc-card h3{font-family:var(--display);font-size:19px;font-weight:800;color:var(--blue-dark);margin-bottom:8px}
+  .doc-card p{font-size:15px;line-height:1.6;color:var(--ink-soft)}
+  .doc-card p + p{margin-top:8px}
+  .doc-card a{font-weight:600}
+
+  /* ---------- decorative sticker showcase + take-stickers page ----------
+     These are the shareable stickers only; the achievement stickerbook
+     above (.stickers / .sticker) is a separate system and is untouched. */
+  .showcase-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .showcase-item{
+    background:#fff;border:1.5px solid var(--border-light);border-radius:14px;
+    padding:12px 10px 10px;text-align:center;
+  }
+  .showcase-item img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block}
+  .showcase-item span{display:block;margin-top:6px;font-family:var(--display);font-size:14.5px;font-weight:700;color:var(--blue-dark)}
+  .showcase-more{text-align:center;margin-top:24px}
+  @media (max-width:720px){ .showcase-grid{grid-template-columns:repeat(2,1fr)} }
+  .take-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .take-card{
+    background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+    padding:18px 16px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  }
+  .take-card img{width:100%;max-width:230px;aspect-ratio:1/1;object-fit:contain;display:block}
+  .take-card h3{font-family:var(--display);font-size:18px;font-weight:800;color:var(--blue-dark)}
+  .take-card .btn{margin-top:auto;width:100%}
+  @media (max-width:720px){ .take-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:480px){ .take-grid{grid-template-columns:1fr} .take-card img{max-width:200px} }
+
+  /* ---------- player: close to earning, sign-out row, settings avatar ---------- */
+  .close-list{display:flex;flex-direction:column;gap:10px}
+  .close-row{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--border-light);border-radius:14px;padding:12px 16px;text-decoration:none;color:inherit}
+  .close-row:hover{border-color:var(--blue)}
+  .close-row .c-main{flex:1;min-width:0}
+  .close-row h4{font-family:var(--display);font-size:16px;font-weight:800;color:var(--blue-dark);line-height:1.25}
+  .close-row .c-game{font-size:12.5px;color:var(--ink-faint)}
+  .close-row .c-arrow{font-size:20px;color:var(--ink-faint);flex:none}
+  .player-actions{text-align:center;margin-top:28px}
+  .avatar-current{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .avatar-current b{font-family:var(--display);font-size:16.5px;font-weight:800;color:var(--blue-dark);display:block}
+  .avatar-current p{font-size:13.5px;line-height:1.45;color:var(--ink-soft)}
+  .chal-play{
+    flex:none;display:inline-flex;align-items:center;cursor:pointer;text-decoration:none;
+    font-size:13px;font-weight:700;color:#fff;background:linear-gradient(180deg,#2b9bf0,#0f7fd0);
+    border:1.5px solid #0f7fd0;border-radius:980px;padding:5px 14px;min-height:32px;
+  }
+  .chal-play:hover{background:linear-gradient(180deg,#1c8fe8,#0b6cb8)}
+
   /* ---------- light entrance: content rises in gently on load and on view change ---------- */
   @keyframes rise-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .anim-in > *{animation:rise-in .7s ease backwards}
@@ -604,10 +671,15 @@
       <span class="dot"><img src="assets/sui-logo-427d941f.png" alt=""></span>
       <span id="wallet-pill-addr">0x…</span>
     </button>
-    <button class="wallet-pill" id="user-pill" type="button" aria-label="Open your player page">
+    <button class="wallet-pill" id="user-pill" type="button" aria-label="Open your player menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
       <span class="avatar" id="user-pill-avatar"></span>
       <span id="user-pill-name">Player</span>
     </button>
+    <div class="user-menu" id="user-menu" role="menu" aria-label="Player menu" hidden>
+      <a href="#/player" role="menuitem">My player page</a>
+      <a href="#/settings" role="menuitem">Profile &amp; settings</a>
+      <button type="button" id="user-menu-signout" role="menuitem">Sign out</button>
+    </div>
   </nav>
 </header>
 
@@ -883,6 +955,29 @@
       </div>
     </section>
 
+    <!-- STICKER SHOWCASE: the ten shareable stickers -->
+    <section id="sticker-showcase" aria-labelledby="showcase-h">
+      <div class="sec-head">
+        <h2 id="showcase-h" class="display">Lofi stickers</h2>
+        <p class="sec-sub">Ten Lofi stickers to save and share wherever you like. Grab the full-size PNGs on the sticker page.</p>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-item"><img src="assets/sticker-display-a52b194a.webp" alt="Lofi sticker: The face, Lofi's smiling face close up" loading="lazy"><span>The face</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-9fc7824d.webp" alt="Lofi sticker: Waving Lofi, waving hello" loading="lazy"><span>Waving Lofi</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-a58a2c6a.webp" alt="Lofi sticker: Butterfly Lofi, with a butterfly" loading="lazy"><span>Butterfly Lofi</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-41a43ec5.webp" alt="Lofi sticker: Snowflake, Lofi with a snowflake" loading="lazy"><span>Snowflake</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-41c07710.webp" alt="Lofi sticker: Pine tree, Lofi beside a pine tree" loading="lazy"><span>Pine tree</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-34bb9419.webp" alt="Lofi sticker: The Lofi mark" loading="lazy"><span>The Lofi mark</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-3c6fd165.webp" alt="Lofi sticker: The Lofi stamp, a round Lofi stamp" loading="lazy"><span>The Lofi stamp</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-80bde6f1.webp" alt="Lofi sticker: Chill, Lofi relaxing" loading="lazy"><span>Chill</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-46570a31.webp" alt="Lofi sticker: Stay frosty, Lofi staying frosty" loading="lazy"><span>Stay frosty</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-2a19660b.webp" alt="Lofi sticker: Snowball Lofi, holding a big snowball" loading="lazy"><span>Snowball Lofi</span></div>
+      </div>
+      <div class="showcase-more">
+        <a class="btn btn-primary" href="#/take-stickers">Take some stickers</a>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -910,8 +1005,13 @@
           <div class="pstat"><b id="player-stickers">0 / 20</b><span>Stickers collected</span></div>
           <div class="pstat"><b id="player-chaldays">0</b><span>Challenge days</span></div>
         </div>
+        <h3 class="view-subh">Close to earning</h3>
+        <div class="close-list" id="player-close"></div>
         <h3 class="view-subh">Best scores</h3>
         <div class="best-grid" id="player-bests"></div>
+        <div class="player-actions">
+          <button class="btn btn-ghost danger" id="player-signout" type="button">Sign out</button>
+        </div>
       </div>
     </div>
   </div>
@@ -980,6 +1080,7 @@
           <p class="signin-status" id="username-status" aria-live="polite"></p>
 
           <h3 class="view-subh">Avatar</h3>
+          <div class="avatar-current" id="avatar-current"></div>
           <div class="avatar-grid" id="avatar-grid"></div>
           <p class="signin-status" id="avatar-status" aria-live="polite"></p>
 
@@ -999,6 +1100,142 @@
           <h3 class="view-subh">Session</h3>
           <button class="btn btn-ghost danger" id="profile-signout" type="button">Sign out</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP -->
+  <div class="view" id="view-help" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="display">Help</h2>
+        <p class="sec-sub">You can play every game as a guest. Sign in to keep your XP, stickers and daily challenges together in one player account.</p>
+      </div>
+      <div class="doc-list">
+        <article class="doc-card">
+          <h3>Find a game and its controls</h3>
+          <p>The Games section on the home page lists all four games by name: Lofi Dash, Frozen Crossing, Lofi Rush and Lofi Climb. Each card shows that game's controls under its description, and each game keeps its own pause and sound controls on its game screen.</p>
+          <p>Tap Play on a card and the game opens right here in your browser, no downloads. The hub header stays at the top, so your profile and the way back are always one tap away.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Saved runs and local bests</h3>
+          <p>Your best score in each game is saved on this device, so it is waiting for you when you come back in the same browser. Sign in and your bests sync to your player account too, so they follow you to your other devices.</p>
+          <p>A local best belongs to the browser it was set in. Clearing this site's browser data removes local bests and on-device saves, but anything already synced to your player account stays. <a href="#/your-data">Your data</a> explains what is kept where.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Stickers, XP and daily challenges</h3>
+          <p>There are 20 achievement stickers, five in each game, worth 840 XP in total. Open the <a href="#/stickers">Stickerbook</a> to see every sticker, what it takes to earn it, and how close you are. When a sticker unlocks in a game, its XP is added to your player account.</p>
+          <p>Three daily challenges arrive every day and reset at 22:00 (10 PM) Asia/Dhaka time. Challenges count toward Challenge Days only; they award no XP. Finishing all three in one day banks a Challenge Day on your player page.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Your account</h3>
+          <p><a href="#/settings">Profile &amp; settings</a> lets you edit your public username, pick an avatar, review the accounts linked to this player, and sign out. Sign in with Google, email, a guest account, or a SUI Wallet, and use Link another account in Profile &amp; settings to add a second sign-in method to the same player; your saved progress stays intact.</p>
+          <p>Signing out signs you out of Lofi Games only, never out of your Google account, and your synced progress is still here when you sign back in.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Report a problem</h3>
+          <p>A useful report makes a problem much easier to find and fix. Include the name of the game, the device and browser you were using, the steps that led to the problem, what you expected to happen and what happened instead. A screenshot, or the score shown at the end of the run, helps a lot.</p>
+          <p>Keep personal sign-in details, passwords and wallet information out of any report you post in public.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOUR DATA -->
+  <div class="view" id="view-yourdata" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="display">Your data</h2>
+        <p class="sec-sub">What is kept on this device, what is kept in your player account, and the controls you have over both.</p>
+      </div>
+      <div class="doc-list">
+        <article class="doc-card">
+          <h3>Playing on this device</h3>
+          <p>Guest play is available without a player account. Your browser keeps your local best score for each game, plus small bits of on-device state: a saved wallet address so a SUI Wallet can reconnect, your username-change count for the day, and whether you picked an avatar yourself.</p>
+          <p>These belong to this device and this browser. Clearing the site's browser data removes them and signs you out here; it does not erase the progress saved to your player account.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Your player account</h3>
+          <p>A signed-in player has one shared player record, kept in Firebase: your public username, your chosen avatar, your XP, the stickers you have collected, your challenge days, and your synced best scores across the four games. That record is what lets the same progress follow you between devices.</p>
+          <p>Your player page shows your totals, and the <a href="#/stickers">Stickerbook</a> shows each sticker's state: collected, ready to claim, or in progress.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Sign-in and optional connections</h3>
+          <p>Sign-in runs through Firebase Authentication, with the method you choose on the sign-in screen: Google, email and password, a guest account, or a SUI Wallet. Linking another method in <a href="#/settings">Profile &amp; settings</a> attaches it to the same player, so no second account is created.</p>
+          <p>A SUI Wallet connection is optional and separate: only your public wallet address is stored on your profile, and Lofi never asks for a seed phrase or a wallet password. Signing out ends your Lofi session on this site only; it does not sign you out of Google, and it does not delete saved scores or stickers.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Public names and reports</h3>
+          <p>Your username, avatar and XP are public: they appear on the <a href="#/leaderboard">Leaderboard</a>, which lists the top 25 players by XP. Pick a username you are happy for other players to see. Your email address and your sign-in details are never shown publicly.</p>
+          <p>If a problem in a game needs reporting, <a href="#/help">Help</a> explains what to include so it can be found and fixed.</p>
+        </article>
+        <article class="doc-card">
+          <h3>Questions and account controls</h3>
+          <p>You can review your player, your linked accounts and your saved stickers from <a href="#/player">Your player</a> and <a href="#/settings">Profile &amp; settings</a>. There you can change your username, switch between your Google photo and the preset avatars, link or disconnect accounts, and sign out.</p>
+          <p><a href="#/help">Help</a> explains how the games, stickers and daily challenges work, and what to include when you report a problem.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAKE STICKERS -->
+  <div class="view" id="view-take-stickers" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="display">Take some stickers.</h2>
+        <p class="sec-sub">All ten Lofi stickers, free to save and share. Tap Download PNG on any sticker to keep the full-size file.</p>
+      </div>
+      <div class="take-grid">
+        <article class="take-card">
+          <img src="assets/sticker-display-a52b194a.webp" alt="Lofi sticker: The face, Lofi's smiling face close up" loading="lazy">
+          <h3>The face</h3>
+          <a class="btn btn-primary" href="assets/sticker-109ce427.png" download="sticker-01-face.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-9fc7824d.webp" alt="Lofi sticker: Waving Lofi, waving hello" loading="lazy">
+          <h3>Waving Lofi</h3>
+          <a class="btn btn-primary" href="assets/sticker-1a2ca346.png" download="sticker-02-waving.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-a58a2c6a.webp" alt="Lofi sticker: Butterfly Lofi, with a butterfly" loading="lazy">
+          <h3>Butterfly Lofi</h3>
+          <a class="btn btn-primary" href="assets/sticker-0ea2ec5b.png" download="sticker-03-butterfly.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-41a43ec5.webp" alt="Lofi sticker: Snowflake, Lofi with a snowflake" loading="lazy">
+          <h3>Snowflake</h3>
+          <a class="btn btn-primary" href="assets/sticker-21ad8833.png" download="sticker-04-snowflake.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-41c07710.webp" alt="Lofi sticker: Pine tree, Lofi beside a pine tree" loading="lazy">
+          <h3>Pine tree</h3>
+          <a class="btn btn-primary" href="assets/sticker-ac126092.png" download="sticker-05-pine.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-34bb9419.webp" alt="Lofi sticker: The Lofi mark" loading="lazy">
+          <h3>The Lofi mark</h3>
+          <a class="btn btn-primary" href="assets/sticker-3511f839.png" download="sticker-06-logo.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-3c6fd165.webp" alt="Lofi sticker: The Lofi stamp, a round Lofi stamp" loading="lazy">
+          <h3>The Lofi stamp</h3>
+          <a class="btn btn-primary" href="assets/sticker-da8d4048.png" download="sticker-07-stamp.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-80bde6f1.webp" alt="Lofi sticker: Chill, Lofi relaxing" loading="lazy">
+          <h3>Chill</h3>
+          <a class="btn btn-primary" href="assets/sticker-a8602fd2.png" download="sticker-08-chill.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-46570a31.webp" alt="Lofi sticker: Stay frosty, Lofi staying frosty" loading="lazy">
+          <h3>Stay frosty</h3>
+          <a class="btn btn-primary" href="assets/sticker-3e50c727.png" download="sticker-09-frosty.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-2a19660b.webp" alt="Lofi sticker: Snowball Lofi, holding a big snowball" loading="lazy">
+          <h3>Snowball Lofi</h3>
+          <a class="btn btn-primary" href="assets/sticker-9730383f.png" download="sticker-10-snowball.png">Download PNG</a>
+        </article>
       </div>
     </div>
   </div>
@@ -1028,6 +1265,9 @@
           <a href="#/challenges">Challenges</a>
           <a href="#/leaderboard">Leaderboard</a>
           <a href="#/settings">Profile</a>
+          <a href="#/help">Help</a>
+          <a href="#/your-data">Your data</a>
+          <a href="#/take-stickers">Take stickers</a>
         </nav>
       </div>
       <div class="foot-col">
@@ -1525,6 +1765,32 @@
     if (a.img) return '<img src="' + a.img + '" alt="">';
     return a.svg;
   }
+  /* Display avatar resolution: an explicitly chosen preset wins; otherwise
+     the Google profile photo (Firebase Auth photoURL) when there is one;
+     otherwise the default preset. The profile doc's avatar field starts as
+     the creation default "yeti", which is not a choice, so a device-side
+     flag records when the player actually picks an avatar in settings;
+     only the "yeti" default is ambiguous, every other stored preset id
+     could only have been written by an explicit pick. The special stored
+     value "google" means the player picked their Google photo. */
+  function avatarPickedFlag(uid){
+    try { return !!localStorage.getItem("lofi_avatar_picked_" + uid); } catch (e) { return false; }
+  }
+  function resolvedAvatarId(profile, user){
+    var chosen = profile && profile.avatar;
+    if (chosen === "google") return (user && user.photoURL) ? "google" : "yeti";
+    if (chosen && AVATARS[chosen] && chosen !== "yeti") return chosen;
+    if (chosen === "yeti" && user && avatarPickedFlag(user.uid)) return "yeti";
+    if (user && user.photoURL) return "google";
+    return (chosen && AVATARS[chosen]) ? chosen : "yeti";
+  }
+  function displayAvatarHTML(profile, user){
+    var id = resolvedAvatarId(profile, user);
+    if (id === "google" && user && user.photoURL) {
+      return '<img src="' + esc(user.photoURL) + '" alt="" referrerpolicy="no-referrer">';
+    }
+    return avatarHTML(id);
+  }
 
   /* ================= State ================= */
   var state = { user:null, profile:null, games:{}, unsubs:[], stickerFilter:"all", chalHistory:null, boardLoaded:false };
@@ -1544,7 +1810,7 @@
   }
 
   /* ================= Router: home + 5 views inside this hub ================= */
-  var ROUTES = { "player":"view-player", "stickers":"view-stickers", "challenges":"view-challenges", "leaderboard":"view-leaderboard", "profile":"view-profile" };
+  var ROUTES = { "player":"view-player", "stickers":"view-stickers", "challenges":"view-challenges", "leaderboard":"view-leaderboard", "profile":"view-profile", "help":"view-help", "your-data":"view-yourdata", "take-stickers":"view-take-stickers" };
   function currentRoute(){
     var h = (location.hash || "").replace(/^#\/?/, "");
     if (h === "settings") h = "profile"; /* #/settings is the canonical name for the profile & settings view */
@@ -1676,10 +1942,10 @@
       navSignin.style.display = "none";
       walletPill.style.display = "none";
       pill.classList.add("show");
-      $("user-pill-avatar").innerHTML = avatarHTML(profile ? profile.avatar : "yeti");
+      $("user-pill-avatar").innerHTML = displayAvatarHTML(profile, user);
       $("user-pill-name").textContent = profile ? profile.username : "Player";
       $("account-box").classList.add("show");
-      $("account-avatar").innerHTML = avatarHTML(profile ? profile.avatar : "yeti");
+      $("account-avatar").innerHTML = displayAvatarHTML(profile, user);
       $("account-name").textContent = profile ? profile.username : "Player";
       var sub = providerLabel();
       if (state.user.email) sub += " · " + state.user.email;
@@ -1689,9 +1955,31 @@
       walletPill.style.display = "";
       pill.classList.remove("show");
       $("account-box").classList.remove("show");
+      closeUserMenu();
     }
   }
-  $("user-pill").addEventListener("click", function(){ location.hash = "#/player"; });
+  /* Header profile dropdown: the pill opens a small menu (player page,
+     profile & settings, sign out) instead of jumping straight to a page.
+     Clicking anywhere outside the pill and menu closes it. */
+  function closeUserMenu(){
+    var m = $("user-menu"); if (m) m.hidden = true;
+    $("user-pill").setAttribute("aria-expanded", "false");
+  }
+  $("user-pill").addEventListener("click", function(e){
+    e.stopPropagation();
+    var m = $("user-menu");
+    var open = m.hidden;
+    m.hidden = !open;
+    this.setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("click", function(e){
+    var m = $("user-menu");
+    if (m && !m.hidden && !m.contains(e.target)) closeUserMenu();
+  });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeUserMenu(); });
+  $("user-menu").addEventListener("click", function(){ closeUserMenu(); });
+  $("user-menu-signout").addEventListener("click", function(){ closeUserMenu(); fullSignOut(); });
+  $("player-signout").addEventListener("click", function(){ fullSignOut(); });
   $("account-profile").addEventListener("click", function(){
     $("signin-overlay").classList.remove("open");
     document.body.classList.remove("modal-open");
@@ -1821,7 +2109,7 @@
     if (!state.user) { signedOut.hidden = false; main.hidden = true; return; }
     signedOut.hidden = true; main.hidden = false;
     var p = state.profile || {};
-    $("player-avatar").innerHTML = avatarHTML(p.avatar || "yeti");
+    $("player-avatar").innerHTML = displayAvatarHTML(state.profile, state.user);
     $("player-name").textContent = p.username || "Player";
     $("player-sub").textContent = providerLabel();
     $("player-xp").textContent = computeXP() + " / 840";
@@ -1833,6 +2121,28 @@
       var sub = g ? "Synced from your account" : "No save yet, play the game to set one";
       return '<div class="best-card"><img src="' + GAME_ART[slug] + '" alt=""><div><h4>' + GAME_NAMES[slug] + '</h4><p>' + sub + '</p></div><b>' + best + '</b></div>';
     }).join("");
+    /* Close to earning: stickers with real progress above zero that are
+       not unlocked yet, closest to completion first. */
+    var closeBox = $("player-close");
+    if (closeBox) {
+      var inProg = CATALOG.map(function(s){ return { s: s, st: getStickerState(s) }; })
+        .filter(function(x){ return x.st.status === "progress" && x.st.progress; })
+        .sort(function(a, b){
+          return (b.st.progress.val / b.st.progress.target) - (a.st.progress.val / a.st.progress.target);
+        });
+      if (!inProg.length) {
+        closeBox.innerHTML = '<p class="empty-note" style="text-align:left;padding:6px 0">Nothing is part-way there yet. Play any game and the stickers you are closest to finishing will show up here.</p>';
+      } else {
+        closeBox.innerHTML = inProg.map(function(x){
+          var pct = Math.min(100, Math.round(x.st.progress.val / x.st.progress.target * 100));
+          return '<a class="close-row" href="#/stickers"><span class="sticker-medal">' + STAR + '</span>' +
+            '<div class="c-main"><h4>' + esc(x.s.name) + '</h4><span class="c-game">' + GAME_NAMES[x.s.slug] + '</span>' +
+            '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+            '<span class="bar-label">' + x.st.progress.val.toLocaleString("en-US") + " / " + x.st.progress.target.toLocaleString("en-US") + " " + x.st.progress.unit + '</span></div>' +
+            '<span class="xp">' + x.s.xp + ' XP</span><span class="c-arrow" aria-hidden="true">›</span></a>';
+        }).join("");
+      }
+    }
   }
 
   /* ================= Stickerbook ================= */
@@ -1899,6 +2209,7 @@
   });
 
   /* ================= Daily challenges (reset 22:00 Asia/Dhaka) ================= */
+  var GAME_LINKS = { "lofi-dash":"/lofigame/dash/", "frozen-crossing":"/lofigame/crossing/", "lofi-rush":"/lofigame/rush/", "lofi-climb":"/lofigame/climb/" };
   var CHAL_POOL = [
     { id:"play-dash", text:"Play Lofi Dash today", slug:"lofi-dash" },
     { id:"play-crossing", text:"Play Frozen Crossing today", slug:"frozen-crossing" },
@@ -1975,7 +2286,8 @@
     var done = state.user ? evalChallenges(key) : {};
     box.innerHTML = chalFor(key).map(function(c){
       var isDone = !!done[c.id];
-      return '<div class="chal-row' + (isDone ? " done" : "") + '"><span class="chal-ic">' + (isDone ? CHECK : "·") + '</span><b>' + esc(c.text) + '</b><span>' + (isDone ? "Done" : (state.user ? "Pending" : "Sign in to track")) + '</span></div>';
+      var play = c.slug && GAME_LINKS[c.slug] ? '<a class="chal-play" href="' + GAME_LINKS[c.slug] + '" aria-label="Play ' + esc(GAME_NAMES[c.slug]) + '">Play</a>' : '';
+      return '<div class="chal-row' + (isDone ? " done" : "") + '"><span class="chal-ic">' + (isDone ? CHECK : "·") + '</span><b>' + esc(c.text) + '</b><span>' + (isDone ? "Done" : (state.user ? "Pending" : "Sign in to track")) + '</span>' + play + '</div>';
     }).join("");
     var hist = $("challenges-history");
     if (hist && state.chalHistory) {
@@ -2045,8 +2357,19 @@
     var p = state.profile || {};
     var input = $("username-input");
     if (document.activeElement !== input) input.value = p.username || "";
-    $("avatar-grid").innerHTML = AVATAR_IDS.map(function(id){
-      return '<button class="avatar-pick' + ((p.avatar || "yeti") === id ? " sel" : "") + '" type="button" data-avatar="' + id + '" aria-label="' + esc(AVATARS[id].label) + '" title="' + esc(AVATARS[id].label) + '"><span class="avatar">' + avatarHTML(id) + '</span></button>';
+    var resId = resolvedAvatarId(p, state.user);
+    var hasPhoto = !!(state.user && state.user.photoURL);
+    $("avatar-current").innerHTML = '<span class="avatar lg">' + displayAvatarHTML(p, state.user) + '</span><div><b>' +
+      (resId === "google" ? "Your Google photo" : esc(AVATARS[resId].label)) + '</b><p>' +
+      (resId === "google"
+        ? "This is the photo from your Google account. Pick a preset below to use that instead."
+        : (hasPhoto ? "Pick your Google photo or another preset below." : "Pick a preset below.")) +
+      '</p></div>';
+    var pickIds = (hasPhoto ? ["google"] : []).concat(AVATAR_IDS);
+    $("avatar-grid").innerHTML = pickIds.map(function(id){
+      var label = id === "google" ? "Google photo" : AVATARS[id].label;
+      var inner = id === "google" ? '<img src="' + esc(state.user.photoURL) + '" alt="" referrerpolicy="no-referrer">' : avatarHTML(id);
+      return '<button class="avatar-pick' + (resId === id ? " sel" : "") + '" type="button" data-avatar="' + id + '" aria-label="' + esc(label) + '" title="' + esc(label) + '"><span class="avatar">' + inner + '</span></button>';
     }).join("");
     var ids = state.user.providerData.map(function(x){ return x.providerId; });
     var hasGoogle = ids.indexOf("google.com") !== -1;
@@ -2095,8 +2418,11 @@
     var btn = e.target.closest ? e.target.closest("[data-avatar]") : null;
     if (!btn || !state.user || !db) return;
     var id = btn.getAttribute("data-avatar");
+    /* Record that this avatar was picked on purpose, so the display
+       resolution can tell a chosen preset from the creation default. */
+    try { localStorage.setItem("lofi_avatar_picked_" + state.user.uid, "1"); } catch (e2) {}
     db.collection("users").doc(state.user.uid).update({ avatar: id, updatedAt: TS() }).then(function(){
-      setStatus("avatar-status", "Avatar saved.", "ok");
+      setStatus("avatar-status", id === "google" ? "Google photo saved." : "Avatar saved.", "ok");
     }).catch(function(){ setStatus("avatar-status", "The avatar could not be saved. Try again.", "err"); });
   });
   function nameChangeLog(){

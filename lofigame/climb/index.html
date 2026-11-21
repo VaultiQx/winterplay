@@ -195,8 +195,8 @@
     position:absolute; left:-8px; right:-8px; z-index:3; pointer-events:none;
     background-repeat:no-repeat; background-size:100% 100%;
   }
-  .snow-edge-top{ top:-56px; height:58px; background-image:url(../assets/snow-86cf839d.webp); }
-  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(../assets/snow-22495d8e.webp); }
+  .snow-edge-top{ top:-56px; height:58px; background-image:url(assets/snow-86cf839d.webp); }
+  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(assets/snow-22495d8e.webp); }
   /* ice rocks off the supplied sheet, piled at the frame's bottom corners */
   .stage-rock{
     position:absolute; bottom:-62px; z-index:3; pointer-events:none;
@@ -299,7 +299,7 @@
   /* snow-icicle strip laid across a panel's top edge */
   .panel-snow{
     position:absolute; top:-17px; left:-10px; right:-10px; height:38px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   /* primary button (Climb again, Resume, …): pixel ice */
@@ -398,7 +398,7 @@
   }
   .guide::before, .ach::before{
     content:""; position:absolute; top:-15px; left:12px; right:12px; height:26px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   .guide h2{ margin:0 0 4px; font-size:20px; font-weight:800; letter-spacing:-.01em; }
@@ -800,6 +800,11 @@
     .mm-track{ height:9px; }
   }
 </style>
+<style>/* Light entrance animation (repo-only patch, re-applied after each re-export) */
+@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body{animation:lofi-fade-in .45s ease-out both}
+@media (prefers-reduced-motion:reduce){body{animation:none}}
+</style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -812,14 +817,14 @@
     </a>
     <a class="site-brand" href="/lofigame/">Lofi Games</a>
     <a class="profile-pill" id="profilePill" href="/lofigame/" aria-label="Your Lofi Games profile">
-      <img id="profilePillImg" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <img id="profilePillImg" src="assets/yeti-ca776e9d.webp" alt="" referrerpolicy="no-referrer" />
       <span id="profilePillLabel">Loading</span>
     </a>
   </header>
 
   <div class="head">
     <div>
-      <h1><img class="logo" src="../assets/logo-d92c727c.webp" alt="Lofi Climb" /></h1>
+      <h1><img class="logo" src="assets/logo-d92c727c.webp" alt="Lofi Climb" /></h1>
       <p>Bounce to the moon in 60 seconds.</p>
     </div>
     <div class="head-actions">
@@ -847,7 +852,7 @@
   </div>
 
   <div class="stage-wrap">
-  <div class="peek" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+  <div class="peek" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
   <div class="snow-edge snow-edge-top" aria-hidden="true"></div>
   <div class="stage">
     <canvas id="game" width="600" height="800" aria-label="Lofi Climb game. Lofi the yeti bounces on his own from ice platform to ice platform, climbing toward the moon 25,000 metres up. Steer with the left and right arrow keys or A and D, or hold the on-screen steer buttons. The screen wraps at the edges. Springs launch him higher, rockets wait to be grabbed and fired with Space. Reach the moon before the 60 second clock runs out."></canvas>
@@ -875,7 +880,7 @@
 
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
-        <img class="start-logo" src="../assets/start-logo-96bfb920.webp" alt="Lofi Climb" />
+        <img class="start-logo" src="assets/start-logo-96bfb920.webp" alt="Lofi Climb" />
         <button class="play-pill pix" id="startBtn" type="button" aria-label="Start climbing"><span class="play-tri" aria-hidden="true"></span>PLAY</button>
       </div>
     </div>
@@ -893,7 +898,7 @@
     <div class="overlay" id="overOverlay" hidden>
       <div class="panel over-panel ice-panel">
         <div class="panel-snow" aria-hidden="true"></div>
-        <div class="over-avatar" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+        <div class="over-avatar" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
         <h2 id="overTitle">Time up</h2>
         <p class="over-sub" id="overSub">The clock ran out.</p>
         <p class="newbest" id="newBest">🏆 New best climb!</p>
@@ -903,17 +908,17 @@
           <div><small>Best</small><strong><span id="resBest">0</span> <span class="unit">m</span></strong></div>
         </div>
         <div class="over-actions">
-          <img class="mini-rock" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Climb again</button>
-          <img class="mini-rock flip" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock flip" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
         </div>
         <p class="over-hint">or press Enter</p>
       </div>
     </div>
   </div>
   <div class="snow-edge snow-edge-bottom" aria-hidden="true"></div>
-  <img class="stage-rock rock-bl" src="../assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
-  <img class="stage-rock rock-br" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-bl" src="assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-br" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
   </div>
 
   <div class="touch" aria-label="Touch controls">
@@ -1284,12 +1289,26 @@
     if(user){
       var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
       pillLabel.textContent = name;
-      pillImg.src = user.photoURL ? user.photoURL : '../assets/yeti-ca776e9d.webp';
+      /* Google profile photo, matching the hub: the signed-in user's
+         photoURL (firebase.auth().currentUser.photoURL) is the pill
+         avatar when one exists; otherwise the preset avatar, exactly
+         as before. Guarded so a missing Firebase SDK never throws. */
+      var photo = null;
+      try{
+        if(typeof firebase !== 'undefined' && firebase.auth){
+          var cu = firebase.auth().currentUser;
+          if(cu && cu.photoURL) photo = cu.photoURL;
+        }
+      }catch(e){}
+      if(!photo && user.photoURL) photo = user.photoURL;
+      pillImg.referrerPolicy = 'no-referrer';
+      pillImg.src = photo ? photo : 'assets/yeti-ca776e9d.webp';
       pillEl.setAttribute('href', '/lofigame/#/profile');
       pillEl.setAttribute('aria-label', 'Signed in as ' + name + '. Open your player page.');
     } else {
       pillLabel.textContent = 'Sign in';
-      pillImg.src = '../assets/yeti-ca776e9d.webp';
+      pillImg.referrerPolicy = 'no-referrer';
+      pillImg.src = 'assets/yeti-ca776e9d.webp';
       pillEl.setAttribute('href', '/lofigame/');
       pillEl.setAttribute('aria-label', 'Sign in on Lofi Games');
     }
@@ -1409,7 +1428,7 @@
   }
 
   /* Lofi: the user's own yeti art, kept whole in its original shape */
-  var yetiSticker = loadSticker('../assets/yeti-ca776e9d.webp');
+  var yetiSticker = loadSticker('assets/yeti-ca776e9d.webp');
 
   /* ---------- sound effects (synthesised, no audio files) ---------- */
   var AC = null, muted = !!saveData.muted, sfxGain = null, musicGain = null;

@@ -130,8 +130,8 @@
     position:absolute; left:-8px; right:-8px; z-index:3; pointer-events:none;
     background-repeat:no-repeat; background-size:100% 100%;
   }
-  .snow-edge-top{ top:-56px; height:58px; background-image:url(../assets/snow-86cf839d.webp); }
-  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(../assets/snow-22495d8e.webp); }
+  .snow-edge-top{ top:-56px; height:58px; background-image:url(assets/snow-86cf839d.webp); }
+  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(assets/snow-22495d8e.webp); }
   /* ice rocks off the supplied sheet, piled at the frame's bottom corners */
   .stage-rock{
     position:absolute; bottom:-62px; z-index:3; pointer-events:none;
@@ -189,7 +189,7 @@
   /* snow-icicle strip laid across a panel's top edge */
   .panel-snow{
     position:absolute; top:-17px; left:-10px; right:-10px; height:38px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   /* primary button (Cross again, Resume, …): pixel ice */
@@ -283,7 +283,7 @@
   }
   .guide::before, .ach::before{
     content:""; position:absolute; top:-15px; left:12px; right:12px; height:26px;
-    background:url(../assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   .guide h2{ margin:0 0 4px; font-size:20px; font-weight:800; letter-spacing:-.01em; }
@@ -881,6 +881,11 @@
     .profile-pill{ font-size:13px; padding-right:11px; }
   }
 </style>
+<style>/* Light entrance animation (repo-only patch, re-applied after each re-export) */
+@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body{animation:lofi-fade-in .45s ease-out both}
+@media (prefers-reduced-motion:reduce){body{animation:none}}
+</style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -893,19 +898,19 @@
         Back
       </a>
       <a class="brand" href="/lofigame/">
-        <img src="../assets/yeti-ca776e9d.webp" alt="" />
+        <img src="assets/yeti-ca776e9d.webp" alt="" />
         <span>Lofi Games</span>
       </a>
     </div>
     <a class="profile-pill" id="profilePill" href="/lofigame/">
-      <img id="pillAvatar" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <img id="pillAvatar" src="assets/yeti-ca776e9d.webp" alt="" referrerpolicy="no-referrer" />
       <span id="pillLabel">Loading</span>
     </a>
   </header>
 
   <div class="head">
     <div>
-      <h1><img class="logo" src="../assets/logo-e5636014.webp" alt="Frozen Crossing" /></h1>
+      <h1><img class="logo" src="assets/logo-e5636014.webp" alt="Frozen Crossing" /></h1>
       <p>Ride the floes. Dodge the ships. Ten crossings to the gold.</p>
     </div>
     <div class="head-actions">
@@ -933,7 +938,7 @@
   </div>
 
   <div class="stage-wrap">
-  <div class="peek" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+  <div class="peek" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
   <div class="snow-edge snow-edge-top" aria-hidden="true"></div>
   <div class="stage">
     <canvas id="game" width="1280" height="572" aria-label="Frozen Crossing game. Lofi the yeti hops one step at a time across a frozen river, riding drifting ice floes and boats to the far bank and its gold. Ships are hazards that must never be touched, and open water with no floe underfoot costs a life. Control with the arrow keys or W A S D, or swipe. Three lives, ten crossings."></canvas>
@@ -952,7 +957,7 @@
 
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
-        <img class="start-logo" src="../assets/start-logo-e36f560e.webp" alt="Frozen Crossing" />
+        <img class="start-logo" src="assets/start-logo-e36f560e.webp" alt="Frozen Crossing" />
         <button class="play-pill pix" id="startBtn" type="button" aria-label="Start crossing"><span class="play-tri" aria-hidden="true"></span>PLAY</button>
       </div>
     </div>
@@ -986,7 +991,7 @@
     <div class="overlay" id="overOverlay" hidden>
       <div class="panel over-panel ice-panel">
         <div class="panel-snow" aria-hidden="true"></div>
-        <div class="over-avatar" aria-hidden="true"><img src="../assets/yeti-ca776e9d.webp" alt="" /></div>
+        <div class="over-avatar" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
         <h2 id="overTitle">Game Over</h2>
         <p class="over-sub" id="overSub">Lofi went under in the Calm Canal.</p>
         <p class="newbest" id="newBest">🏆 New best score!</p>
@@ -998,17 +1003,17 @@
         </div>
         <div class="stamps-row" id="stampRow" aria-label="Stamps earned"></div>
         <div class="over-actions">
-          <img class="mini-rock" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Cross again</button>
-          <img class="mini-rock flip" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock flip" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
         </div>
         <p class="over-hint">or press Enter</p>
       </div>
     </div>
   </div>
   <div class="snow-edge snow-edge-bottom" aria-hidden="true"></div>
-  <img class="stage-rock rock-bl" src="../assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
-  <img class="stage-rock rock-br" src="../assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-bl" src="assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-br" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
   </div>
 
   <div class="touch" aria-label="Touch controls">
@@ -1425,7 +1430,7 @@
   }
 
   /* Lofi: the user's own yeti art, kept whole in its original shape */
-  var yetiSticker = loadSticker('../assets/yeti-ca776e9d.webp');
+  var yetiSticker = loadSticker('assets/yeti-ca776e9d.webp');
 
   /* ---------- river art Archer picked ----------
      Ice floes and speedboats cut from his sheets, white backgrounds
@@ -1444,16 +1449,16 @@
     return o;
   }
   var floeSprites = [
-    loadSprite('../assets/floe-d7364a40.png'), loadSprite('../assets/floe-d446b25a.png'),
-    loadSprite('../assets/floe-131361aa.png'), loadSprite('../assets/floe-75dd6eea.png')
+    loadSprite('assets/floe-d7364a40.png'), loadSprite('assets/floe-d446b25a.png'),
+    loadSprite('assets/floe-131361aa.png'), loadSprite('assets/floe-75dd6eea.png')
   ];
   var boatSprites = [
-    loadSprite('../assets/boat-6ae0b77c.webp'), loadSprite('../assets/boat-92bf8a66.webp'),
-    loadSprite('../assets/boat-28ad8e2b.webp'), loadSprite('../assets/boat-ec5559b8.webp'),
-    loadSprite('../assets/boat-1ca6ae06.webp'), loadSprite('../assets/boat-02363680.webp'),
-    loadSprite('../assets/boat-4513b24c.webp'), loadSprite('../assets/boat-a7c6af61.webp'),
-    loadSprite('../assets/boat-abc1375c.webp'), loadSprite('../assets/boat-84c26eac.webp'),
-    loadSprite('../assets/boat-2af1104a.webp')
+    loadSprite('assets/boat-6ae0b77c.webp'), loadSprite('assets/boat-92bf8a66.webp'),
+    loadSprite('assets/boat-28ad8e2b.webp'), loadSprite('assets/boat-ec5559b8.webp'),
+    loadSprite('assets/boat-1ca6ae06.webp'), loadSprite('assets/boat-02363680.webp'),
+    loadSprite('assets/boat-4513b24c.webp'), loadSprite('assets/boat-a7c6af61.webp'),
+    loadSprite('assets/boat-abc1375c.webp'), loadSprite('assets/boat-84c26eac.webp'),
+    loadSprite('assets/boat-2af1104a.webp')
   ];
   /* the red speedboat's photo is shot on a diagonal, bow dropped
      about 16 degrees below level, so in play it cruised tilted.
@@ -1462,10 +1467,10 @@
      leftward rows) and it runs straight and level like the rest.
      Every other boat photo is already level: tilt stays 0. */
   boatSprites[1].tilt = -0.279;
-  var treasureSprite = loadSprite('../assets/treasure-8f0cf237.webp');
+  var treasureSprite = loadSprite('assets/treasure-8f0cf237.webp');
   /* the water half of Archer's ocean photo: wavy clear surface over
      underwater depth, bubbles, fish and coral */
-  var waterTex = loadSprite('../assets/water-ae9caf87.jpeg');
+  var waterTex = loadSprite('assets/water-ae9caf87.jpeg');
 
   /* ---------- sound effects (synthesised, no audio files) ---------- */
   var AC = null, muted = persisted.muted, sfxGain = null, musicGain = null;
@@ -3089,10 +3094,16 @@
 <script>
 /* Header profile pill: reads the same Firebase auth state the save
    sync above uses (the app is already initialized there; this only
-   listens). Signed in: the pill shows the account's photo and name
-   and links to the hub player page. Signed out: it offers Sign in
-   and links to the hub, where sign-in lives. If Firebase never
-   loads, the pill simply stays a Sign in link to the hub. */
+   listens). Signed in: the pill shows the account's name and, like
+   the hub, the user's real Google profile photo when there is one
+   (the preset yeti otherwise), and links to the hub player page.
+   Signed out: it offers Sign in and links to the hub, where sign-in
+   lives. If Firebase never loads, the pill simply stays a Sign in
+   link to the hub. The avatar img carries referrerpolicy=
+   "no-referrer" (set in the markup and re-asserted in setUser):
+   Google refuses to serve profile photos to a page that sends a
+   Referer, so without it the photo request fails and the error
+   handler below would swap the preset back in. */
 (function(){
   "use strict";
   var pill = document.getElementById('profilePill');
@@ -3101,19 +3112,34 @@
   if(!pill || !avatar || !label) return;
   function setSignedOut(){
     label.textContent = 'Sign in';
-    avatar.src = '../assets/yeti-ca776e9d.webp';
+    avatar.src = 'assets/yeti-ca776e9d.webp';
     pill.href = '/lofigame/';
     pill.setAttribute('aria-label', 'Sign in at Lofi Games');
   }
   function setUser(user){
     var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
     label.textContent = name;
-    avatar.src = user.photoURL || '../assets/yeti-ca776e9d.webp';
+    /* The signed-in user's Google profile photo
+       (firebase.auth().currentUser.photoURL), read defensively so a
+       half-loaded SDK can never throw here; the auth listener's own
+       user object is the same account and is the fallback. When no
+       photo exists, the preset avatar shows exactly as before. */
+    var photo = user.photoURL || '';
+    try{
+      var cu = (window.firebase && firebase.auth) ? firebase.auth().currentUser : null;
+      if(cu && cu.photoURL) photo = cu.photoURL;
+    }catch(e){ /* keep the listener's photo */ }
+    if(photo){
+      avatar.referrerPolicy = 'no-referrer';
+      avatar.src = photo;
+    } else {
+      avatar.src = 'assets/yeti-ca776e9d.webp';
+    }
     pill.href = '/lofigame/#/profile';
     pill.setAttribute('aria-label', 'Signed in as ' + name + '. Open your player page.');
   }
   avatar.addEventListener('error', function(){
-    if(avatar.src.indexOf('../assets/yeti-ca776e9d.webp') === -1) avatar.src = '../assets/yeti-ca776e9d.webp';
+    if(avatar.src.indexOf('assets/yeti-ca776e9d.webp') === -1) avatar.src = 'assets/yeti-ca776e9d.webp';
   });
   var tries = 0;
   (function hook(){
@@ -3122,6 +3148,11 @@
         firebase.auth().onAuthStateChanged(function(user){
           if(user) setUser(user); else setSignedOut();
         });
+        /* Safety net: if the auth callback somehow never arrives,
+           the pill must not sit on Loading forever. */
+        setTimeout(function(){
+          if(label.textContent === 'Loading') setSignedOut();
+        }, 8000);
         return;
       }catch(e){ /* fall through to the signed-out pill */ }
       setSignedOut();
