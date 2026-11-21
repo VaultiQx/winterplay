@@ -273,9 +273,14 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     clip-path:polygon(50% 0,88% 38%,72% 100%,30% 82%,8% 30%);
   }
 
-  /* ---------- hero: centred title over a centrepiece banner ---------- */
-  .hero{position:relative;overflow:hidden;padding:52px 0 8px;text-align:center}
+  /* ---------- hero: left-aligned copy beside the folder, banner below ----------
+     Wide screens: two columns, copy on the left and the folder on the right,
+     vertically centred against the copy. Narrow screens: the copy stacks and
+     the folder sits centred under the buttons. */
+  .hero{position:relative;overflow:hidden;padding:52px 0 8px;text-align:left}
   .hero-inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .hero-top{display:flex;flex-direction:column;align-items:flex-start}
+  .hero-copy{min-width:0}
   .hero-kicker{
     font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:.14em;
     color:var(--blue);text-transform:uppercase;
@@ -285,8 +290,12 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     font-size:clamp(46px,7.2vw,76px);font-weight:800;letter-spacing:.005em;line-height:1.04;
   }
   h1 .accent{color:var(--blue)}
-  .hero-sub{margin:14px auto 0;font-size:17px;line-height:1.55;color:var(--ink-soft);max-width:520px}
-  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .hero-sub{margin:14px 0 0;font-size:17px;line-height:1.55;color:var(--ink-soft);max-width:520px}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start;margin-top:24px}
+  @media (min-width:900px){
+    .hero-top{flex-direction:row;align-items:center;gap:36px}
+    .hero-copy{flex:1 1 auto}
+  }
   .hero-banner{position:relative;max-width:880px;margin:36px auto 0}
   .hero-banner img{
     width:100%;aspect-ratio:21/9;object-fit:cover;object-position:50% 32%;display:block;
@@ -299,8 +308,9 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   /* ---------- hero sticker folder: big tilted folder, links to the stickers page.
      The source photo is a square with a light-grey backdrop; the img is zoomed
      and offset inside the tile so the tile crops in on the folder itself.
-     On narrow screens it sits in flow under the hero buttons; on wide screens
-     it floats in the empty space to the right of the headline. ---------- */
+     On narrow screens it sits centred under the hero buttons; on wide screens
+     it is the hero's right column, close to the headline and sized to balance
+     the copy block beside it. ---------- */
   .hero-folder{
     display:block;position:relative;width:140px;aspect-ratio:76/66;margin:28px auto 0;
     border-radius:18px;overflow:hidden;cursor:pointer;
@@ -319,11 +329,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     0%,100%{transform:rotate(5.2deg) translateY(-6px)}
     50%{transform:rotate(6.8deg) translateY(6px)}
   }
-  @media (min-width:1025px){
-    .hero-folder{
-      position:absolute;z-index:2;margin:0;width:204px;top:10px;
-      right:calc(24px - (100vw - 1024px)/2);
-    }
+  @media (min-width:900px){
+    .hero-folder{flex:none;margin:0;width:288px}
   }
   @media (max-width:720px){
     .hero{padding-top:38px}
@@ -955,7 +962,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
 <main id="top">
 <div id="view-home">
 
-  <!-- HERO: centred title, centrepiece banner below -->
+  <!-- HERO: left-aligned copy with the folder beside it, banner below -->
   <div class="hero">
     <span class="mist mist-a" aria-hidden="true"></span>
     <span class="mist mist-b" aria-hidden="true"></span>
@@ -965,16 +972,20 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <span class="shard" style="width:38px;height:70px;top:150px;right:8%" aria-hidden="true"></span>
     <span class="shard" style="width:28px;height:52px;top:36px;right:22%" aria-hidden="true"></span>
     <div class="hero-inner">
-      <p class="hero-kicker display">Lofi Games</p>
-      <h1 class="display">Play like a <span class="accent">yeti</span>.</h1>
-      <p class="hero-sub">Four free mini games starring Lofi the Yeti, up on the ice. All four are live now, tap Play on any card and play right in your browser.</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="#games">Browse games</a>
-        <a class="btn btn-ghost" href="#how">How to play</a>
+      <div class="hero-top">
+        <div class="hero-copy">
+          <p class="hero-kicker display">Lofi Games</p>
+          <h1 class="display">Play like a <span class="accent">yeti</span>.</h1>
+          <p class="hero-sub">Four free mini games starring Lofi the Yeti, up on the ice. All four are live now, tap Play on any card and play right in your browser.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#games">Browse games</a>
+            <a class="btn btn-ghost" href="#how">How to play</a>
+          </div>
+        </div>
+        <a class="hero-folder" href="#/take-stickers" aria-label="Take some stickers">
+          <img src="assets/img-display-6d920d9b.webp" alt="" aria-hidden="true">
+        </a>
       </div>
-      <a class="hero-folder" href="#/take-stickers" aria-label="Take some stickers">
-        <img src="assets/img-display-6d920d9b.webp" alt="" aria-hidden="true">
-      </a>
       <div class="hero-banner">
         <img src="assets/hero-b25f6836.webp" alt="Lofi the Yeti smiling on a snowy peak, arms raised, with mountains and a crescent moon behind him" fetchpriority="high">
         <span class="mist" aria-hidden="true"></span>
