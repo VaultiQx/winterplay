@@ -9,6 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<script>
+/* Theme: apply the saved Ice / Night choice before first paint, so a
+   returning Night player never sees a light flash on load. */
+try { if (localStorage.getItem("lofi_theme") === "night") document.documentElement.setAttribute("data-theme", "night"); } catch (e) {}
+</script>
 <style>
   :root{
     color-scheme: light;
@@ -175,17 +180,6 @@
   .sui-wallet-opt img{width:26px;height:26px;border-radius:7px;flex:none;display:block}
   .sui-wallet-opt b{font-size:14.5px;font-weight:700}
   .sui-wallet-opt .chev{margin-left:auto;font-size:18px;color:var(--ink-faint);flex:none}
-  /* no-wallet box: the working next step when no wallet can be detected */
-  .sui-get{display:none;margin-top:10px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:13px}
-  .sui-get.show{display:block}
-  .sui-get p{font-size:13.5px;line-height:1.55;color:var(--ink-soft)}
-  .sui-get .wallet-actions{margin-top:11px}
-  .sui-get .wallet-actions a{
-    flex:1;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
-    font-size:13.5px;font-weight:600;min-height:38px;border-radius:980px;padding:7px 12px;
-  }
-  .sui-get .btn-slush{background:linear-gradient(180deg,#2b9bf0,#0f7fd0);color:#fff;border:1.5px solid #0f7fd0}
-  .sui-get .btn-get{background:#fff;color:var(--blue-deep);border:1.5px solid var(--border)}
   .sui-btn b{display:block;font-size:15px;font-weight:700;line-height:1.25}
   .sui-btn span{display:block;font-size:12px;color:#d8efff;line-height:1.35}
   .sui-btn .chev{margin-left:auto;font-size:18px;color:#cfeaff;flex:none}
@@ -229,13 +223,6 @@
   .email-reveal.open .chev{transform:rotate(180deg)}
   .email-section{margin-top:10px}
   .email-section[hidden]{display:none}
-  .guest-row{text-align:center;margin-top:12px}
-  .guest-btn{
-    cursor:pointer;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-soft);
-    background:none;border:none;padding:6px 10px;min-height:32px;
-    text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border);
-  }
-  .guest-btn:hover{color:var(--blue-deep)}
   .email-form{display:flex;flex-direction:column;gap:7px}
   .email-form label{font-size:13px;font-weight:600;color:var(--ink)}
   .email-form input{
@@ -526,6 +513,8 @@
   .sticker-medal svg{width:18px;height:18px}
   .st-collected .sticker-medal{background:linear-gradient(180deg,#2b9bf0,#0b5fa5);color:#fff}
   .st-ready .sticker-medal{background:var(--green);color:#fff}
+  @keyframes medal-spark{0%{transform:scale(1)}35%{transform:scale(1.16);box-shadow:0 0 0 5px rgba(43,155,240,.22),0 0 16px rgba(43,155,240,.5)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(43,155,240,0)}}
+  .st-collected .sticker-medal{animation:medal-spark .9s ease 1}
   .sticker h4{font-family:var(--display);font-size:15.5px;font-weight:800;color:var(--blue-dark);line-height:1.25}
   .sticker p{font-size:12.5px;line-height:1.45;color:var(--ink-soft)}
   .sticker .st-status{margin-top:auto;font-size:12px;font-weight:700;color:var(--ink-faint);padding-top:4px}
@@ -613,6 +602,13 @@
   @media (max-width:720px){ .take-grid{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:480px){ .take-grid{grid-template-columns:1fr} .take-card img{max-width:200px} }
 
+  /* ---------- phone wallpapers on the take-stickers page ---------- */
+  .wallpaper-head{margin-top:48px}
+  .wallpaper-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .take-card.wallpaper-card img{max-width:180px;aspect-ratio:9/16;object-fit:cover;border-radius:10px}
+  @media (max-width:720px){ .wallpaper-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:480px){ .wallpaper-grid{grid-template-columns:1fr} .take-card.wallpaper-card img{max-width:220px} }
+
   /* ---------- player: close to earning, sign-out row, settings avatar ---------- */
   .close-list{display:flex;flex-direction:column;gap:10px}
   .close-row{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--border-light);border-radius:14px;padding:12px 16px;text-decoration:none;color:inherit}
@@ -632,6 +628,142 @@
   }
   .chal-play:hover{background:linear-gradient(180deg,#1c8fe8,#0b6cb8)}
 
+  /* ---------- home sticker strip: compact row under the hero ---------- */
+  .sticker-strip{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:linear-gradient(180deg,#f7fcff,#eef8ff);
+    border:1.5px solid var(--border);border-radius:var(--radius);
+    padding:12px 16px;margin-top:24px;text-decoration:none;color:inherit;
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+  }
+  .sticker-strip:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(35,115,180,.16);border-color:var(--blue)}
+  .sticker-strip-label{font-family:var(--display);font-size:19px;font-weight:800;color:var(--blue-dark);white-space:nowrap}
+  .sticker-strip-thumbs{display:flex;gap:8px;flex-wrap:wrap;flex:1;min-width:0}
+  .sticker-strip-thumbs img{width:68px;height:68px;object-fit:contain;display:block;border-radius:12px;background:#fff;border:1px solid var(--border-light)}
+  .sticker-strip-cta{
+    display:inline-flex;align-items:center;justify-content:center;flex:none;
+    font-size:14px;font-weight:700;color:#fff;white-space:nowrap;
+    background:linear-gradient(180deg,#2b9bf0,#0f7fd0);border:1.5px solid #0f7fd0;
+    padding:8px 18px;border-radius:980px;min-height:38px;
+  }
+  @media (max-width:640px){ .sticker-strip-thumbs img{width:56px;height:56px} }
+  .sticker-strip-wallpapers{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    width:100%;border-top:1px solid var(--border-light);padding-top:10px;
+  }
+  .sticker-strip-wallpapers .wp-label{font-family:var(--display);font-size:15.5px;font-weight:800;color:var(--blue-dark);white-space:nowrap}
+  .sticker-strip-wallpapers img{width:52px;height:auto;aspect-ratio:9/16;object-fit:cover;display:block;border-radius:8px;background:#fff;border:1px solid var(--border-light)}
+  @media (max-width:640px){ .sticker-strip-wallpapers img{width:48px} }
+
+  /* ---------- hub polish: loading pulse + subtle hover states ---------- */
+  @keyframes nav-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .nav-pending{animation:nav-pulse 1.6s ease-in-out infinite}
+  .game-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .game-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(35,115,180,.16);border-color:var(--blue)}
+  .take-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .take-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(35,115,180,.15);border-color:var(--blue)}
+  .showcase-item{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .showcase-item:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(35,115,180,.13);border-color:var(--blue)}
+  .foot-col nav a{transition:color .2s ease,transform .2s ease}
+  .foot-col nav a:hover{transform:translateX(2px)}
+
+  /* ---------- player badges: collected achievement stickers ---------- */
+  .badge-row{display:flex;flex-wrap:wrap;gap:10px}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;border:1.5px solid var(--border);border-radius:980px;
+    padding:6px 14px 6px 8px;font-size:13.5px;font-weight:600;color:var(--blue-dark);
+  }
+  .badge .sticker-medal{width:28px;height:28px;background:linear-gradient(180deg,#2b9bf0,#0b5fa5);color:#fff}
+  .badge .sticker-medal svg{width:15px;height:15px}
+  .badge-empty{font-size:14.5px;line-height:1.55;color:var(--ink-faint)}
+
+  /* ---------- settings: theme picker ---------- */
+  .theme-card{margin-top:16px}
+  .theme-note{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin-bottom:14px}
+  .theme-opts{display:flex;gap:10px;flex-wrap:wrap}
+  .theme-opt{
+    cursor:pointer;font:inherit;font-size:14.5px;font-weight:600;color:var(--blue-deep);
+    background:#fff;border:1.5px solid var(--border);border-radius:12px;
+    padding:10px 20px;min-height:44px;transition:border-color .2s ease,background .2s ease,color .2s ease;
+  }
+  .theme-opt:hover{border-color:var(--blue)}
+  .theme-opt[aria-pressed="true"]{background:linear-gradient(180deg,#2b9bf0,#0f7fd0);color:#fff;border-color:#0f7fd0}
+
+  /* ---------- Night theme: dark navy chrome, same ice-blue accents ----------
+     Only the hub chrome is themed; the game pages keep their own look.
+     Sticker artwork keeps a white tile so it reads the same in both themes. */
+  html[data-theme="night"]{
+    color-scheme:dark;
+    --ice:#122c47;
+    --ice-mid:#1a3a5c;
+    --ice-deep:#26507a;
+    --surface:#10263f;
+    --ink:#e8f4fc;
+    --ink-soft:#b8d2e4;
+    --ink-faint:#8fb0c8;
+    --border:#2e5a85;
+    --border-light:#234a70;
+    --blue:#4db2f5;
+    --blue-deep:#7cc4f8;
+    --blue-dark:#a8d8fb;
+  }
+  html[data-theme="night"] body{
+    background:
+      radial-gradient(900px 340px at 12% -40px,rgba(50,110,170,.28),rgba(50,110,170,0) 70%),
+      radial-gradient(1000px 380px at 88% -60px,rgba(45,100,160,.26),rgba(45,100,160,0) 70%),
+      radial-gradient(1200px 500px at 50% 108%,rgba(50,110,170,.22),rgba(50,110,170,0) 70%),
+      linear-gradient(180deg,#0d2440 0%,#0a1c30 260px,#081627 560px,#0a1e35 100%);
+  }
+  html[data-theme="night"] .display{-webkit-text-stroke:1.5px rgba(6,20,36,.55);text-shadow:0 3px 0 rgba(0,0,0,.25),0 12px 30px rgba(0,0,0,.35)}
+  html[data-theme="night"] header{background:rgba(10,28,48,.92)}
+  html[data-theme="night"] .vapor{opacity:.35}
+  html[data-theme="night"] .mist{opacity:.22}
+  html[data-theme="night"] .game-card,
+  html[data-theme="night"] .info-card,
+  html[data-theme="night"] .empty-card,
+  html[data-theme="night"] .pstat,
+  html[data-theme="night"] .doc-card,
+  html[data-theme="night"] .sticker-strip{background:linear-gradient(180deg,#132c49,#0f243d)}
+  html[data-theme="night"] .profile-card{background:linear-gradient(180deg,#132c49,#0d2138)}
+  html[data-theme="night"] .sticker,
+  html[data-theme="night"] .chal-row,
+  html[data-theme="night"] .board-row,
+  html[data-theme="night"] .best-card,
+  html[data-theme="night"] .close-row,
+  html[data-theme="night"] .take-card,
+  html[data-theme="night"] .showcase-item,
+  html[data-theme="night"] .badge{background:#10263f}
+  html[data-theme="night"] .sticker.st-collected,
+  html[data-theme="night"] .board-row.me{background:linear-gradient(180deg,#16324f,#10263f)}
+  html[data-theme="night"] .btn-signin,
+  html[data-theme="night"] .nav-pending,
+  html[data-theme="night"] .google-btn,
+  html[data-theme="night"] .email-btn,
+  html[data-theme="night"] .btn-copy,
+  html[data-theme="night"] .btn-disconnect,
+  html[data-theme="night"] .sui-wallet-opt,
+  html[data-theme="night"] .user-menu,
+  html[data-theme="night"] .chip,
+  html[data-theme="night"] .mini-btn,
+  html[data-theme="night"] .avatar-pick,
+  html[data-theme="night"] .theme-opt{background:#10263f}
+  html[data-theme="night"] .wallet-pill{background:linear-gradient(180deg,#16324f,#10263f)}
+  html[data-theme="night"] .btn-ghost{background:#132c49}
+  html[data-theme="night"] .btn-ghost:hover{background:#1a3a5c}
+  html[data-theme="night"] .genre,
+  html[data-theme="night"] .xp,
+  html[data-theme="night"] .coming-pill{background:#0d2138}
+  html[data-theme="night"] .wallet-addr{background:#0d2138}
+  html[data-theme="night"] .signin-card{background:linear-gradient(180deg,#132c49,#0f243d 55%,#0d2138)}
+  html[data-theme="night"] .signin-close{background:#10263f}
+  html[data-theme="night"] .email-form input{background:#0d2138}
+  html[data-theme="night"] .soon{background:rgba(10,28,48,.92)}
+  html[data-theme="night"] .art-placeholder{background:linear-gradient(180deg,#1a3a5c 0%,#122c47 58%,#0f243d 100%)}
+  html[data-theme="night"] .ring{background:radial-gradient(circle at 34% 28%,#1d4066 0%,#14304f 52%,#0f2743 100%);border-color:#3f7fb8;box-shadow:0 0 0 7px rgba(10,28,48,.6),0 0 30px rgba(40,110,180,.4),inset 0 0 18px rgba(80,150,220,.35)}
+  html[data-theme="night"] .take-card img,
+  html[data-theme="night"] .showcase-item img{background:#fff;border-radius:12px}
+
   /* ---------- light entrance: content rises in gently on load and on view change ---------- */
   @keyframes rise-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .anim-in > *{animation:rise-in .7s ease backwards}
@@ -645,6 +777,10 @@
     .mist,.vapor i{animation:none}
     .nav-pending .spin{animation:none}
     .anim-in > *{animation:none}
+    .st-collected .sticker-medal{animation:none}
+    .nav-pending{animation:none}
+    .game-card,.take-card,.showcase-item,.sticker-strip,.foot-col nav a{transition:none}
+    .game-card:hover,.take-card:hover,.showcase-item:hover,.sticker-strip:hover,.foot-col nav a:hover{transform:none}
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -712,6 +848,29 @@
   </div>
 
   <div class="wrap">
+
+    <!-- STICKER STRIP: compact shortcut to the sticker page, right under the hero -->
+    <a class="sticker-strip" href="#/take-stickers" aria-label="Take some Lofi stickers and phone wallpapers">
+      <span class="sticker-strip-label">Lofi stickers</span>
+      <span class="sticker-strip-thumbs" aria-hidden="true">
+        <img src="assets/sticker-display-a52b194a.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-9fc7824d.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-41a43ec5.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-6fbbc31f.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-7fdb7e4d.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-9c6f8eb3.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-1e8012bf.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-d9a7ef5f.webp" alt="" loading="lazy">
+      </span>
+      <span class="sticker-strip-cta">Take some stickers</span>
+      <span class="sticker-strip-wallpapers" aria-hidden="true">
+        <span class="wp-label">Phone wallpapers</span>
+        <img src="assets/wallpaper-display-7f69b519.webp" alt="" loading="lazy">
+        <img src="assets/wallpaper-display-c210551d.webp" alt="" loading="lazy">
+        <img src="assets/wallpaper-display-22fbd1bc.webp" alt="" loading="lazy">
+        <img src="assets/wallpaper-display-9c603fb5.webp" alt="" loading="lazy">
+      </span>
+    </a>
 
     <!-- GAMES -->
     <section id="games" aria-labelledby="games-h">
@@ -935,7 +1094,7 @@
         </div>
         <div class="info-card">
           <h3>Sign in, your way</h3>
-          <p>Sign in with Google, email or your SUI Wallet, no seed phrase ever asked. Or play as a guest and link an account later, your progress comes with you.</p>
+          <p>Sign in with Google, email or your SUI Wallet, no seed phrase ever asked.</p>
         </div>
         <div class="info-card">
           <h3>Four ways to play</h3>
@@ -955,11 +1114,11 @@
       </div>
     </section>
 
-    <!-- STICKER SHOWCASE: the ten shareable stickers -->
+    <!-- STICKER SHOWCASE: the fifteen shareable stickers -->
     <section id="sticker-showcase" aria-labelledby="showcase-h">
       <div class="sec-head">
         <h2 id="showcase-h" class="display">Lofi stickers</h2>
-        <p class="sec-sub">Ten Lofi stickers to save and share wherever you like. Grab the full-size PNGs on the sticker page.</p>
+        <p class="sec-sub">Fifteen Lofi stickers to save and share wherever you like. Grab the full-size PNGs on the sticker page.</p>
       </div>
       <div class="showcase-grid">
         <div class="showcase-item"><img src="assets/sticker-display-a52b194a.webp" alt="Lofi sticker: The face, Lofi's smiling face close up" loading="lazy"><span>The face</span></div>
@@ -972,6 +1131,11 @@
         <div class="showcase-item"><img src="assets/sticker-display-80bde6f1.webp" alt="Lofi sticker: Chill, Lofi relaxing" loading="lazy"><span>Chill</span></div>
         <div class="showcase-item"><img src="assets/sticker-display-46570a31.webp" alt="Lofi sticker: Stay frosty, Lofi staying frosty" loading="lazy"><span>Stay frosty</span></div>
         <div class="showcase-item"><img src="assets/sticker-display-2a19660b.webp" alt="Lofi sticker: Snowball Lofi, holding a big snowball" loading="lazy"><span>Snowball Lofi</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-6fbbc31f.webp" alt="Lofi sticker: Red scarf" loading="lazy"><span>Red scarf</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-7fdb7e4d.webp" alt="Lofi sticker: Sledding" loading="lazy"><span>Sledding</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-9c6f8eb3.webp" alt="Lofi sticker: Hot cocoa" loading="lazy"><span>Hot cocoa</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-1e8012bf.webp" alt="Lofi sticker: Under the moon" loading="lazy"><span>Under the moon</span></div>
+        <div class="showcase-item"><img src="assets/sticker-display-d9a7ef5f.webp" alt="Lofi sticker: Aurora" loading="lazy"><span>Aurora</span></div>
       </div>
       <div class="showcase-more">
         <a class="btn btn-primary" href="#/take-stickers">Take some stickers</a>
@@ -989,7 +1153,7 @@
         <p class="sec-sub">Your XP, stickers and best scores across all four games.</p>
       </div>
       <div id="player-signedout" class="empty-card" hidden>
-        <p>You are browsing as a guest. Sign in to open your player page, and your XP and stickers will follow you on any device.</p>
+        <p>Sign in to open your player page, and your XP and stickers will follow you on any device.</p>
         <button class="btn btn-primary" type="button" data-signin-open>Sign in</button>
       </div>
       <div id="player-main" hidden>
@@ -1001,10 +1165,12 @@
           </div>
         </div>
         <div class="pstats">
-          <div class="pstat"><b id="player-xp">0 / 840</b><span>Total XP</span></div>
+          <div class="pstat"><b id="player-xp">0</b><span>Total XP</span></div>
           <div class="pstat"><b id="player-stickers">0 / 20</b><span>Stickers collected</span></div>
           <div class="pstat"><b id="player-chaldays">0</b><span>Challenge days</span></div>
         </div>
+        <h3 class="view-subh">Your stickers</h3>
+        <div class="badge-row" id="player-badges"></div>
         <h3 class="view-subh">Close to earning</h3>
         <div class="close-list" id="player-close"></div>
         <h3 class="view-subh">Best scores</h3>
@@ -1101,6 +1267,14 @@
           <button class="btn btn-ghost danger" id="profile-signout" type="button">Sign out</button>
         </div>
       </div>
+      <div class="profile-card theme-card">
+        <h3 class="view-subh">Theme</h3>
+        <p class="theme-note">Choose how the hub looks on this device. Your choice is saved here and used on every visit.</p>
+        <div class="theme-opts" role="group" aria-label="Theme">
+          <button class="theme-opt" type="button" id="theme-opt-ice" aria-pressed="true">Ice</button>
+          <button class="theme-opt" type="button" id="theme-opt-night" aria-pressed="false">Night</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1109,7 +1283,7 @@
     <div class="wrap">
       <div class="sec-head">
         <h2 class="display">Help</h2>
-        <p class="sec-sub">You can play every game as a guest. Sign in to keep your XP, stickers and daily challenges together in one player account.</p>
+        <p class="sec-sub">Sign in to keep your XP, stickers and daily challenges together in one player account.</p>
       </div>
       <div class="doc-list">
         <article class="doc-card">
@@ -1124,12 +1298,12 @@
         </article>
         <article class="doc-card">
           <h3>Stickers, XP and daily challenges</h3>
-          <p>There are 20 achievement stickers, five in each game, worth 840 XP in total. Open the <a href="#/stickers">Stickerbook</a> to see every sticker, what it takes to earn it, and how close you are. When a sticker unlocks in a game, its XP is added to your player account.</p>
+          <p>There are 20 achievement stickers, five in each game. Each game also awards XP for completing its 10 levels, so your total XP has no cap. Open the <a href="#/stickers">Stickerbook</a> to see every sticker, what it takes to earn it, and how close you are. When a sticker unlocks in a game, its XP is added to your player account.</p>
           <p>Three daily challenges arrive every day and reset at 22:00 (10 PM) Asia/Dhaka time. Challenges count toward Challenge Days only; they award no XP. Finishing all three in one day banks a Challenge Day on your player page.</p>
         </article>
         <article class="doc-card">
           <h3>Your account</h3>
-          <p><a href="#/settings">Profile &amp; settings</a> lets you edit your public username, pick an avatar, review the accounts linked to this player, and sign out. Sign in with Google, email, a guest account, or a SUI Wallet, and use Link another account in Profile &amp; settings to add a second sign-in method to the same player; your saved progress stays intact.</p>
+          <p><a href="#/settings">Profile &amp; settings</a> lets you edit your public username, pick an avatar, review the accounts linked to this player, and sign out. Sign in with Google, email, or a SUI Wallet, and use Link another account in Profile &amp; settings to add a second sign-in method to the same player; your saved progress stays intact.</p>
           <p>Signing out signs you out of Lofi Games only, never out of your Google account, and your synced progress is still here when you sign back in.</p>
         </article>
         <article class="doc-card">
@@ -1151,7 +1325,7 @@
       <div class="doc-list">
         <article class="doc-card">
           <h3>Playing on this device</h3>
-          <p>Guest play is available without a player account. Your browser keeps your local best score for each game, plus small bits of on-device state: a saved wallet address so a SUI Wallet can reconnect, your username-change count for the day, and whether you picked an avatar yourself.</p>
+          <p>Your browser keeps your local best score for each game, plus small bits of on-device state: a saved wallet address so a SUI Wallet can reconnect, your username-change count for the day, and whether you picked an avatar yourself.</p>
           <p>These belong to this device and this browser. Clearing the site's browser data removes them and signs you out here; it does not erase the progress saved to your player account.</p>
         </article>
         <article class="doc-card">
@@ -1161,7 +1335,7 @@
         </article>
         <article class="doc-card">
           <h3>Sign-in and optional connections</h3>
-          <p>Sign-in runs through Firebase Authentication, with the method you choose on the sign-in screen: Google, email and password, a guest account, or a SUI Wallet. Linking another method in <a href="#/settings">Profile &amp; settings</a> attaches it to the same player, so no second account is created.</p>
+          <p>Sign-in runs through Firebase Authentication, with the method you choose on the sign-in screen: Google, email and password, or a SUI Wallet. Linking another method in <a href="#/settings">Profile &amp; settings</a> attaches it to the same player, so no second account is created.</p>
           <p>A SUI Wallet connection is optional and separate: only your public wallet address is stored on your profile, and Lofi never asks for a seed phrase or a wallet password. Signing out ends your Lofi session on this site only; it does not sign you out of Google, and it does not delete saved scores or stickers.</p>
         </article>
         <article class="doc-card">
@@ -1183,7 +1357,7 @@
     <div class="wrap">
       <div class="sec-head">
         <h2 class="display">Take some stickers.</h2>
-        <p class="sec-sub">All ten Lofi stickers, free to save and share. Tap Download PNG on any sticker to keep the full-size file.</p>
+        <p class="sec-sub">All fifteen Lofi stickers and four phone wallpapers, free to save and share. Tap Download PNG on any sticker or wallpaper to keep the full-size file.</p>
       </div>
       <div class="take-grid">
         <article class="take-card">
@@ -1236,6 +1410,57 @@
           <h3>Snowball Lofi</h3>
           <a class="btn btn-primary" href="assets/sticker-9730383f.png" download="sticker-10-snowball.png">Download PNG</a>
         </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-6fbbc31f.webp" alt="Lofi sticker: Red scarf" loading="lazy">
+          <h3>Red scarf</h3>
+          <a class="btn btn-primary" href="assets/sticker-b5d08b08.png" download="sticker-11-scarf.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-7fdb7e4d.webp" alt="Lofi sticker: Sledding" loading="lazy">
+          <h3>Sledding</h3>
+          <a class="btn btn-primary" href="assets/sticker-5160770e.png" download="sticker-12-sledding.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-9c6f8eb3.webp" alt="Lofi sticker: Hot cocoa" loading="lazy">
+          <h3>Hot cocoa</h3>
+          <a class="btn btn-primary" href="assets/sticker-7c15e5ec.png" download="sticker-13-cocoa.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-1e8012bf.webp" alt="Lofi sticker: Under the moon" loading="lazy">
+          <h3>Under the moon</h3>
+          <a class="btn btn-primary" href="assets/sticker-4cfe7b9f.png" download="sticker-14-moon.png">Download PNG</a>
+        </article>
+        <article class="take-card">
+          <img src="assets/sticker-display-d9a7ef5f.webp" alt="Lofi sticker: Aurora" loading="lazy">
+          <h3>Aurora</h3>
+          <a class="btn btn-primary" href="assets/sticker-44df27ee.png" download="sticker-15-aurora.png">Download PNG</a>
+        </article>
+      </div>
+      <div class="sec-head wallpaper-head">
+        <h2 class="display">Phone wallpapers</h2>
+        <p class="sec-sub">Four Lofi phone wallpapers, made for your lock screen. Tap Download PNG to keep the full-size file.</p>
+      </div>
+      <div class="wallpaper-grid">
+        <article class="take-card wallpaper-card">
+          <img src="assets/wallpaper-display-7f69b519.webp" alt="Lofi phone wallpaper: Snowfall, Lofi sitting in the snow with snowflakes falling" loading="lazy">
+          <h3>Snowfall</h3>
+          <a class="btn btn-primary" href="assets/wallpaper-0054fd46.png" download="lofi-wallpaper-final-snowfall.png">Download PNG</a>
+        </article>
+        <article class="take-card wallpaper-card">
+          <img src="assets/wallpaper-display-c210551d.webp" alt="Lofi phone wallpaper: Snow hills with butterfly, Lofi standing and waving in snowy hills with a pink butterfly on his head" loading="lazy">
+          <h3>Snow hills with butterfly</h3>
+          <a class="btn btn-primary" href="assets/wallpaper-57d3a2f7.png" download="lofi-wallpaper-final-snowhills-butterfly.png">Download PNG</a>
+        </article>
+        <article class="take-card wallpaper-card">
+          <img src="assets/wallpaper-display-22fbd1bc.webp" alt="Lofi phone wallpaper: Ice blue, Lofi standing and waving as a die-cut sticker on a flat ice-blue background" loading="lazy">
+          <h3>Ice blue</h3>
+          <a class="btn btn-primary" href="assets/wallpaper-d5f2dea2.png" download="lofi-wallpaper-final-flat-iceblue.png">Download PNG</a>
+        </article>
+        <article class="take-card wallpaper-card">
+          <img src="assets/wallpaper-display-9c603fb5.webp" alt="Lofi phone wallpaper: Pale pink, Lofi standing and waving as a die-cut sticker on a flat pale pink background" loading="lazy">
+          <h3>Pale pink</h3>
+          <a class="btn btn-primary" href="assets/wallpaper-6eebd0b1.png" download="lofi-wallpaper-final-flat-pink.png">Download PNG</a>
+        </article>
       </div>
     </div>
   </div>
@@ -1243,40 +1468,40 @@
   <footer>
     <div class="foot-main">
       <div class="foot-brand-col">
-        <a class="f-brand" href="#top"><img src="assets/brand-d42d1948.webp" alt=""> Lofi Games</a>
+        <a class="f-brand" href="#top" title="Back to top"><img src="assets/brand-d42d1948.webp" alt=""> Lofi Games</a>
         <p class="f-tag">Four free mini games starring Lofi the Yeti, played right in your browser. Sign in with your SUI Wallet. No downloads.</p>
         <p class="f-meta">4 games · 20 achievements · Free, always</p>
       </div>
       <div class="foot-col">
         <h3>Games</h3>
         <nav aria-label="Footer games">
-          <a href="/lofigame/dash/">Lofi Dash</a>
-          <a href="/lofigame/crossing/">Frozen Crossing</a>
-          <a href="/lofigame/rush/">Lofi Rush</a>
-          <a href="/lofigame/climb/">Lofi Climb</a>
+          <a href="/lofigame/dash/" title="Play Lofi Dash">Lofi Dash</a>
+          <a href="/lofigame/crossing/" title="Play Frozen Crossing">Frozen Crossing</a>
+          <a href="/lofigame/rush/" title="Play Lofi Rush">Lofi Rush</a>
+          <a href="/lofigame/climb/" title="Play Lofi Climb">Lofi Climb</a>
         </nav>
       </div>
       <div class="foot-col">
         <h3>Hub</h3>
         <nav aria-label="Footer hub">
-          <a href="#games">Games</a>
-          <a href="#/player">Player</a>
-          <a href="#/stickers">Stickers</a>
-          <a href="#/challenges">Challenges</a>
-          <a href="#/leaderboard">Leaderboard</a>
-          <a href="#/settings">Profile</a>
-          <a href="#/help">Help</a>
-          <a href="#/your-data">Your data</a>
-          <a href="#/take-stickers">Take stickers</a>
+          <a href="#games" title="Games">Games</a>
+          <a href="#/player" title="Your player page">Player</a>
+          <a href="#/stickers" title="Achievement stickers">Stickers</a>
+          <a href="#/challenges" title="Daily challenges">Challenges</a>
+          <a href="#/leaderboard" title="Leaderboard">Leaderboard</a>
+          <a href="#/settings" title="Profile and settings">Profile</a>
+          <a href="#/help" title="Help">Help</a>
+          <a href="#/your-data" title="Your data">Your data</a>
+          <a href="#/take-stickers" title="Downloadable stickers">Take stickers</a>
         </nav>
       </div>
       <div class="foot-col">
         <h3>Explore</h3>
         <nav aria-label="Footer explore">
-          <a href="#how">How to play</a>
-          <a href="#about">About the hub</a>
-          <a href="#yeti">Meet Lofi</a>
-          <a href="#top">Back to top</a>
+          <a href="#how" title="How to play">How to play</a>
+          <a href="#about" title="About the hub">About the hub</a>
+          <a href="#yeti" title="Meet Lofi">Meet Lofi</a>
+          <a href="#top" title="Back to top">Back to top</a>
         </nav>
       </div>
     </div>
@@ -1295,18 +1520,11 @@
 
       <button class="sui-btn" id="sui-connect" type="button">
         <span class="sui-ic"><img src="assets/sui-logo-427d941f.png" alt=""></span>
-        <span><b id="sui-btn-title">Connect SUI Wallet</b><span id="sui-btn-sub">Slush, Sui Wallet, Suiet and other Sui wallets</span></span>
+        <span><b id="sui-btn-title">Connect free wallet</b></span>
         <span class="chev" aria-hidden="true">›</span>
       </button>
       <p class="signin-status" id="sui-status" aria-live="polite"></p>
       <div class="sui-wallets" id="sui-wallet-list" role="group" aria-label="Choose a wallet"></div>
-      <div class="sui-get" id="sui-get">
-        <p>No SUI wallet can reach this page here. On a phone, open this hub inside the Slush app and Connect works there. On a computer, install the Slush browser extension, then come back and tap Connect. Wallet extensions also cannot reach this page while it is shown inside another app's preview.</p>
-        <div class="wallet-actions">
-          <a class="btn-slush" href="https://my.slush.app/browse/https://winterplay.online/lofigame/" target="_blank" rel="noopener">Open in Slush</a>
-          <a class="btn-get" href="https://slush.app" target="_blank" rel="noopener">Get Slush</a>
-        </div>
-      </div>
       <div class="wallet-addr" id="wallet-addr-box">
         <small>Connected wallet</small>
         <code id="wallet-addr-full"></code>
@@ -1341,11 +1559,6 @@
         <p class="signin-status" id="email-status" aria-live="polite"></p>
       </div>
 
-      <div class="guest-row">
-        <button class="guest-btn" id="guest-btn" type="button">Continue as guest</button>
-        <p class="signin-status" id="guest-status" aria-live="polite"></p>
-      </div>
-
       <div class="wallet-addr" id="account-box">
         <small>Signed in</small>
         <div class="account-line"><span class="avatar" id="account-avatar"></span><b id="account-name"></b></div>
@@ -1356,7 +1569,7 @@
         </div>
       </div>
 
-      <p class="signin-note">Guests can link an account later and keep their progress. Nothing here ever asks for a seed phrase or a wallet password.</p>
+      <p class="signin-note">Nothing here ever asks for a seed phrase or a wallet password.</p>
     </div>
   </div>
 
@@ -1370,12 +1583,10 @@
   var overlay = document.getElementById("signin-overlay");
   var suiBtn = document.getElementById("sui-connect");
   var suiTitle = document.getElementById("sui-btn-title");
-  var suiSub = document.getElementById("sui-btn-sub");
   var suiStatus = document.getElementById("sui-status");
   var addrBox = document.getElementById("wallet-addr-box");
   var addrFull = document.getElementById("wallet-addr-full");
   var walletList = document.getElementById("sui-wallet-list");
-  var getBox = document.getElementById("sui-get");
   var navSignin = document.getElementById("signin-open");
   var pill = document.getElementById("wallet-pill");
   var pillAddr = document.getElementById("wallet-pill-addr");
@@ -1447,11 +1658,9 @@
     return out;
   }
   function hideWalletChoices(){ walletList.classList.remove("show"); walletList.innerHTML = ""; }
-  function hideGetBox(){ getBox.classList.remove("show"); }
   /* When several SUI wallets are installed, the player picks one instead
      of the hub silently connecting whichever registered first. */
   function renderWalletChoices(list){
-    hideGetBox();
     walletList.innerHTML = "";
     list.forEach(function(w){
       var b = document.createElement("button");
@@ -1482,15 +1691,13 @@
 
   function renderSession(){
     hideWalletChoices();
-    hideGetBox();
     if (session.address) {
       navSignin.style.display = "none";
       pill.classList.add("show");
       pillAddr.textContent = shortAddr(session.address);
       addrBox.classList.add("show");
       addrFull.textContent = session.address;
-      suiTitle.textContent = "Connected";
-      suiSub.textContent = (session.wallet && session.wallet.name ? session.wallet.name : "SUI Wallet") + " · " + shortAddr(session.address);
+      suiTitle.textContent = (session.wallet && session.wallet.name ? session.wallet.name : "SUI Wallet") + " · " + shortAddr(session.address);
       suiStatus.className = "signin-status ok";
       suiStatus.textContent = "You are signed in with your SUI Wallet for this session.";
     } else {
@@ -1498,8 +1705,7 @@
       pill.classList.remove("show");
       addrBox.classList.remove("show");
       addrFull.textContent = "";
-      suiTitle.textContent = "Connect SUI Wallet";
-      suiSub.textContent = "Slush, Sui Wallet, Suiet and other Sui wallets";
+      suiTitle.textContent = "Connect free wallet";
     }
   }
 
@@ -1537,7 +1743,6 @@
     if (session.address) { renderSession(); return; }
     suiBtn.disabled = true;
     hideWalletChoices();
-    hideGetBox();
     suiStatus.className = "signin-status";
     suiStatus.textContent = "Looking for a SUI wallet…";
     /* Re-run detection on every Connect tap, then keep checking briefly:
@@ -1552,15 +1757,8 @@
       clearInterval(poll);
       suiBtn.disabled = false;
       if (!list.length) {
-        /* No wallet can be detected here: the usual cause is a phone
-           browser (wallet apps cannot inject into it) or an in-app
-           preview. Show the working next step instead of a dead end:
-           the get box offers "Open in Slush", which loads this hub in
-           the Slush app's own browser, where its wallet registers with
-           the page and Connect works. */
         suiStatus.className = "signin-status err";
         suiStatus.textContent = "No SUI wallet found in this browser.";
-        getBox.classList.add("show");
         return;
       }
       if (list.length > 1) {
@@ -1574,7 +1772,6 @@
   });
 
   async function connectTo(wallet){
-      hideGetBox();
       try {
         suiStatus.textContent = "Approve the connection in your " + (wallet.name || "wallet") + " pop-up…";
         var result = await wallet.features["standard:connect"].connect();
@@ -1611,7 +1808,7 @@
     session = { wallet: null, account: null, address: "" };
     saveSession();
     suiStatus.className = "signin-status";
-    suiStatus.textContent = "Disconnected. You are browsing as a guest again.";
+    suiStatus.textContent = "Disconnected.";
     renderSession();
     notifySui();
   }
@@ -1642,7 +1839,7 @@
   /* Restore a saved sign-in after a reload: wait briefly for a wallet to
      register, then ask it for a silent reconnect. No pop-up is ever shown
      on load; if the wallet does not confirm the saved account, the hub
-     simply stays in guest mode and the saved address is never displayed
+     simply stays signed out and the saved address is never displayed
      as if it were connected. */
   function tryRestoreSession(){
     var saved = loadSavedSession();
@@ -1673,7 +1870,7 @@
         saveSession();
         renderSession();
         notifySui();
-      }).catch(function(){ /* wallet did not silently reconnect: stay a guest */ });
+      }).catch(function(){ /* wallet did not silently reconnect: stay signed out */ });
     }, 150);
   }
   tryRestoreSession();
@@ -1708,7 +1905,7 @@
   function $(id){ return document.getElementById(id); }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
 
-  /* ================= Catalogue: 20 stickers, 840 XP (from the shared spec) ================= */
+  /* ================= Catalogue: 20 stickers (achievements are 840 XP in total; level XP is uncapped on top) ================= */
   var GAME_SLUGS = ["lofi-dash", "frozen-crossing", "lofi-rush", "lofi-climb"];
   var GAME_NAMES = { "lofi-dash":"Lofi Dash", "frozen-crossing":"Frozen Crossing", "lofi-rush":"Lofi Rush", "lofi-climb":"Lofi Climb" };
   var GAME_ART = { "lofi-dash":"assets/banner-6a93c876.webp", "frozen-crossing":"assets/banner-crossing-732e2db5.webp", "lofi-rush":"assets/banner-rush-414cab74.webp", "lofi-climb":"assets/banner-climb-e6cb52da.webp" };
@@ -1902,11 +2099,28 @@
       }, function(){}));
     });
   }
+  function levelXPOf(slug){
+    var cloud = 0, local = 0;
+    try {
+      var g = state.games[slug];
+      var gv = g ? Number(g.levelXP) : 0;
+      cloud = isFinite(gv) && gv > 0 ? gv : 0;
+    } catch (e) { cloud = 0; }
+    try {
+      var loc = localSave(slug);
+      var lv = loc ? Number(loc.levelXP) : 0;
+      local = isFinite(lv) && lv > 0 ? lv : 0;
+    } catch (e) { local = 0; }
+    return Math.max(cloud, local);
+  }
   function computeXP(){
     var total = 0;
     CATALOG.forEach(function(s){
       var g = state.games[s.slug];
       if (g && g.unlocked && g.unlocked[s.bare]) total += s.xp;
+    });
+    GAME_SLUGS.forEach(function(slug){
+      try { total += levelXPOf(slug); } catch (e) {}
     });
     return total;
   }
@@ -1929,7 +2143,6 @@
   /* ================= Auth UI (header pill, modal account box) ================= */
   function providerLabel(){
     if (!state.user) return "";
-    if (state.user.isAnonymous) return "Guest account";
     var ids = state.user.providerData.map(function(p){ return p.providerId; });
     if (ids.indexOf("google.com") !== -1) return "Google account";
     if (ids.indexOf("password") !== -1) return "Email account";
@@ -2041,15 +2254,7 @@
       $("signin-overlay").classList.remove("open");
       document.body.classList.remove("modal-open");
     };
-    if (state.user && state.user.isAnonymous) {
-      state.user.linkWithPopup(provider).then(done, function(err){
-        if (err && err.code === "auth/credential-already-in-use") {
-          auth.signInWithPopup(provider).then(done, function(e2){ setStatus("google-status", fbErr(e2), "err"); });
-        } else setStatus("google-status", fbErr(err), "err");
-      });
-    } else {
-      auth.signInWithPopup(provider).then(done, function(err){ setStatus("google-status", fbErr(err), "err"); });
-    }
+    auth.signInWithPopup(provider).then(done, function(err){ setStatus("google-status", fbErr(err), "err"); });
   });
 
   var emailMode = "signin";
@@ -2069,28 +2274,11 @@
     if (pass.length < 6) { setStatus("email-status", "Your password needs at least 6 characters.", "err"); $("signin-password").focus(); return; }
     setStatus("email-status", emailMode === "signin" ? "Signing you in…" : "Creating your account…");
     var okMsg = emailMode === "signin" ? "Signed in with email." : "Account created, you are signed in.";
-    var cred = firebase.auth.EmailAuthProvider.credential(email, pass);
-    if (state.user && state.user.isAnonymous) {
-      /* Link first so guest progress is preserved; if the email already has
-         its own account, fall back to a plain sign-in to that account. */
-      state.user.linkWithCredential(cred).then(function(){ setStatus("email-status", okMsg, "ok"); }, function(err){
-        if (err && (err.code === "auth/email-already-in-use" || err.code === "auth/credential-already-in-use")) {
-          auth.signInWithEmailAndPassword(email, pass).then(function(){ setStatus("email-status", "Signed in with email.", "ok"); }, function(e2){ setStatus("email-status", fbErr(e2), "err"); });
-        } else setStatus("email-status", fbErr(err), "err");
-      });
-    } else if (emailMode === "signup") {
+    if (emailMode === "signup") {
       auth.createUserWithEmailAndPassword(email, pass).then(function(){ setStatus("email-status", okMsg, "ok"); }, function(err){ setStatus("email-status", fbErr(err), "err"); });
     } else {
       auth.signInWithEmailAndPassword(email, pass).then(function(){ setStatus("email-status", okMsg, "ok"); }, function(err){ setStatus("email-status", fbErr(err), "err"); });
     }
-  });
-
-  $("guest-btn").addEventListener("click", function(){
-    if (!FB) { noService("guest-status"); return; }
-    if (state.user && !state.user.isAnonymous) { setStatus("guest-status", "You are already signed in with an account."); return; }
-    if (state.user && state.user.isAnonymous) { setStatus("guest-status", "You are already playing as a guest.", "ok"); return; }
-    setStatus("guest-status", "Setting up your guest account…");
-    auth.signInAnonymously().then(function(){ setStatus("guest-status", "You are in as a guest. Link Google or email later and your progress comes with you.", "ok"); }, function(err){ setStatus("guest-status", fbErr(err), "err"); });
   });
 
   /* SUI connect/disconnect mirrors onto the profile doc */
@@ -2112,9 +2300,23 @@
     $("player-avatar").innerHTML = displayAvatarHTML(state.profile, state.user);
     $("player-name").textContent = p.username || "Player";
     $("player-sub").textContent = providerLabel();
-    $("player-xp").textContent = computeXP() + " / 840";
+    $("player-xp").textContent = computeXP().toLocaleString("en-US");
     $("player-stickers").textContent = collectedCount() + " / 20";
     $("player-chaldays").textContent = String(p.challengeDays || 0);
+    /* Profile badges: one badge per collected achievement sticker,
+       using the same per-sticker icons as the stickerbook. Stickers
+       that are not collected yet are not shown here. */
+    var badgeBox = $("player-badges");
+    if (badgeBox) {
+      var collected = CATALOG.filter(function(s){ return getStickerState(s).status === "collected"; });
+      if (!collected.length) {
+        badgeBox.innerHTML = '<p class="badge-empty">No stickers collected yet — play a game to earn your first one.</p>';
+      } else {
+        badgeBox.innerHTML = collected.map(function(s){
+          return '<span class="badge"><span class="sticker-medal">' + stickerIcon(s.id) + '</span>' + esc(s.name) + '</span>';
+        }).join("");
+      }
+    }
     $("player-bests").innerHTML = GAME_SLUGS.map(function(slug){
       var g = state.games[slug];
       var best = g && typeof g.best === "number" ? g.best.toLocaleString("en-US") + " " + GAME_UNITS[slug] : "—";
@@ -2135,7 +2337,7 @@
       } else {
         closeBox.innerHTML = inProg.map(function(x){
           var pct = Math.min(100, Math.round(x.st.progress.val / x.st.progress.target * 100));
-          return '<a class="close-row" href="#/stickers"><span class="sticker-medal">' + STAR + '</span>' +
+          return '<a class="close-row" href="#/stickers"><span class="sticker-medal">' + stickerIcon(x.s.id) + '</span>' +
             '<div class="c-main"><h4>' + esc(x.s.name) + '</h4><span class="c-game">' + GAME_NAMES[x.s.slug] + '</span>' +
             '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
             '<span class="bar-label">' + x.st.progress.val.toLocaleString("en-US") + " / " + x.st.progress.target.toLocaleString("en-US") + " " + x.st.progress.unit + '</span></div>' +
@@ -2176,7 +2378,29 @@
     return { status:"locked", label:"Locked" };
   }
   function getStickerState(s){ return state.user ? stickerState(s) : stickerStateSignedOut(s); }
-  var STAR = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9 2.9-6z" fill="currentColor"/></svg>';
+  var ICONS = {
+    "dash-first": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3v9.5L16 14v4H8V3z" fill="currentColor"/><path d="M2 6h4M1 10h5M2 14h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    "dash-clean": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5l7 2.5v6.2c0 4.8-3 8.3-7 10.3-4-2-7-5.5-7-10.3V5l7-2.5z" fill="currentColor"/></svg>',
+    "dash-coins": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>',
+    "dash-long": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8c4-2 8-2 11 0 2 1.3 4 .7 5-1M3 12c4-2 8-2 11 0 2 1.3 4 .7 5-1M3 16c4-2 8-2 11 0 2 1.3 4 .7 5-1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    "dash-ultra": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3h10v5.5A5 5 0 0 1 12 13.5 5 5 0 0 1 7 8.5V3z" fill="currentColor"/><path d="M7 4.5H3.8A3.4 3.4 0 0 0 7 9M17 4.5h3.2A3.4 3.4 0 0 1 17 9M11 13.5h2V17h-2z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    "crossing-first": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="13.5" r="7" stroke="currentColor" stroke-width="1.8"/><circle cx="7.5" cy="6" r="2.5" fill="currentColor"/><circle cx="16.5" cy="6" r="2.5" fill="currentColor"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/><path d="M9 16c1 1 5 1 6 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    "crossing-station": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="2.5" width="6" height="2" rx="1" fill="currentColor"/><rect x="9" y="19.5" width="6" height="2" rx="1" fill="currentColor"/><ellipse cx="12" cy="12" rx="6.5" ry="7" stroke="currentColor" stroke-width="1.8"/><path d="M12 5v14M8.2 6.6c-1 3.4-1 7.4 0 10.8M15.8 6.6c1 3.4 1 7.4 0 10.8" stroke="currentColor" stroke-width="1.1"/></svg>',
+    "crossing-commuter": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12c3-4 6.5-6 10-6 2.6 0 5.2 1.6 7.2 3.7L21.5 12l-1.3 2.3C18.2 16.4 15.6 18 13 18c-3.7 0-7.5-2-10.5-6z" fill="currentColor"/><path d="M18.5 12l3.5-4.2v8.4L18.5 12z" fill="currentColor"/></svg>',
+    "crossing-wholeway": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 22V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 3.5c3-1.5 6 1.5 11 0v8c-5 1.5-8-1.5-11 0v-8z" fill="currentColor"/></svg>',
+    "crossing-scratch": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 18L2 9l5 4 5-7 5 7 5-4-1 9H3z" fill="currentColor"/><rect x="3" y="19" width="18" height="2" rx="1" fill="currentColor"/></svg>',
+    "rush-first": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 19h18M3 19L19 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8.5 8.5l6.5 6.5M15 9.8V15h-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    "rush-chain": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="15" r="5.5" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="9" r="5.5" stroke="currentColor" stroke-width="2"/></svg>',
+    "rush-perfect": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="currentColor"/></svg>',
+    "rush-stage3": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 19l6-11 4 6 3.5-5L22 19H2z" fill="currentColor"/></svg>',
+    "rush-moon": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.4 14.2A8.5 8.5 0 1 1 9.8 3.6a7 7 0 1 0 10.6 10.6z" fill="currentColor"/></svg>',
+    "climb-first": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c10 2 10 4 0 6 10 2 10 4 0 6 10 2 10 4 0 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    "climb-m500": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 19l9-14 9 14H3z" fill="currentColor"/></svg>',
+    "climb-rocket": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c2.8 2.3 4.2 5.7 4.2 9.5L12 15.2 7.8 11.5C7.8 7.7 9.2 4.3 12 2z" fill="currentColor"/><path d="M7.8 11.8L4.8 16.5l3.6-.6M16.2 11.8l3 4.7-3.6-.6" fill="currentColor"/><path d="M10.4 17.6c.6 1.4 1.1 2.9 1.6 4.4.5-1.5 1-3 1.6-4.4-1 .6-2.2.6-3.2 0z" fill="currentColor"/></svg>',
+    "climb-m2000": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 19l7-9.5 4 4.8 2.2-2.6L22 19H2z" fill="currentColor"/><path d="M15.2 11.7V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M15.2 4c1.8-.9 3.6.8 5.6 0v3.6c-2 .8-3.8-.9-5.6 0V4z" fill="currentColor"/></svg>',
+    "climb-moon": '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10" cy="13.5" r="7.5" fill="currentColor"/><path d="M18.6 2.8l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9.9-2.1z" fill="currentColor"/></svg>'
+  };
+  function stickerIcon(id){ return ICONS[id] || ICONS["dash-first"]; }
   function renderStickers(){
     var groups = $("sticker-groups"); if (!groups) return;
     var f = state.stickerFilter;
@@ -2194,7 +2418,7 @@
           var pct = Math.min(100, Math.round(st.progress.val / st.progress.target * 100));
           prog = '<div class="bar"><i style="width:' + pct + '%"></i></div><span class="bar-label">' + st.progress.val.toLocaleString("en-US") + " / " + st.progress.target.toLocaleString("en-US") + " " + st.progress.unit + '</span>';
         }
-        return '<div class="sticker st-' + st.status + '"><div class="sticker-top"><span class="sticker-medal">' + STAR + '</span><span class="xp">' + s.xp + ' XP</span></div><h4>' + esc(s.name) + '</h4><p>' + esc(s.desc) + '</p>' + prog + '<span class="st-status">' + esc(st.label) + '</span></div>';
+        return '<div class="sticker st-' + st.status + '"><div class="sticker-top"><span class="sticker-medal">' + stickerIcon(s.id) + '</span><span class="xp">' + s.xp + ' XP</span></div><h4>' + esc(s.name) + '</h4><p>' + esc(s.desc) + '</p>' + prog + '<span class="st-status">' + esc(st.label) + '</span></div>';
       }).join("");
       if (items) html += '<h3 class="view-subh">' + GAME_NAMES[slug] + '</h3><div class="stickers">' + items + '</div>';
     });
@@ -2379,7 +2603,7 @@
       '<div class="linked-row"><b>Google</b><span class="lstate">' + (hasGoogle ? '<span>Linked</span>' : '<button class="mini-btn" type="button" id="link-google-btn">Link Google</button>') + '</span></div>' +
       '<div class="linked-row"><b>Email</b><span>' + (hasEmail ? esc(state.user.email || "") : '') + '</span><span class="lstate">' + (hasEmail ? '<span>Linked</span>' : '<button class="mini-btn" type="button" id="link-email-btn">Link email</button>') + '</span></div>' +
       '<div class="linked-row"><b>SUI Wallet</b><span class="lstate">' + (addr ? '<button class="mini-btn red" type="button" id="sui-disconnect-btn">Disconnect</button>' : '<button class="mini-btn" type="button" id="sui-connect-btn">Connect</button>') + '</span>' + (addr ? '<span class="linked-addr">' + esc(addr) + '</span>' : '') + '</div>' +
-      '<p class="signin-note" style="text-align:left;margin-top:12px">Link another account above and the same player, XP and stickers carry over. Guest accounts keep everything when they link.</p>';
+      '<p class="signin-note" style="text-align:left;margin-top:12px">Link another account above and the same player, XP and stickers carry over.</p>';
     var lg = $("link-google-btn");
     if (lg) lg.addEventListener("click", linkGoogle);
     var le = $("link-email-btn");
@@ -2522,6 +2746,27 @@
       }
     });
   });
+
+  /* ---------- theme picker (Profile & settings): Ice / Night ----------
+     The choice is kept on this device in localStorage; the small script
+     in <head> applies it before first paint on every load, and this
+     block keeps the two buttons in step with the active theme. */
+  var iceBtn = document.getElementById("theme-opt-ice");
+  var nightBtn = document.getElementById("theme-opt-night");
+  function syncThemeButtons(){
+    var night = document.documentElement.getAttribute("data-theme") === "night";
+    if (iceBtn) iceBtn.setAttribute("aria-pressed", String(!night));
+    if (nightBtn) nightBtn.setAttribute("aria-pressed", String(night));
+  }
+  function setTheme(name){
+    if (name === "night") document.documentElement.setAttribute("data-theme", "night");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("lofi_theme", name); } catch (e) {}
+    syncThemeButtons();
+  }
+  if (iceBtn) iceBtn.addEventListener("click", function(){ setTheme("ice"); });
+  if (nightBtn) nightBtn.addEventListener("click", function(){ setTheme("night"); });
+  syncThemeButtons();
 
   /* ---------- sign-in sheet: email section expands on demand ---------- */
   var reveal = document.getElementById("email-reveal");

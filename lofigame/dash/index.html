@@ -328,6 +328,43 @@
   .ach li.unlocked .pts{ color:var(--gold-deep); }
   .ach li .state{ flex:none; font-size:12px; font-weight:700; color:var(--muted); }
   .ach li.unlocked .state{ color:#149653; }
+  /* ---------- levels: panel states, HUD progress, level-up banner ---------- */
+  .levels-total{ font-weight:800; font-size:14px; color:var(--gold-deep); font-variant-numeric:tabular-nums; }
+  .ach li.current{ border-color:var(--gold); background:#fff6d8; box-shadow:inset 0 2px 0 #fff, 0 2px 0 rgba(185,126,6,.35); }
+  .ach li.current .dot{ background:#ffe9a3; border-color:var(--gold-deep); color:#7a5200; }
+  .ach li.current .state{ color:#7a5200; }
+  .ach li.locked{ opacity:.72; }
+  .hud-in{ flex-wrap:wrap; row-gap:6px; }
+  .level-banner{
+    position:absolute; top:54px; left:50%; z-index:6; pointer-events:none;
+    transform:translate(-50%, -8px); opacity:0;
+    background:var(--facet), linear-gradient(180deg,#ffe9a3,#ffd34d);
+    border:3px solid var(--blue-dark); border-radius:12px;
+    box-shadow:0 4px 0 var(--blue-dark), 0 14px 26px rgba(0,10,40,.35);
+    padding:10px 20px; white-space:nowrap;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:19px; color:#5b3d00;
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .level-banner.show{ opacity:1; transform:translate(-50%, 0); }
+  .level-banner[hidden]{ display:none; }
+  .start-panel .start-level{
+    margin:14px 0 0; color:#fff;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px;
+    text-shadow:0 2px 0 rgba(0,42,122,.55);
+  }
+  .over-panel .over-levels{ margin:0 0 14px; font-size:13.5px; font-weight:800; color:#7a5200; line-height:1.45; }
+  .over-levels[hidden]{ display:none; }
+  @media (max-width:560px){
+    .level-banner{ top:46px; font-size:15px; padding:8px 14px; }
+    .start-panel .start-level{ font-size:13px; margin-top:10px; }
+    .over-panel .over-levels{ font-size:12px; margin-bottom:10px; }
+  }
+  @media (min-width:761px){
+    .over-panel .over-levels{ font-size:.95cqw; margin-bottom:1.2cqw; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .level-banner{ transition:none; }
+  }
   /* toast */
   .toast{
     position:fixed; left:50%; bottom:22px; transform:translate(-50%, 90px);
@@ -812,18 +849,22 @@ body{animation:lofi-fade-in .45s ease-out both}
       <div class="hud-group">
         <span class="chip">🏃 <span id="hudDist">0</span><span class="unit">m</span></span>
         <span class="chip">🪙 <span id="hudCoins">0</span></span>
+        <span class="chip">🏅 <span id="hudLevel">Level 1 · 0 / 500 m</span></span>
       </div>
       <div class="hud-group right">
-        <span class="chip">⭐ <span id="xpTotal">0 / 210</span><span class="unit">XP</span></span>
+        <span class="chip">⭐ <span id="xpTotal">0</span><span class="unit">XP</span></span>
         <span class="chip">🏆 <span id="hudBest">0</span><span class="unit">m</span></span>
         <span class="chip speed">⚡ <span id="hudSpeed">1.0</span><span class="unit">×</span></span>
       </div>
     </div>
 
+    <div class="level-banner" id="levelBanner" hidden role="status"></div>
+
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
         <img class="start-logo" src="assets/start-logo-1bbb7cb1.webp" alt="Lofi Dash" />
         <button class="play-pill pix" id="startBtn" type="button" aria-label="Start run"><span class="play-tri" aria-hidden="true"></span>PLAY</button>
+        <p class="start-level" id="startLevel"></p>
       </div>
     </div>
 
@@ -849,6 +890,7 @@ body{animation:lofi-fade-in .45s ease-out both}
           <div><small>Coins</small><strong id="resCoins">0</strong></div>
           <div><small>Best</small><strong><span id="resBest">0</span> <span class="unit">m</span></strong></div>
         </div>
+        <p class="over-levels" id="overLevels" hidden></p>
         <div class="over-actions">
           <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Run again</button>
@@ -871,7 +913,7 @@ body{animation:lofi-fade-in .45s ease-out both}
 
   <section class="guide" aria-label="How to play">
     <h2>How to play</h2>
-    <p class="goal">Jump over the road stickers, duck when you need to, and collect 🪙 coins. One hit ends the run. The world changes every 500 m.</p>
+    <p class="goal">Jump over the road stickers, duck when you need to, and collect 🪙 coins. One hit ends the run. The world changes as you clear each level.</p>
     <ul>
       <li><span class="keys-inline"><kbd>↑</kbd><kbd>W</kbd></span><span>Jump · press again in the air to dash</span></li>
       <li><span class="keys-inline"><kbd>→</kbd><kbd>D</kbd></span><span>Move forward</span></li>
@@ -882,6 +924,14 @@ body{animation:lofi-fade-in .45s ease-out both}
       <li><span class="keys-inline"><kbd>Touch</kbd></span><span>Tap to jump, tap again to dash, swipe down to duck</span></li>
       <li><span class="keys-inline"><kbd>Enter</kbd></span><span>Start · Run again</span></li>
     </ul>
+  </section>
+
+  <section class="ach levels" aria-label="Levels">
+    <div class="ach-head">
+      <h2>🏅 Levels</h2>
+      <span class="levels-total" id="levelsTotal">0 XP from levels</span>
+    </div>
+    <ul id="levelList"></ul>
   </section>
 
   <section class="ach" aria-label="Achievements">
@@ -1024,6 +1074,19 @@ body{animation:lofi-fade-in .45s ease-out both}
   if(savedData && savedData.unlocked && typeof savedData.unlocked === 'object'){
     ACH.forEach(function(a){ if(savedData.unlocked[a.id]) unlocked[a.id] = true; });
   }
+  /* ---------- levels: 10 consecutive single-run distance stretches.
+     Level n ends at LEVELS_END[n-1] metres from the start of a run and
+     pays 10 x n XP the first time it is completed. A save written
+     before levels existed simply has no level fields: level 0, 0 XP. */
+  var LEVELS_LEN = [500, 700, 800, 1000, 1200, 1500, 1800, 2200, 2600, 3000];
+  var LEVELS_END = [];
+  (function(){ var acc = 0; LEVELS_LEN.forEach(function(l){ acc += l; LEVELS_END.push(acc); }); })();
+  var level = 0, levelXP = 0;
+  if(savedData){
+    if(typeof savedData.level === 'number' && isFinite(savedData.level)) level = Math.min(10, Math.max(0, Math.floor(savedData.level)));
+    if(typeof savedData.levelXP === 'number' && isFinite(savedData.levelXP)) levelXP = Math.max(0, Math.floor(savedData.levelXP));
+  }
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function saveSave(){
     try{
       if(window.localStorage){
@@ -1031,6 +1094,8 @@ body{animation:lofi-fade-in .45s ease-out both}
           v: 1,
           best: (typeof best === 'number' && isFinite(best)) ? best : 0,
           unlocked: unlocked,
+          level: (typeof level === 'number' && isFinite(level)) ? level : 0,
+          levelXP: (typeof levelXP === 'number' && isFinite(levelXP)) ? levelXP : 0,
           muted: !!muted,
           soundVol: (typeof soundVolVal === 'number') ? soundVolVal : 0.8,
           musicVol: (typeof musicVolVal === 'number') ? musicVolVal : 0.55,
@@ -1097,6 +1162,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       var data = {
         best: (typeof best === 'number' && isFinite(best)) ? best : 0,
         unlocked: fbCurrentUnlocked(),
+        level: (typeof level === 'number' && isFinite(level)) ? level : 0,
+        levelXP: (typeof levelXP === 'number' && isFinite(levelXP)) ? levelXP : 0,
         settings: fbCurrentSettings(),
         migratedFromLocal: true,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1133,6 +1200,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       var localUnlocked = fbCurrentUnlocked();
       Object.keys(fbPendingUnlocks).forEach(function(k){ if(fbPendingUnlocks[k]) localUnlocked[k] = true; });
       var localSettings = fbCurrentSettings();
+      var localLevel = (typeof level === 'number' && isFinite(level)) ? level : 0;
+      var localLevelXP = (typeof levelXP === 'number' && isFinite(levelXP)) ? levelXP : 0;
       var hasLocalSave = !!savedData;
       try{
         if(window.localStorage){
@@ -1145,6 +1214,8 @@ body{animation:lofi-fade-in .45s ease-out both}
               if(parsedNow.unlocked && typeof parsedNow.unlocked === 'object'){
                 Object.keys(parsedNow.unlocked).forEach(function(k){ if(parsedNow.unlocked[k]) localUnlocked[k] = true; });
               }
+              if(typeof parsedNow.level === 'number' && isFinite(parsedNow.level)) localLevel = Math.max(localLevel, Math.floor(parsedNow.level));
+              if(typeof parsedNow.levelXP === 'number' && isFinite(parsedNow.levelXP)) localLevelXP = Math.max(localLevelXP, Math.floor(parsedNow.levelXP));
             }
           }
         }
@@ -1154,6 +1225,11 @@ body{animation:lofi-fade-in .45s ease-out both}
       var cloudUnlocked = (cloud && cloud.unlocked && typeof cloud.unlocked === 'object') ? cloud.unlocked : {};
       var cloudEarnedAt = (cloud && cloud.earnedAt && typeof cloud.earnedAt === 'object') ? cloud.earnedAt : {};
       var cloudSettings = (cloud && cloud.settings && typeof cloud.settings === 'object') ? cloud.settings : null;
+      /* Levels merge like best: MAX of local and cloud, never down. */
+      var cloudLevel = (cloud && typeof cloud.level === 'number' && isFinite(cloud.level)) ? Math.floor(cloud.level) : 0;
+      var cloudLevelXP = (cloud && typeof cloud.levelXP === 'number' && isFinite(cloud.levelXP)) ? Math.floor(cloud.levelXP) : 0;
+      var mergedLevel = Math.min(10, Math.max(localLevel, cloudLevel));
+      var mergedLevelXP = Math.max(localLevelXP, cloudLevelXP);
       /* MERGE: best = max; unlocked = union. */
       var mergedBest = Math.max(localBest, cloudBest);
       var mergedUnlocked = {};
@@ -1190,6 +1266,8 @@ body{animation:lofi-fade-in .45s ease-out both}
         var mergedDoc = {
           best: mergedBest,
           unlocked: mergedUnlocked,
+          level: mergedLevel,
+          levelXP: mergedLevelXP,
           settings: mergedSettings,
           migratedFromLocal: true,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1207,6 +1285,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       /* Load the merged state into the game, exactly as the local
          load does: best, unlocked, and settings into live state. */
       best = mergedBest;
+      level = mergedLevel;
+      levelXP = mergedLevelXP;
       Object.keys(unlocked).forEach(function(k){ delete unlocked[k]; });
       Object.keys(mergedUnlocked).forEach(function(k){ unlocked[k] = true; });
       muted = !!mergedSettings.muted;
@@ -1215,6 +1295,7 @@ body{animation:lofi-fade-in .45s ease-out both}
       tipsOn = !!mergedSettings.tipsOn;
       savedData = {
         v: 1, best: mergedBest, unlocked: mergedUnlocked,
+        level: mergedLevel, levelXP: mergedLevelXP,
         muted: muted, soundVol: soundVolVal, musicVol: musicVolVal, tipsOn: tipsOn
       };
       /* Persist merged state locally without re-queueing a sync
@@ -1243,6 +1324,7 @@ body{animation:lofi-fade-in .45s ease-out both}
         if(typeof updateHud === 'function') updateHud();
       }catch(e){}
       renderAch();
+      if(typeof renderLevels === 'function') renderLevels();
     }).catch(function(err){
       /* Offline / read failure: keep playing on the local save;
          the merge retries on the next sign-in. Log it so a failed
@@ -1273,6 +1355,12 @@ body{animation:lofi-fade-in .45s ease-out both}
   }
   var achList = document.getElementById('achList');
   var xpTotal = document.getElementById('xpTotal');
+  var levelListEl = document.getElementById('levelList');
+  var levelsTotalEl = document.getElementById('levelsTotal');
+  var startLevelEl = document.getElementById('startLevel');
+  var hudLevelEl = document.getElementById('hudLevel');
+  var levelBannerEl = document.getElementById('levelBanner');
+  var overLevelsEl = document.getElementById('overLevels');
 
   function renderAch(){
     achList.innerHTML = '';
@@ -1291,7 +1379,35 @@ body{animation:lofi-fade-in .45s ease-out both}
       li.querySelector('.txt span').textContent = a.desc;
       achList.appendChild(li);
     });
-    xpTotal.textContent = total + ' / 210';
+    /* total XP is uncapped: achievement XP plus level XP, no "/ 210" */
+    xpTotal.textContent = total + levelXP;
+  }
+
+  function renderLevels(){
+    if(levelListEl){
+      levelListEl.innerHTML = '';
+      LEVELS_LEN.forEach(function(len, i){
+        var n = i + 1;
+        var xp = n * 10;
+        var st = n <= level ? 'done' : (n === level + 1 ? 'current' : 'locked');
+        var li = document.createElement('li');
+        li.className = st === 'done' ? 'unlocked' : st;
+        li.innerHTML =
+          '<span class="dot" aria-hidden="true">' + (st === 'done' ? '✓' : n) + '</span>' +
+          '<span class="txt"><strong></strong><span></span></span>' +
+          '<span class="pts">+' + xp + ' XP</span>' +
+          '<span class="state">' + (st === 'done' ? 'Completed' : (st === 'current' ? 'Current' : 'Locked')) + '</span>';
+        li.querySelector('.txt strong').textContent = 'Level ' + n + ' · ' + fmt(len) + ' m';
+        li.querySelector('.txt span').textContent = 'Ends at ' + fmt(LEVELS_END[i]) + ' m in one run';
+        levelListEl.appendChild(li);
+      });
+    }
+    if(levelsTotalEl) levelsTotalEl.textContent = fmt(levelXP) + ' XP from levels';
+    if(startLevelEl){
+      startLevelEl.textContent = level >= 10
+        ? 'All 10 levels complete · ' + fmt(levelXP) + ' level XP'
+        : 'Next: Level ' + (level + 1) + ' · reach ' + fmt(LEVELS_END[level]) + ' m · +' + ((level + 1) * 10) + ' XP';
+    }
   }
 
   var toastTimer = null;
@@ -1316,10 +1432,13 @@ body{animation:lofi-fade-in .45s ease-out both}
     queueFirestoreSync(id);
   }
   renderAch();
+  renderLevels();
 
   /* ---------- game state ---------- */
   var state = 'ready'; // ready | playing | paused | over
   var distPx = 0, coinsRun = 0, best = 0;
+  var runLevels = []; // levels first-completed during the current run
+  var sparks = [];    // level-up confetti burst particles
   if(savedData && typeof savedData.best === 'number' && isFinite(savedData.best) && savedData.best > 0){
     best = Math.floor(savedData.best);
     hudBest.textContent = best;
@@ -1606,6 +1725,7 @@ body{animation:lofi-fade-in .45s ease-out both}
 
   function reset(){
     distPx = 0; coinsRun = 0; speed = baseSpeed; timeAlive = 0;
+    runLevels = []; sparks = [];
     obstacles = []; coinsArr = [];
     spawnT = 0.9; coinT = 1.4;
     player.y = 0; player.vy = 0; player.onGround = true; player.ducking = false;
@@ -1639,6 +1759,16 @@ body{animation:lofi-fade-in .45s ease-out both}
     document.getElementById('resCoins').textContent = coinsRun;
     document.getElementById('resBest').textContent = best;
     document.getElementById('newBest').className = 'newbest' + (isBest && d>0 ? ' show' : '');
+    if(overLevelsEl){
+      if(runLevels.length){
+        var lvlTotal = 0;
+        var lvlParts = runLevels.map(function(r){ lvlTotal += r.xp; return 'Level ' + r.n + ' (+' + r.xp + ' XP)'; });
+        overLevelsEl.textContent = '🏅 ' + lvlParts.join(' · ') + ' — +' + lvlTotal + ' XP this run';
+        overLevelsEl.hidden = false;
+      } else {
+        overLevelsEl.hidden = true;
+      }
+    }
     /* the run is finished: the live score / XP chips leave the screen
        with it, so the Game Over panel stands on its own */
     hudIn.classList.add('hud-hidden');
@@ -1816,6 +1946,9 @@ body{animation:lofi-fade-in .45s ease-out both}
     if(distM >= 1500) unlock('long');
     if(distM >= 3000) unlock('ultra');
 
+    checkLevels(distM);
+    tickSparks(dt);
+
     updateHud();
   }
 
@@ -1824,6 +1957,92 @@ body{animation:lofi-fade-in .45s ease-out both}
     hudCoins.textContent = coinsRun;
     hudBest.textContent = best;
     hudSpeed.textContent = (speed/baseSpeed).toFixed(1);
+    if(hudLevelEl){
+      hudLevelEl.textContent = level >= 10
+        ? 'All levels complete'
+        : 'Level ' + (level + 1) + ' · ' + fmt(Math.floor(distPx/50)) + ' / ' + fmt(LEVELS_END[level]) + ' m';
+    }
+  }
+
+  /* ---------- level completion: banner queue, chime, spark burst ---------- */
+  var bannerQueue = [], bannerBusy = false;
+  function showLevelBanner(n, xp){
+    bannerQueue.push({ n: n, xp: xp });
+    pumpBanner();
+  }
+  function pumpBanner(){
+    if(bannerBusy || !bannerQueue.length || !levelBannerEl) return;
+    bannerBusy = true;
+    var b = bannerQueue.shift();
+    levelBannerEl.textContent = 'Level ' + b.n + ' complete! +' + b.xp + ' XP';
+    levelBannerEl.hidden = false;
+    levelBannerEl.classList.remove('show');
+    void levelBannerEl.offsetWidth;
+    levelBannerEl.classList.add('show');
+    setTimeout(function(){
+      levelBannerEl.classList.remove('show');
+      levelBannerEl.hidden = true;
+      bannerBusy = false;
+      pumpBanner();
+    }, 2100);
+  }
+  var SPARK_COLORS = ['#ffc21f', '#00b7ff', '#ff5c8a', '#59d8ff', '#ffffff'];
+  function spawnSparks(){
+    var cx = playerX() + player.w/2;
+    var cy = GROUND + player.y - playerH()/2;
+    var count = reduced ? 10 : 26;
+    for(var i=0;i<count;i++){
+      sparks.push({
+        x: cx, y: cy,
+        vx: (Math.random() - 0.5) * 430,
+        vy: -Math.random() * 380 - 60,
+        t: 0, life: 0.7 + Math.random() * 0.5,
+        c: SPARK_COLORS[i % SPARK_COLORS.length],
+        s: 3 + Math.random() * 4,
+        rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 12
+      });
+    }
+  }
+  function tickSparks(dt){
+    for(var i=sparks.length-1;i>=0;i--){
+      var p = sparks[i];
+      p.t += dt;
+      if(p.t >= p.life){ sparks.splice(i,1); continue; }
+      p.vy += 900 * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rot += p.vr * dt;
+    }
+  }
+  function drawSparks(){
+    sparks.forEach(function(p){
+      var a = Math.max(0, 1 - p.t / p.life);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s * 0.7);
+      ctx.restore();
+    });
+    ctx.globalAlpha = 1;
+  }
+  /* A level completes the moment the run's distance crosses its
+     cumulative end, in order; XP is paid once, on first completion. */
+  function checkLevels(distM){
+    while(level < 10 && distM >= LEVELS_END[level]){
+      var n = level + 1;
+      var xp = n * 10;
+      level = n;
+      levelXP += xp;
+      runLevels.push({ n: n, xp: xp });
+      saveSave();
+      renderAch();
+      renderLevels();
+      showLevelBanner(n, xp);
+      sfx.unlock();
+      spawnSparks();
+    }
   }
 
   /* ---------- drawing ---------- */
@@ -1886,15 +2105,20 @@ body{animation:lofi-fade-in .45s ease-out both}
   /* ---------- rotating background themes ----------
      Three looks inspired by the pictures shared for this game, all drawn
      fresh in code (no copied artwork, no stock images): a pixel-cloud
-     meadow, green cartoon hills, and a snowy sunset. Each theme
-     runs for 500 m, then crossfades into the next. The road is built
+     meadow, green cartoon hills, and a snowy sunset. The road is built
      from pixel bricks and changes with the theme. */
-  var THEME_LEN = 500;
+  /* The theme follows the current level instead of raw distance:
+     theme index = (current level - 1) mod 3, crossfading into the
+     next theme over the last stretch of the level. */
   function themeInfo(){
     var m = distPx/50;
-    var seg = Math.floor(m / THEME_LEN);
-    var idx = ((seg % 3) + 3) % 3;
-    var frac = (m - seg*THEME_LEN) / THEME_LEN;
+    var cur = Math.min(10, Math.max(1, level + 1));
+    var idx = (cur - 1) % 3;
+    var prevEnd = cur > 1 ? LEVELS_END[cur - 2] : 0;
+    var len = LEVELS_END[cur - 1] - prevEnd;
+    var frac = len > 0 ? (m - prevEnd) / len : 0;
+    if(frac < 0) frac = 0;
+    if(frac >= 1) frac = frac % 1;
     var blend = frac > 0.94 ? (frac - 0.94)/0.06 : 0;
     return { idx: idx, next: (idx + 1) % 3, blend: blend };
   }
@@ -2218,6 +2442,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     obstacles.forEach(drawObstacle);
     drawHeadPops();
     drawLofi();
+    drawSparks();
 
     if(state === 'ready'){
       ctx.fillStyle = 'rgba(15,42,68,0.55)';

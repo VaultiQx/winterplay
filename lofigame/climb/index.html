@@ -246,6 +246,22 @@
     border-radius:5px;
     transition:width .3s ease;
   }
+  /* the meter spans all ten levels (32,500 m): a tick at every level
+     end, gold once that level is done, and the moon marker at its
+     true 25,000 m spot between the level 8 and level 9 ticks */
+  .mm-wrap{ position:relative; }
+  .mm-tick{
+    position:absolute; top:-2px; width:2px; height:15px; margin-left:-1px;
+    border-radius:1px; background:rgba(255,255,255,.75);
+    box-shadow:0 1px 2px rgba(0,20,70,.45);
+  }
+  .mm-tick.done{ background:var(--gold); }
+  .mm-moon{
+    position:absolute; top:-15px; transform:translateX(-50%);
+    font-size:12px; line-height:1;
+    filter:drop-shadow(0 1px 2px rgba(0,20,70,.65));
+  }
+  .mm-level{ margin-top:4px; margin-bottom:0; letter-spacing:.07em; }
   /* start-of-run reminder: a small ice card under the moon meter that
      opens every run with the goal and the controls, then fades away.
      It never takes input, so the first bounces play right under it. */
@@ -269,6 +285,23 @@
     .remind{ top:84px; padding:8px 10px 7px; }
     .remind-goal{ font-size:14.5px; }
     .remind-how{ font-size:11.5px; }
+  }
+  /* level-up banner: a gold pill that pops under the meter each time
+     a level end is crossed, then fades; it never takes input */
+  .levelup{
+    position:absolute; top:150px; left:50%; transform:translateX(-50%); z-index:6;
+    pointer-events:none; text-align:center; white-space:nowrap;
+    background:linear-gradient(180deg,#ffe9a3,#ffd34d);
+    border:2.5px solid var(--gold-deep); border-radius:999px;
+    box-shadow:0 4px 0 rgba(185,126,6,.8), 0 10px 22px rgba(0,10,40,.35);
+    padding:9px 20px;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:17px; color:#7a5200;
+    opacity:1; transition:opacity .3s ease, transform .3s ease;
+  }
+  .levelup[hidden]{ display:none; }
+  .levelup.hide{ opacity:0; transform:translateX(-50%) translateY(-8px); }
+  @media (max-width:560px){
+    .levelup{ top:126px; font-size:14.5px; padding:7px 15px; }
   }
   /* Stage: the climb plays in a tall portrait 3:4 frame (600x800),
      so far more of the vertical climb is visible at once; same ice
@@ -355,6 +388,13 @@
     background:linear-gradient(180deg,#ffe9a3,#ffd34d); border:2px solid var(--gold-deep); border-radius:999px;
     padding:6px 14px; box-shadow:0 2px 0 rgba(185,126,6,.8);
   }
+  /* levels finished in the run that just ended, with their XP */
+  .over-levels{
+    margin:0 0 14px; padding:8px 12px;
+    background:#fff8e1; border:2px solid #f0d48a; border-radius:10px;
+    font-size:13.5px; font-weight:700; line-height:1.45; color:#7a5200;
+  }
+  .over-levels[hidden]{ display:none; }
   /* the action row: ice rocks piled on both sides of the button */
   .over-actions{ display:flex; align-items:flex-end; justify-content:center; gap:8px; }
   .mini-rock{ width:58px; height:auto; flex:none; pointer-events:none; filter:drop-shadow(0 3px 4px rgba(0,20,70,.3)); }
@@ -443,6 +483,15 @@
   .ach li.unlocked .pts{ color:var(--gold-deep); }
   .ach li .state{ flex:none; font-size:12px; font-weight:700; color:var(--muted); }
   .ach li.unlocked .state{ color:#149653; }
+  /* levels panel: same card family as achievements; the next level
+     to finish wears gold, finished levels read like unlocked rows,
+     and levels past the current one sit dimmed */
+  .lvl-total{ font-size:14px; font-weight:800; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .lvl-total strong{ color:var(--gold-deep); }
+  .ach li.current{ border-color:var(--gold-deep); background:linear-gradient(180deg,#fffbe8,#ffedb3); }
+  .ach li.current .dot{ background:#ffe9a3; border-color:var(--gold-deep); color:#7a5200; }
+  .ach li.current .state{ color:#7a5200; }
+  .ach li.locked{ opacity:.62; }
   /* toast */
   .toast{
     position:fixed; left:50%; bottom:22px; transform:translate(-50%, 90px);
@@ -635,6 +684,7 @@
     .over-avatar{ width:64px; height:64px; margin-bottom:6px; }
     .over-avatar img{ width:58px; }
     .over-sub{ font-size:12.5px; margin-bottom:10px; }
+    .over-levels{ margin-bottom:10px; font-size:12.5px; padding:6px 9px; }
     .over-hint{ display:none; }
     .mini-rock{ width:42px; }
     .panel-snow{ height:30px; top:-13px; }
@@ -692,6 +742,7 @@
   @media (prefers-reduced-motion: reduce){
     .toast{ transition:none; }
     .remind{ transition:none; }
+    .levelup{ transition:none; }
     .btn:active{ transform:none; }
     .peek img{ animation:none; }
     .mm-fill{ transition:none; }
@@ -863,20 +914,26 @@ body{animation:lofi-fade-in .45s ease-out both}
         <span class="chip">🚀 <span id="hudRockets">0</span></span>
       </div>
       <div class="hud-group right">
-        <span class="chip">⭐ <span id="xpTotal">0 / 210</span><span class="unit">XP</span></span>
+        <span class="chip">⭐ <span id="xpTotal">0</span><span class="unit">XP</span></span>
         <span class="chip best">🏆 <span id="hudBest">0</span><span class="unit">m</span></span>
         <span class="chip" id="timeChip">⏱ <span id="hudTime">60</span><span class="unit">s</span></span>
       </div>
     </div>
     <div class="moon-meter hud-hidden" id="moonMeter" aria-hidden="true">
       <span class="mm-label">WAY TO THE MOON · 25,000 M</span>
-      <div class="mm-track"><div class="mm-fill" id="mmFill"></div></div>
+      <div class="mm-wrap" id="mmWrap">
+        <div class="mm-track"><div class="mm-fill" id="mmFill"></div></div>
+        <span class="mm-moon" id="mmMoon">🌙</span>
+      </div>
+      <span class="mm-label mm-level" id="mmLevel">Level 1 · 0 / 1,000 m</span>
     </div>
 
     <div class="remind" id="remind" hidden aria-hidden="true">
       <p class="remind-goal">🌙 Reach the moon · 25,000 m in 60 s</p>
       <p class="remind-how">Steer with ◀ ▶, A D or the arrows below · ride the springs &amp; rockets up</p>
     </div>
+
+    <div class="levelup" id="levelUp" hidden aria-hidden="true"><span id="levelUpText">Level 1 complete! +20 XP</span></div>
 
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
@@ -907,6 +964,7 @@ body{animation:lofi-fade-in .45s ease-out both}
           <div><small>Bounces</small><strong id="resBounces">0</strong></div>
           <div><small>Best</small><strong><span id="resBest">0</span> <span class="unit">m</span></strong></div>
         </div>
+        <p class="over-levels" id="overLevels" hidden></p>
         <div class="over-actions">
           <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Climb again</button>
@@ -944,6 +1002,14 @@ body{animation:lofi-fade-in .45s ease-out both}
       <li><span class="keys-inline"><kbd>Touch</kbd></span><span>Hold the steer arrows, tap Rocket to fly</span></li>
       <li><span class="keys-inline"><kbd>Enter</kbd></span><span>Start · Climb again</span></li>
     </ul>
+  </section>
+
+  <section class="ach levels" aria-label="Levels">
+    <div class="ach-head">
+      <h2>🗻 Levels</h2>
+      <span class="lvl-total">Level XP earned <strong id="levelXpTotal">0</strong></span>
+    </div>
+    <ul id="levelList"></ul>
   </section>
 
   <section class="ach" aria-label="Achievements">
@@ -1054,14 +1120,28 @@ body{animation:lofi-fade-in .45s ease-out both}
   }catch(e){ saveData = {}; }
   if(saveData.unlocked && typeof saveData.unlocked === 'object') unlocked = saveData.unlocked;
 
+  /* ---------- levels: ten consecutive stretches of a single climb,
+     measured from the start of a run. Level n ends at the cumulative
+     sum of the lengths; finishing it pays 20 x n XP, once ever. The
+     moon stays at 25,000 m, crossed inside level 9; level 10 runs
+     beyond it. A save written before levels existed simply has no
+     level fields and starts at level 0 / 0 XP, everything else kept. */
+  var LEVEL_LENGTHS = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500];
+  var LEVEL_ENDS = [];
+  (function(){ var s = 0; for(var n = 0; n < LEVEL_LENGTHS.length; n++){ s += LEVEL_LENGTHS[n]; LEVEL_ENDS.push(s); } })();
+  var LEVEL_TOTAL_M = LEVEL_ENDS[LEVEL_ENDS.length - 1]; /* 32,500 */
+  var level = (typeof saveData.level === 'number' ? saveData.level : 0);
+  var levelXP = (typeof saveData.levelXP === 'number' ? saveData.levelXP : 0);
+  var runLevels = [], runLevelXP = 0; /* levels finished in the current run */
+
   /* ---------- Firebase sync (Lofi Games, project lofi-games) ----------
      Public client config (not a secret), embedded per the shared spec.
      Firestore mirror: users/{uid}/games/lofi-climb. localStorage stays
      the offline fallback: every local write below is unchanged, the
      local key is never deleted, and a failed cloud write never blocks
      gameplay (it is retried on the next save or sign-in). Nothing but
-     best / unlocked / earnedAt / settings is ever written — no wallet
-     address, seed phrase, private key or password. */
+     best / level / levelXP / unlocked / earnedAt / settings is ever
+     written — no wallet address, seed phrase, private key or password. */
   var firebaseConfig = {
     apiKey: "AIzaSyBQ5isDVE9nWFXO-3es3OmxVL047HmnE28",
     authDomain: "winterplay.online",
@@ -1090,6 +1170,8 @@ body{animation:lofi-fade-in .45s ease-out both}
     for(k in unlocked){ if(Object.prototype.hasOwnProperty.call(unlocked, k) && unlocked[k]) u[k] = true; }
     return {
       best: (typeof best === 'number' ? best : (saveData.best || 0)),
+      level: (typeof level === 'number' ? level : (saveData.level || 0)),
+      levelXP: (typeof levelXP === 'number' ? levelXP : (saveData.levelXP || 0)),
       unlocked: u,
       settings: {
         muted: (typeof muted === 'boolean' ? muted : !!saveData.muted),
@@ -1108,7 +1190,7 @@ body{animation:lofi-fade-in .45s ease-out both}
       if(fbMergeInFlight || !fbUser || !fbDb) return; /* a merge in flight writes the full fresh state itself */
       var ref = fbDocRef(); if(!ref) return;
       var snap = fbSnapshot();
-      var payload = { best: snap.best, unlocked: snap.unlocked, settings: snap.settings, updatedAt: fbTs() };
+      var payload = { best: snap.best, level: snap.level, levelXP: snap.levelXP, unlocked: snap.unlocked, settings: snap.settings, updatedAt: fbTs() };
       try{
         var p = ref.set(payload, { merge: true });
         if(p && typeof p.catch === 'function') p.catch(function(){ /* offline: local save kept; retried on next save/sign-in */ });
@@ -1142,6 +1224,10 @@ body{animation:lofi-fade-in .45s ease-out both}
     fbApplyingMerge = true;
     try{
       if(typeof merged.best === 'number') best = Math.max((typeof best === 'number' ? best : 0), merged.best);
+      /* levels merge by max, exactly like best: the further-along
+         side wins and a merge can never un-complete a level */
+      if(typeof merged.level === 'number') level = Math.max(level || 0, merged.level);
+      if(typeof merged.levelXP === 'number') levelXP = Math.max(levelXP || 0, merged.levelXP);
       /* achievements merge additively: union the merged keys into the
          live unlocked set, never wholesale-replace it, so an unlock
          recorded after the merge snapshot was taken survives */
@@ -1159,6 +1245,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       }
       saveData = {
         best: (typeof best === 'number' ? best : 0),
+        level: level,
+        levelXP: levelXP,
         unlocked: unlocked,
         muted: muted,
         musicVol: Math.round(musicVolVal * 100),
@@ -1182,6 +1270,7 @@ body{animation:lofi-fade-in .45s ease-out both}
         tipsToggle.setAttribute('aria-checked', tipsOn ? 'true' : 'false');
       }
       renderAch();
+      renderLevels();
       try{ updateHud(); }catch(e){}
     }catch(e){}
     fbApplyingMerge = false;
@@ -1195,6 +1284,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       if(raw){
         var p = JSON.parse(raw) || {};
         if(typeof p.best === 'number') live.best = Math.max(live.best || 0, p.best);
+        if(typeof p.level === 'number') live.level = Math.max(live.level || 0, p.level);
+        if(typeof p.levelXP === 'number') live.levelXP = Math.max(live.levelXP || 0, p.levelXP);
         if(p.unlocked && typeof p.unlocked === 'object'){
           for(var k in p.unlocked){ if(Object.prototype.hasOwnProperty.call(p.unlocked, k) && p.unlocked[k]) live.unlocked[k] = true; }
         }
@@ -1220,6 +1311,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       var local = fbLiveLocal();
       var cloud = (snapDoc && snapDoc.exists) ? (snapDoc.data() || {}) : null;
       var mergedBest = Math.max(local.best || 0, (cloud && typeof cloud.best === 'number') ? cloud.best : 0);
+      var mergedLevel = Math.max(local.level || 0, (cloud && typeof cloud.level === 'number') ? cloud.level : 0);
+      var mergedLevelXP = Math.max(local.levelXP || 0, (cloud && typeof cloud.levelXP === 'number') ? cloud.levelXP : 0);
       var mergedUnlocked = {}, k;
       for(k in local.unlocked){ if(Object.prototype.hasOwnProperty.call(local.unlocked, k) && local.unlocked[k]) mergedUnlocked[k] = true; }
       if(cloud && cloud.unlocked && typeof cloud.unlocked === 'object'){
@@ -1251,8 +1344,8 @@ body{animation:lofi-fade-in .45s ease-out both}
           };
         }
       }
-      var merged = { best: mergedBest, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings };
-      var payload = { best: mergedBest, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings, migratedFromLocal: true, updatedAt: fbTs() };
+      var merged = { best: mergedBest, level: mergedLevel, levelXP: mergedLevelXP, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings };
+      var payload = { best: mergedBest, level: mergedLevel, levelXP: mergedLevelXP, unlocked: mergedUnlocked, earnedAt: mergedEarned, settings: mergedSettings, migratedFromLocal: true, updatedAt: fbTs() };
       var finish = function(){ fbMergeInFlight = false; fbFlushPendingUnlocks(); };
       try{
         var wp = ref.set(payload, { merge: true });
@@ -1340,6 +1433,8 @@ body{animation:lofi-fade-in .45s ease-out both}
     try{
       var d = {
         best: (typeof best === 'number' ? best : (saveData.best || 0)),
+        level: level,
+        levelXP: levelXP,
         unlocked: unlocked,
         muted: (typeof muted === 'boolean' ? muted : !!saveData.muted),
         musicVol: (typeof musicVolVal === 'number' ? Math.round(musicVolVal * 100) : saveData.musicVol),
@@ -1373,7 +1468,7 @@ body{animation:lofi-fade-in .45s ease-out both}
       li.querySelector('.txt span').textContent = a.desc;
       achList.appendChild(li);
     });
-    xpTotal.textContent = total + ' / 210';
+    xpTotal.textContent = total + levelXP;
   }
 
   var toastTimer = null;
@@ -1394,6 +1489,120 @@ body{animation:lofi-fade-in .45s ease-out both}
     scheduleUnlockCloudSync(id);
   }
   renderAch();
+
+  /* ---------- levels panel (menu screen) ----------
+     Ten rows in the achievements card family: a finished level reads
+     like an unlocked row with a checkmark, the next level to finish
+     wears gold as Current, and the rest sit dimmed as Locked. */
+  var levelList = document.getElementById('levelList');
+  var levelXpTotalEl = document.getElementById('levelXpTotal');
+  function fmtLvl(m){ return m.toLocaleString('en-US'); }
+  function renderLevels(){
+    if(levelList){
+      levelList.innerHTML = '';
+      for(var i = 0; i < LEVEL_LENGTHS.length; i++){
+        var n = i + 1;
+        var done = n <= level;
+        var current = n === level + 1;
+        var li = document.createElement('li');
+        li.className = done ? 'unlocked' : (current ? 'current' : 'locked');
+        var sub = 'Ends at ' + fmtLvl(LEVEL_ENDS[i]) + ' m';
+        if(n === 9) sub += ' · 🌙 Moon at 25,000 m';
+        if(n === 10) sub += ' · Beyond the moon';
+        li.innerHTML =
+          '<span class="dot" aria-hidden="true">' + (done ? '✓' : n) + '</span>' +
+          '<span class="txt"><strong></strong><span></span></span>' +
+          '<span class="pts">+' + (20 * n) + ' XP</span>' +
+          '<span class="state">' + (done ? 'Done' : (current ? 'Current' : 'Locked')) + '</span>';
+        li.querySelector('.txt strong').textContent = 'Level ' + n + ' · ' + fmtLvl(LEVEL_LENGTHS[i]) + ' m';
+        li.querySelector('.txt span').textContent = sub;
+        levelList.appendChild(li);
+      }
+    }
+    if(levelXpTotalEl) levelXpTotalEl.textContent = fmtLvl(levelXP) + ' XP';
+  }
+  renderLevels();
+
+  /* ---------- moon meter: level ticks + the moon marker ----------
+     The track spans all ten levels (32,500 m); a tick stands at each
+     level end and turns gold once that level is done, and the moon
+     marker sits at its true 25,000 m, inside level 9's stretch. */
+  var mmWrap = document.getElementById('mmWrap');
+  var mmMoonEl = document.getElementById('mmMoon');
+  var mmLevelEl = document.getElementById('mmLevel');
+  var mmTickEls = [];
+  if(mmWrap){
+    for(var ti = 0; ti < LEVEL_ENDS.length - 1; ti++){
+      var tick = document.createElement('span');
+      tick.className = 'mm-tick';
+      tick.style.left = (LEVEL_ENDS[ti] / LEVEL_TOTAL_M * 100) + '%';
+      mmWrap.appendChild(tick);
+      mmTickEls.push(tick);
+    }
+  }
+  if(mmMoonEl) mmMoonEl.style.left = (25000 / LEVEL_TOTAL_M * 100) + '%';
+
+  /* ---------- level-up banner + spark burst ----------
+     Each crossed level end queues its own banner, so a run that
+     finishes several levels shows them one after another, each with
+     the unlock chime and a burst of sparks around Lofi. */
+  var levelUpEl = document.getElementById('levelUp');
+  var levelUpText = document.getElementById('levelUpText');
+  var bannerQueue = [], bannerTimer = null, bannerHideTimer = null;
+  function showNextBanner(){
+    var b = bannerQueue.shift();
+    if(!b){ bannerTimer = null; return; }
+    if(levelUpText) levelUpText.textContent = 'Level ' + b.n + ' complete! +' + b.xp + ' XP';
+    if(levelUpEl){ levelUpEl.hidden = false; levelUpEl.classList.remove('hide'); }
+    bannerTimer = setTimeout(function(){
+      bannerTimer = null;
+      if(levelUpEl) levelUpEl.classList.add('hide');
+      bannerHideTimer = setTimeout(function(){
+        bannerHideTimer = null;
+        if(levelUpEl) levelUpEl.hidden = true;
+        showNextBanner();
+      }, reduced ? 60 : 320);
+    }, 2100);
+  }
+  function queueLevelBanner(n, xp){
+    bannerQueue.push({ n: n, xp: xp });
+    if(!bannerTimer && !bannerHideTimer) showNextBanner();
+  }
+  function clearLevelBanner(){
+    bannerQueue = [];
+    clearTimeout(bannerTimer); bannerTimer = null;
+    clearTimeout(bannerHideTimer); bannerHideTimer = null;
+    if(levelUpEl){ levelUpEl.hidden = true; levelUpEl.classList.remove('hide'); }
+  }
+  function burstSparks(){
+    var cols = ['#ffd34d', '#59d8ff', '#ff5c8a', '#ffffff'];
+    for(var i = 0; i < 26; i++){
+      var ang = Math.random() * 6.283, sp = 60 + Math.random() * 190;
+      particles.push({
+        x: player.x, y: player.y - 20,
+        vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 60,
+        t: 0, life: 0.55 + Math.random() * 0.35, r: 2 + Math.random() * 2.6,
+        kind: 'spark', color: cols[i % 4]
+      });
+    }
+  }
+  /* a level completes the moment the run's height passes its end;
+     levels finish strictly in order, each paying out once ever */
+  function checkLevels(){
+    while(level < LEVEL_ENDS.length && heightM >= LEVEL_ENDS[level]){
+      level++;
+      var xp = 20 * level;
+      levelXP += xp;
+      runLevels.push({ n: level, xp: xp });
+      runLevelXP += xp;
+      persistSave();
+      renderAch();
+      renderLevels();
+      queueLevelBanner(level, xp);
+      sfx.unlock();
+      burstSparks();
+    }
+  }
 
   /* ---------- sticker art ----------
      Every picture is drawn as a flat sticker in its original shape:
@@ -1672,6 +1881,8 @@ body{animation:lofi-fade-in .45s ease-out both}
     camY = 0;
     timeLeft = TIME_LIMIT; runTime = 0;
     bounces = 0; heightM = 0; maxAltPx = 0; bestStandY = START_Y;
+    runLevels = []; runLevelXP = 0;
+    clearLevelBanner();
     charges = 0; rocketT = 0; squashT = 0;
     player.x = W/2; player.y = START_Y; player.vx = 0; player.vy = 0;
     platforms = []; pickups = []; lanterns = []; particles = [];
@@ -1746,6 +1957,17 @@ body{animation:lofi-fade-in .45s ease-out both}
     document.getElementById('resBounces').textContent = bounces;
     document.getElementById('resBest').textContent = fmtM(best);
     document.getElementById('newBest').className = 'newbest' + (heightM > prevBest && heightM > 0 ? ' show' : '');
+    var overLevelsEl = document.getElementById('overLevels');
+    if(overLevelsEl){
+      if(runLevels.length){
+        overLevelsEl.hidden = false;
+        overLevelsEl.textContent = 'Levels completed this run: ' + runLevels.map(function(r){ return 'Level ' + r.n + ' (+' + r.xp + ' XP)'; }).join(' · ') + ' · +' + runLevelXP + ' XP in total';
+      } else {
+        overLevelsEl.hidden = true;
+        overLevelsEl.textContent = '';
+      }
+    }
+    clearLevelBanner();
     hudIn.classList.add('hud-hidden');
     moonMeter.classList.add('hud-hidden');
     hideReminder();
@@ -1891,6 +2113,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     heightM = Math.floor(maxAltPx * M_PER_PX);
     if(heightM >= 500) unlock('m500');
     if(heightM >= 2000) unlock('m2000');
+    checkLevels();
     if(altPx() >= MOON_PX){ endGame('moon'); return; }
 
     /* slipped below the screen */
@@ -1913,7 +2136,12 @@ body{animation:lofi-fade-in .45s ease-out both}
     var tl = Math.ceil(timeLeft);
     hudTime.textContent = tl;
     timeChip.classList.toggle('urgent', state === 'playing' && tl <= 10);
-    mmFill.style.width = clamp(heightM / MOON_M * 100, 0, 100) + '%';
+    mmFill.style.width = clamp(heightM / LEVEL_TOTAL_M * 100, 0, 100) + '%';
+    if(mmLevelEl){
+      if(level >= LEVEL_ENDS.length) mmLevelEl.textContent = 'ALL 10 LEVELS COMPLETE · ' + fmtM(heightM) + ' M';
+      else mmLevelEl.textContent = 'Level ' + (level + 1) + ' · ' + fmtM(heightM) + ' / ' + fmtM(LEVEL_ENDS[level]) + ' m';
+    }
+    for(var ti2 = 0; ti2 < mmTickEls.length; ti2++) mmTickEls[ti2].classList.toggle('done', ti2 < level);
   }
 
   /* ---------- drawing ---------- */
@@ -2101,7 +2329,7 @@ body{animation:lofi-fade-in .45s ease-out both}
       var mx = W * 0.68, mr = 74;
       ctx.save();
       var halo = ctx.createRadialGradient(mx, moonSY, mr * 0.4, mx, moonSY, mr * 2.1);
-      halo.addColorStop(0, 'rgba(255,240,190,0.5)');
+      halo.addColorStop(0, 'rgba(255,240,190,' + (0.45 + 0.45 * sky.night).toFixed(3) + ')');
       halo.addColorStop(1, 'rgba(255,240,190,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(mx - mr * 2.1, moonSY - mr * 2.1, mr * 4.2, mr * 4.2);
@@ -2243,6 +2471,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       ctx.globalAlpha = pa * 0.9;
       if(pt.kind === 'flame'){
         ctx.fillStyle = pt.t / pt.life < 0.4 ? '#ff9a3c' : '#e86a2c';
+      } else if(pt.kind === 'spark'){
+        ctx.fillStyle = pt.color || '#ffd34d';
       } else {
         ctx.fillStyle = '#ffffff';
       }
