@@ -108,8 +108,8 @@
     position:absolute; left:-8px; right:-8px; z-index:3; pointer-events:none;
     background-repeat:no-repeat; background-size:100% 100%;
   }
-  .snow-edge-top{ top:-56px; height:58px; background-image:url(assets/snow-86cf839d.webp); }
-  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(assets/snow-22495d8e.webp); }
+  .snow-edge-top{ top:-56px; height:58px; background-image:url(/lofigame/assets/snow-86cf839d.webp); }
+  .snow-edge-bottom{ bottom:-48px; height:58px; background-image:url(/lofigame/assets/snow-22495d8e.webp); }
   .stage-rock{
     position:absolute; bottom:-62px; z-index:3; pointer-events:none;
     filter:drop-shadow(0 5px 7px rgba(2,20,70,.4));
@@ -183,7 +183,7 @@
   .panel p{ margin:0 0 14px; color:var(--muted); font-size:15px; line-height:1.5; }
   .panel-snow{
     position:absolute; top:-17px; left:-10px; right:-10px; height:38px;
-    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(/lofigame/assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   .btn{
@@ -267,7 +267,7 @@
   }
   .guide::before, .ach::before{
     content:""; position:absolute; top:-15px; left:12px; right:12px; height:26px;
-    background:url(assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
+    background:url(/lofigame/assets/snow-86cf839d.webp) no-repeat; background-size:100% 100%;
     pointer-events:none;
   }
   .guide h2{ margin:0 0 4px; font-size:20px; font-weight:800; letter-spacing:-.01em; }
@@ -857,17 +857,17 @@ body{animation:lofi-fade-in .45s ease-out both}
       Back
     </a>
     <a class="site-brand" href="/lofigame/">
-      <img src="assets/yeti-ca776e9d.webp" alt="" />
+      <img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" />
       <span>Lofi Games</span>
     </a>
     <div class="auth-cluster">
       <span class="nav-pending" id="navPending" role="status"><span class="spin" aria-hidden="true"></span>Loading</span>
       <button class="pill pill-signin" id="pillSignin" type="button" hidden>
-        <img src="assets/yeti-ca776e9d.webp" alt="" />
+        <img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" />
         Sign in
       </button>
       <a class="pill pill-user" id="pillUser" href="/lofigame/#/player" hidden>
-        <span class="pill-avatar" id="pillAvatar"><img src="assets/yeti-ca776e9d.webp" alt="" /></span>
+        <span class="pill-avatar" id="pillAvatar"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" /></span>
         <span id="pillName">Player</span>
       </a>
     </div>
@@ -878,7 +878,7 @@ body{animation:lofi-fade-in .45s ease-out both}
 <main class="wrap">
   <div class="head">
     <div>
-      <h1><img class="logo" src="assets/logo-5349ba0a.webp" alt="Lofi Rush" /></h1>
+      <h1><img class="logo" src="/lofigame/assets/logo-5349ba0a.webp" alt="Lofi Rush" /></h1>
       <p>Switch lanes. Chain the coins. Chase the moon.</p>
     </div>
     <div class="head-actions">
@@ -906,7 +906,7 @@ body{animation:lofi-fade-in .45s ease-out both}
   </div>
 
   <div class="stage-wrap">
-  <div class="peek" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
+  <div class="peek" aria-hidden="true"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" /></div>
   <div class="snow-edge snow-edge-top" aria-hidden="true"></div>
   <div class="stage">
     <canvas id="game" width="960" height="540" aria-label="Lofi Rush game. Lofi the yeti slides downhill on a three-lane ice track toward a huge full moon. Switch lanes with left and right, jump ice blocks, logs, barriers, snowmen, snow rocks and sign boards with up, slide under torii gates with down. Chain coins to fill the Rush meter. Three hearts per run, ten stages, the moon waits at 3,000 metres."></canvas>
@@ -930,7 +930,7 @@ body{animation:lofi-fade-in .45s ease-out both}
 
     <div class="overlay" id="startOverlay">
       <div class="panel start-panel">
-        <img class="start-logo" src="assets/start-logo-247e38a2.webp" alt="Lofi Rush" />
+        <img class="start-logo" src="/lofigame/assets/start-logo-247e38a2.webp" alt="Lofi Rush" />
         <button class="play-pill pix" id="startBtn" type="button" aria-label="Start run"><span class="play-tri" aria-hidden="true"></span>PLAY</button>
         <div class="stage-panel" id="stagePanel" aria-label="Stages">
           <div class="stage-panel-head">
@@ -955,7 +955,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     <div class="overlay" id="overOverlay" hidden>
       <div class="panel over-panel ice-panel">
         <div class="panel-snow" aria-hidden="true"></div>
-        <div class="over-avatar" aria-hidden="true"><img src="assets/yeti-ca776e9d.webp" alt="" /></div>
+        <div class="over-avatar" aria-hidden="true"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" /></div>
         <h2 id="overTitle">Game Over</h2>
         <p class="over-sub" id="overSub">Lofi ran out of hearts on the slope.</p>
         <p class="newbest" id="newBest">🏆 New best run!</p>
@@ -966,17 +966,17 @@ body{animation:lofi-fade-in .45s ease-out both}
         </div>
         <p class="over-stages" id="overStages" hidden></p>
         <div class="over-actions">
-          <img class="mini-rock" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock" src="/lofigame/assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
           <button class="btn pix" id="restartBtn" type="button">↻ Rush again</button>
-          <img class="mini-rock flip" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+          <img class="mini-rock flip" src="/lofigame/assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
         </div>
         <p class="over-hint">or press Enter</p>
       </div>
     </div>
   </div>
   <div class="snow-edge snow-edge-bottom" aria-hidden="true"></div>
-  <img class="stage-rock rock-bl" src="assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
-  <img class="stage-rock rock-br" src="assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-bl" src="/lofigame/assets/rock-39b343c2.webp" alt="" aria-hidden="true" />
+  <img class="stage-rock rock-br" src="/lofigame/assets/rock-18f68e8f.webp" alt="" aria-hidden="true" />
   </div>
 
   <div class="touch" aria-label="Touch controls">
@@ -1013,7 +1013,7 @@ body{animation:lofi-fade-in .45s ease-out both}
 
 <footer class="site-foot">
   <div class="site-foot-in">
-    <span class="foot-brand"><img src="assets/yeti-ca776e9d.webp" alt="" />Lofi Games</span>
+    <span class="foot-brand"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" />Lofi Games</span>
     <nav class="foot-links" aria-label="Footer">
       <a href="/lofigame/">All games</a>
       <a href="/lofigame/dash/">Lofi Dash</a>
@@ -1223,7 +1223,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     for(k=0;k<dirs.length;k++){ d = dirs[k]; ctx.drawImage(o.silWhite, x + d[0]*3.5, y + d[1]*3.5, w, h); }
     ctx.drawImage(o.img, x, y, w, h);
   }
-  var yetiSticker = loadSticker('assets/yeti-ca776e9d.webp');
+  var yetiSticker = loadSticker('/lofigame/assets/yeti-ca776e9d.webp');
 
   /* ---------- scenery cut out of Archer's own photos ----------
      The snowy pines and the mountain ranges are cut from his
@@ -1237,22 +1237,22 @@ body{animation:lofi-fade-in .45s ease-out both}
     o.img.src = src;
     return o;
   }
-  var mtnLPic = loadPic('assets/mtn-3453b74b.png');
-  var mtnRPic = loadPic('assets/mtn-a989db4a.png');
-  var pinePics = [loadPic('assets/pine-26c606a3.png'), loadPic('assets/pine-d206baaf.png')];
+  var mtnLPic = loadPic('/lofigame/assets/mtn-3453b74b.png');
+  var mtnRPic = loadPic('/lofigame/assets/mtn-a989db4a.png');
+  var pinePics = [loadPic('/lofigame/assets/pine-26c606a3.png'), loadPic('/lofigame/assets/pine-d206baaf.png')];
   /* Archer's two lamps for the roadside: the wooden post with its
      warm hanging lantern (its little "Boozy Mug" sign cropped out
      of the sprite), and the blue glowing stone lantern — both cut
      to transparency from his photos */
-  var lampPics = [loadPic('assets/lamp-fdceced6.webp'), loadPic('assets/lamp-b2419b82.webp')];
+  var lampPics = [loadPic('/lofigame/assets/lamp-fdceced6.webp'), loadPic('/lofigame/assets/lamp-b2419b82.webp')];
   /* Archer's four jump-over sprites, cut to transparency from
      his photos: the two snowmen (the purple one's "Road Trip"
      logo cropped out), the snow-covered rocks and the wooden
      sign board (its little floating snow cloud cropped out) */
-  var snowmanPPic = loadPic('assets/snowman-5ab98f83.webp');
-  var snowmanRPic = loadPic('assets/snowman-470a46da.webp');
-  var snowRocksPic = loadPic('assets/snowrocks-1e513fcf.webp');
-  var signBoardPic = loadPic('assets/signboard-88daf714.webp');
+  var snowmanPPic = loadPic('/lofigame/assets/snowman-5ab98f83.webp');
+  var snowmanRPic = loadPic('/lofigame/assets/snowman-470a46da.webp');
+  var snowRocksPic = loadPic('/lofigame/assets/snowrocks-1e513fcf.webp');
+  var signBoardPic = loadPic('/lofigame/assets/signboard-88daf714.webp');
 
   /* ---------- sound effects (synthesised, no audio files) ---------- */
   var AC = null, muted = (saved.muted === true), sfxGain = null, musicGain = null;
@@ -3326,7 +3326,7 @@ body{animation:lofi-fade-in .45s ease-out both}
   };
   function siteAvatarHTML(id){
     if(id && SITE_AVATAR_SVG[id]) return SITE_AVATAR_SVG[id];
-    return '<img src="assets/yeti-ca776e9d.webp" alt="">';
+    return '<img src="/lofigame/assets/yeti-ca776e9d.webp" alt="">';
   }
   /* The signed-in user's Google profile photo, when they have
      one. Read off the auth user (or the current auth user as a
