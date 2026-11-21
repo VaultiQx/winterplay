@@ -790,6 +790,14 @@
     taskState = { done: 0, opened: [] };
     saveTasks();
     renderTasks();
+    try {
+      localStorage.removeItem("muse-waitlist-entry");
+      localStorage.removeItem("muse-waitlist-draft");
+    } catch (e) { /* storage unavailable */ }
+    var successEl = document.getElementById("success");
+    var formEl = document.getElementById("waitlist-form");
+    if (successEl) successEl.classList.remove("show");
+    if (formEl) formEl.style.display = "";
     document.getElementById("steps").scrollIntoView({ behavior: "smooth" });
   });
 
@@ -941,7 +949,7 @@
   // Run the check immediately if the address field is already filled (restore).
   if (validAddr(addrInput.value)) runCheck(addrInput.value.trim());
 
-  function showSuccess(user, addr) {
+  function showSuccess(user, addr, scroll) {
     document.getElementById("success-user").textContent = "@" + user;
     document.getElementById("success-addr").textContent =
       addr.slice(0, 6) + "..." + addr.slice(-4);
@@ -962,8 +970,20 @@
     document.getElementById("preview-note").hidden = !!FORM_CONFIG.formId;
     form.style.display = "none";
     successBox.classList.add("show");
-    successBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (scroll !== false) successBox.scrollIntoView({ behavior: "smooth", block: "center" });
   }
+
+  // Returning visitor who already submitted: show their saved spot instead
+  // of the empty form. Without this, leaving the site and coming back showed
+  // the blank form again ("fill it again and again").
+  try {
+    var savedEntry = JSON.parse(localStorage.getItem("muse-waitlist-entry") || "null");
+    if (savedEntry && savedEntry.x && savedEntry.addr) {
+      foxCount = (typeof savedEntry.foxes === "number") ? savedEntry.foxes : null;
+      waitlistSection.hidden = false;
+      showSuccess(savedEntry.x, savedEntry.addr, false);
+    }
+  } catch (e) { /* storage unavailable, form still works */ }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
