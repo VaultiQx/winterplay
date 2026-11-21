@@ -97,7 +97,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     display:inline-flex;align-items:center;gap:7px;cursor:pointer;font:inherit;
     font-size:13px;font-weight:700;color:var(--blue-deep);
     background:#fff;border:1.5px solid var(--border);
-    padding:6px 14px;border-radius:980px;min-height:32px;margin-left:auto;white-space:nowrap;
+    padding:6px 14px;border-radius:980px;min-height:32px;white-space:nowrap;
   }
   .btn-signin:hover{border-color:var(--blue);color:var(--blue-dark)}
   .btn-signin img{width:20px;height:20px;border-radius:50%;object-fit:cover;flex:none;display:block}
@@ -105,7 +105,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     display:none;align-items:center;gap:7px;cursor:pointer;font:inherit;
     font-size:13px;font-weight:700;color:var(--blue-dark);
     background:linear-gradient(180deg,#f7fcff,#e9f6fe);border:1.5px solid var(--border);
-    padding:5px 12px 5px 8px;border-radius:980px;min-height:32px;margin-left:auto;white-space:nowrap;
+    padding:5px 12px 5px 8px;border-radius:980px;min-height:32px;white-space:nowrap;
   }
   .wallet-pill.show{display:inline-flex}
   .wallet-pill .dot{width:20px;height:20px;border-radius:50%;overflow:hidden;display:inline-flex;flex:none}
@@ -116,7 +116,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     display:none;align-items:center;gap:8px;
     font-size:13px;font-weight:600;color:var(--ink-faint);
     background:#fff;border:1.5px solid var(--border-light);
-    padding:6px 14px;border-radius:980px;min-height:32px;margin-left:auto;white-space:nowrap;
+    padding:6px 14px;border-radius:980px;min-height:32px;white-space:nowrap;
   }
   body.auth-pending .nav-pending{display:inline-flex}
   body.auth-pending #signin-open{display:none}
@@ -130,7 +130,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     .nav{gap:12px;padding:0 16px}
     .wrap{padding:0 16px}
     .brand span{display:none}
-    .btn-signin,.wallet-pill,.nav-pending{margin-left:auto;padding-left:11px;padding-right:11px}
+    .btn-signin,.wallet-pill,.nav-pending{padding-left:11px;padding-right:11px}
   }
 
   /* ---------- sign-in modal: same ice theme ---------- */
@@ -647,14 +647,6 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     padding:8px 18px;border-radius:980px;min-height:38px;
   }
   @media (max-width:640px){ .sticker-strip-thumbs img{width:56px;height:56px} }
-  .sticker-strip-wallpapers{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    width:100%;
-  }
-  .sticker-strip-wallpapers .wp-label{font-family:var(--display);font-size:15.5px;font-weight:800;color:var(--blue-dark);white-space:nowrap}
-  .sticker-strip-wallpapers img{width:52px;height:auto;aspect-ratio:9/16;object-fit:cover;display:block;border-radius:8px;background:#fff;border:1px solid var(--border-light)}
-  @media (max-width:640px){ .sticker-strip-wallpapers img{width:48px} }
-
   /* ---------- hub polish: loading pulse + subtle hover states ---------- */
   @keyframes nav-pulse{0%,100%{opacity:1}50%{opacity:.55}}
   .nav-pending{animation:nav-pulse 1.6s ease-in-out infinite}
@@ -768,7 +760,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   /* ---------- header sticker folder (frosted glass, Apple style) ---------- */
   .folder-btn{
     position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;
-    width:40px;height:40px;margin-left:2px;cursor:pointer;font:inherit;
+    width:40px;height:40px;margin-left:auto;cursor:pointer;font:inherit;
     background:rgba(255,255,255,.55);border:1.5px solid rgba(255,255,255,.75);border-radius:12px;
     backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
     box-shadow:0 4px 14px rgba(35,115,180,.18),inset 0 1px 0 rgba(255,255,255,.8);
@@ -898,18 +890,6 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       <span>Lofi Games</span>
     </a>
     <span class="nav-pending" id="nav-pending" role="status"><img class="nav-pending-lofi" src="assets/brand-d42d1948.webp" alt="" aria-hidden="true">Loading</span>
-    <button class="btn-signin" id="signin-open" type="button" aria-haspopup="dialog">
-      <img src="assets/brand-d42d1948.webp" alt="">
-      Sign in
-    </button>
-    <button class="wallet-pill" id="wallet-pill" type="button" aria-haspopup="dialog">
-      <span class="dot"><img src="assets/sui-logo-427d941f.png" alt=""></span>
-      <span id="wallet-pill-addr">0x…</span>
-    </button>
-    <button class="wallet-pill" id="user-pill" type="button" aria-label="Open your player menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
-      <span class="avatar" id="user-pill-avatar"></span>
-      <span id="user-pill-name">Player</span>
-    </button>
     <button class="folder-btn" id="sticker-folder-btn" type="button" aria-label="Stickers" aria-haspopup="true" aria-expanded="false" aria-controls="sticker-folder-panel">
       <span class="folder-icon" aria-hidden="true"><span class="folder-tab"></span><span class="folder-body"></span></span>
     </button>
@@ -933,6 +913,18 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       </div>
       <a class="sticker-folder-link" href="#/take-stickers">Take some stickers</a>
     </div>
+    <button class="btn-signin" id="signin-open" type="button" aria-haspopup="dialog">
+      <img src="assets/brand-d42d1948.webp" alt="">
+      Sign in
+    </button>
+    <button class="wallet-pill" id="wallet-pill" type="button" aria-haspopup="dialog">
+      <span class="dot"><img src="assets/sui-logo-427d941f.png" alt=""></span>
+      <span id="wallet-pill-addr">0x…</span>
+    </button>
+    <button class="wallet-pill" id="user-pill" type="button" aria-label="Open your player menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
+      <span class="avatar" id="user-pill-avatar"></span>
+      <span id="user-pill-name">Player</span>
+    </button>
     <div class="user-menu" id="user-menu" role="menu" aria-label="Player menu" hidden>
       <a href="#/player" role="menuitem">My player page</a>
       <a href="#/settings" role="menuitem">Profile &amp; settings</a>
@@ -970,17 +962,6 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   </div>
 
   <div class="wrap">
-
-    <!-- WALLPAPER STRIP: compact shortcut to the wallpapers, right under the hero -->
-    <a class="sticker-strip" href="#/take-stickers" aria-label="Phone wallpapers">
-      <span class="sticker-strip-wallpapers" aria-hidden="true">
-        <span class="wp-label">Phone wallpapers</span>
-        <img src="assets/wallpaper-display-7f69b519.webp" alt="" loading="lazy">
-        <img src="assets/wallpaper-display-c210551d.webp" alt="" loading="lazy">
-        <img src="assets/wallpaper-display-22fbd1bc.webp" alt="" loading="lazy">
-        <img src="assets/wallpaper-display-9c603fb5.webp" alt="" loading="lazy">
-      </span>
-    </a>
 
     <!-- GAMES -->
     <section id="games" aria-labelledby="games-h">
