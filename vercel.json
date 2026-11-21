@@ -1,9 +1,9 @@
 {
   "trailingSlash": true,
   "rewrites": [
-    { "source": "/__/auth/handler", "destination": "/__/auth/handler.html" },
-    { "source": "/__/auth/iframe", "destination": "/__/auth/iframe.html" },
-    { "source": "/__/auth/links", "destination": "/__/auth/links.html" },
-    { "source": "/__/auth/callback", "destination": "/__/auth/callback.html" }
+    { "source": "/__/auth/handler/", "destination": "/__/auth/handler.html" },
+    { "source": "/__/auth/iframe/", "destination": "/__/auth/iframe.html" },
+    { "source": "/__/auth/links/", "destination": "/__/auth/links.html" },
+    { "source": "/__/auth/callback/", "destination": "/__/auth/callback.html" }
   ]
 }
