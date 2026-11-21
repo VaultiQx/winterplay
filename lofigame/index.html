@@ -649,7 +649,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   @media (max-width:640px){ .sticker-strip-thumbs img{width:56px;height:56px} }
   .sticker-strip-wallpapers{
     display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    width:100%;border-top:1px solid var(--border-light);padding-top:10px;
+    width:100%;
   }
   .sticker-strip-wallpapers .wp-label{font-family:var(--display);font-size:15.5px;font-weight:800;color:var(--blue-dark);white-space:nowrap}
   .sticker-strip-wallpapers img{width:52px;height:auto;aspect-ratio:9/16;object-fit:cover;display:block;border-radius:8px;background:#fff;border:1px solid var(--border-light)}
@@ -764,6 +764,100 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   html[data-theme="night"] .take-card img,
   html[data-theme="night"] .showcase-item img{background:#fff;border-radius:12px}
 
+
+  /* ---------- header sticker folder (frosted glass, Apple style) ---------- */
+  .folder-btn{
+    position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;
+    width:40px;height:40px;margin-left:2px;cursor:pointer;font:inherit;
+    background:rgba(255,255,255,.55);border:1.5px solid rgba(255,255,255,.75);border-radius:12px;
+    backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+    box-shadow:0 4px 14px rgba(35,115,180,.18),inset 0 1px 0 rgba(255,255,255,.8);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .folder-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(35,115,180,.24),inset 0 1px 0 rgba(255,255,255,.8)}
+  .folder-icon{position:relative;width:24px;height:18px;display:block}
+  .folder-tab{
+    position:absolute;top:-4px;left:1px;width:10px;height:6px;
+    background:linear-gradient(180deg,rgba(190,228,252,.95),rgba(140,205,250,.85));
+    border:1px solid rgba(255,255,255,.8);border-bottom:none;border-radius:4px 5px 0 0;
+  }
+  .folder-body{
+    position:absolute;left:0;right:0;bottom:0;height:16px;
+    background:linear-gradient(160deg,rgba(255,255,255,.82),rgba(168,216,246,.62) 55%,rgba(110,185,240,.55));
+    border:1px solid rgba(255,255,255,.85);border-radius:5px 7px 6px 6px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 3px 8px rgba(35,115,180,.22);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  }
+  .sticker-folder-panel{
+    position:absolute;top:calc(100% + 8px);right:22px;z-index:60;width:308px;max-width:92vw;
+    background:#fff;border:1.5px solid var(--border);border-radius:16px;
+    box-shadow:0 18px 44px rgba(12,42,68,.22);padding:14px;
+  }
+  .sticker-folder-panel[hidden]{display:none}
+  .sticker-folder-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .sticker-folder-grid img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:var(--ice);border:1px solid var(--border-light);border-radius:10px;padding:3px}
+  .sticker-folder-link{
+    display:flex;align-items:center;justify-content:center;margin-top:12px;
+    font-size:14px;font-weight:700;color:#fff;text-decoration:none;
+    background:linear-gradient(180deg,#2b9bf0,#0f7fd0);border:1.5px solid #0f7fd0;
+    border-radius:980px;padding:8px 18px;min-height:38px;transition:transform .2s ease,background .2s ease;
+  }
+  .sticker-folder-link:hover{background:linear-gradient(180deg,#1c8fe8,#0b6cb8);transform:translateY(-1px)}
+  @media (max-width:640px){ .sticker-folder-panel{right:16px} }
+  html[data-theme="night"] .sticker-folder-panel{background:#10263f}
+  html[data-theme="night"] .folder-btn{background:rgba(16,38,63,.6)}
+
+  /* ---------- nav pending: bouncing Lofi ---------- */
+  .nav-pending-lofi{width:20px;height:20px;border-radius:50%;object-fit:cover;flex:none;display:block;animation:lofi-bounce 1s ease-in-out infinite}
+  @keyframes lofi-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+  /* ---------- footer Hub tooltips ---------- */
+  .foot-col nav a[data-tip]{position:relative}
+  .foot-col nav a[data-tip]:hover::after,.foot-col nav a[data-tip]:focus-visible::after{
+    content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 4px);z-index:70;
+    background:#0c2a44;color:#eaf6ff;font-size:11.5px;font-weight:600;line-height:1.35;white-space:nowrap;
+    padding:5px 9px;border-radius:8px;box-shadow:0 8px 20px rgba(4,18,32,.35);pointer-events:none;
+  }
+
+  /* ---------- achievement toast with spark burst ---------- */
+  .ach-toast{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);z-index:90;
+    display:flex;align-items:center;gap:9px;max-width:92vw;
+    background:linear-gradient(180deg,#123a5c,#0c2a44);color:#fff;
+    font-size:14.5px;font-weight:700;border:1.5px solid rgba(255,255,255,.35);border-radius:980px;
+    padding:10px 18px;box-shadow:0 16px 38px rgba(12,42,68,.35);opacity:0;pointer-events:none;
+  }
+  .ach-toast[hidden]{display:none}
+  .ach-toast.show{opacity:1;transform:translateX(-50%) translateY(0);transition:opacity .3s ease,transform .3s ease}
+  .ach-toast-sparks{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
+  .ach-toast-sparks i{
+    position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;
+    background:#ffd94d;box-shadow:0 0 8px rgba(255,217,77,.9);
+  }
+  .ach-toast.show .ach-toast-sparks i{animation:spark-burst .8s ease-out 1}
+  .ach-toast-sparks i:nth-child(1){--dx:-52px;--dy:-30px}
+  .ach-toast-sparks i:nth-child(2){--dx:-28px;--dy:-44px}
+  .ach-toast-sparks i:nth-child(3){--dx:0px;--dy:-50px}
+  .ach-toast-sparks i:nth-child(4){--dx:28px;--dy:-44px}
+  .ach-toast-sparks i:nth-child(5){--dx:52px;--dy:-30px}
+  .ach-toast-sparks i:nth-child(6){--dx:0px;--dy:34px}
+  @keyframes spark-burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+
+  /* ---------- hub polish: cute hover lifts ---------- */
+  .btn,.play-btn,.chip,.mini-btn,.email-btn,.google-btn,.sui-btn{transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+  .btn:hover,.play-btn:hover,.chip:hover,.mini-btn:hover{transform:translateY(-1px) scale(1.02)}
+  .game-card:hover{transform:translateY(-3px) scale(1.01) rotate(.35deg)}
+  .take-card:hover{transform:translateY(-3px) scale(1.01) rotate(.35deg)}
+  .user-menu a,.user-menu button{transition:background .18s ease,transform .18s ease}
+  .user-menu a:hover,.user-menu button:hover{transform:translateX(2px)}
+  .close-row{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .close-row:hover{transform:translateY(-1px) scale(1.01)}
+  .soon-badge{
+    font-size:11px;font-weight:800;letter-spacing:.04em;color:#0b5fa5;background:#fff;
+    border:1.5px solid rgba(255,255,255,.9);border-radius:980px;padding:2px 9px;white-space:nowrap;flex:none;
+    box-shadow:0 2px 8px rgba(11,95,165,.25);
+  }
+
   /* ---------- light entrance: content rises in gently on load and on view change ---------- */
   @keyframes rise-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .anim-in > *{animation:rise-in .7s ease backwards}
@@ -781,6 +875,11 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     .nav-pending{animation:none}
     .game-card,.take-card,.showcase-item,.sticker-strip,.foot-col nav a{transition:none}
     .game-card:hover,.take-card:hover,.showcase-item:hover,.sticker-strip:hover,.foot-col nav a:hover{transform:none}
+    .nav-pending-lofi{animation:none}
+    .btn:hover,.play-btn:hover,.chip:hover,.mini-btn:hover,.close-row:hover,.folder-btn:hover,.sticker-folder-link:hover,.user-menu a:hover,.user-menu button:hover{transform:none}
+    .btn,.play-btn,.chip,.mini-btn,.email-btn,.google-btn,.sui-btn,.close-row,.folder-btn,.sticker-folder-link,.user-menu a,.user-menu button{transition:none}
+    .ach-toast.show .ach-toast-sparks i{animation:none}
+    .ach-toast{transition:none}
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -798,7 +897,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       <img src="assets/brand-d42d1948.webp" alt="">
       <span>Lofi Games</span>
     </a>
-    <span class="nav-pending" id="nav-pending" role="status"><span class="spin" aria-hidden="true"></span>Loading</span>
+    <span class="nav-pending" id="nav-pending" role="status"><img class="nav-pending-lofi" src="assets/brand-d42d1948.webp" alt="" aria-hidden="true">Loading</span>
     <button class="btn-signin" id="signin-open" type="button" aria-haspopup="dialog">
       <img src="assets/brand-d42d1948.webp" alt="">
       Sign in
@@ -811,6 +910,29 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       <span class="avatar" id="user-pill-avatar"></span>
       <span id="user-pill-name">Player</span>
     </button>
+    <button class="folder-btn" id="sticker-folder-btn" type="button" aria-label="Stickers" aria-haspopup="true" aria-expanded="false" aria-controls="sticker-folder-panel">
+      <span class="folder-icon" aria-hidden="true"><span class="folder-tab"></span><span class="folder-body"></span></span>
+    </button>
+    <div class="sticker-folder-panel" id="sticker-folder-panel" aria-label="Lofi stickers" hidden>
+      <div class="sticker-folder-grid" aria-hidden="true">
+        <img src="assets/sticker-display-a52b194a.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-9fc7824d.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-a58a2c6a.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-41a43ec5.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-41c07710.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-34bb9419.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-3c6fd165.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-80bde6f1.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-46570a31.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-2a19660b.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-6fbbc31f.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-7fdb7e4d.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-9c6f8eb3.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-1e8012bf.webp" alt="" loading="lazy">
+        <img src="assets/sticker-display-d9a7ef5f.webp" alt="" loading="lazy">
+      </div>
+      <a class="sticker-folder-link" href="#/take-stickers">Take some stickers</a>
+    </div>
     <div class="user-menu" id="user-menu" role="menu" aria-label="Player menu" hidden>
       <a href="#/player" role="menuitem">My player page</a>
       <a href="#/settings" role="menuitem">Profile &amp; settings</a>
@@ -849,20 +971,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
 
   <div class="wrap">
 
-    <!-- STICKER STRIP: compact shortcut to the sticker page, right under the hero -->
-    <a class="sticker-strip" href="#/take-stickers" aria-label="Take some Lofi stickers and phone wallpapers">
-      <span class="sticker-strip-label">Lofi stickers</span>
-      <span class="sticker-strip-thumbs" aria-hidden="true">
-        <img src="assets/sticker-display-a52b194a.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-9fc7824d.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-41a43ec5.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-6fbbc31f.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-7fdb7e4d.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-9c6f8eb3.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-1e8012bf.webp" alt="" loading="lazy">
-        <img src="assets/sticker-display-d9a7ef5f.webp" alt="" loading="lazy">
-      </span>
-      <span class="sticker-strip-cta">Take some stickers</span>
+    <!-- WALLPAPER STRIP: compact shortcut to the wallpapers, right under the hero -->
+    <a class="sticker-strip" href="#/take-stickers" aria-label="Phone wallpapers">
       <span class="sticker-strip-wallpapers" aria-hidden="true">
         <span class="wp-label">Phone wallpapers</span>
         <img src="assets/wallpaper-display-7f69b519.webp" alt="" loading="lazy">
@@ -1114,33 +1224,6 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       </div>
     </section>
 
-    <!-- STICKER SHOWCASE: the fifteen shareable stickers -->
-    <section id="sticker-showcase" aria-labelledby="showcase-h">
-      <div class="sec-head">
-        <h2 id="showcase-h" class="display">Lofi stickers</h2>
-        <p class="sec-sub">Fifteen Lofi stickers to save and share wherever you like. Grab the full-size PNGs on the sticker page.</p>
-      </div>
-      <div class="showcase-grid">
-        <div class="showcase-item"><img src="assets/sticker-display-a52b194a.webp" alt="Lofi sticker: The face, Lofi's smiling face close up" loading="lazy"><span>The face</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-9fc7824d.webp" alt="Lofi sticker: Waving Lofi, waving hello" loading="lazy"><span>Waving Lofi</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-a58a2c6a.webp" alt="Lofi sticker: Butterfly Lofi, with a butterfly" loading="lazy"><span>Butterfly Lofi</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-41a43ec5.webp" alt="Lofi sticker: Snowflake, Lofi with a snowflake" loading="lazy"><span>Snowflake</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-41c07710.webp" alt="Lofi sticker: Pine tree, Lofi beside a pine tree" loading="lazy"><span>Pine tree</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-34bb9419.webp" alt="Lofi sticker: The Lofi mark" loading="lazy"><span>The Lofi mark</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-3c6fd165.webp" alt="Lofi sticker: The Lofi stamp, a round Lofi stamp" loading="lazy"><span>The Lofi stamp</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-80bde6f1.webp" alt="Lofi sticker: Chill, Lofi relaxing" loading="lazy"><span>Chill</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-46570a31.webp" alt="Lofi sticker: Stay frosty, Lofi staying frosty" loading="lazy"><span>Stay frosty</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-2a19660b.webp" alt="Lofi sticker: Snowball Lofi, holding a big snowball" loading="lazy"><span>Snowball Lofi</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-6fbbc31f.webp" alt="Lofi sticker: Red scarf" loading="lazy"><span>Red scarf</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-7fdb7e4d.webp" alt="Lofi sticker: Sledding" loading="lazy"><span>Sledding</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-9c6f8eb3.webp" alt="Lofi sticker: Hot cocoa" loading="lazy"><span>Hot cocoa</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-1e8012bf.webp" alt="Lofi sticker: Under the moon" loading="lazy"><span>Under the moon</span></div>
-        <div class="showcase-item"><img src="assets/sticker-display-d9a7ef5f.webp" alt="Lofi sticker: Aurora" loading="lazy"><span>Aurora</span></div>
-      </div>
-      <div class="showcase-more">
-        <a class="btn btn-primary" href="#/take-stickers">Take some stickers</a>
-      </div>
-    </section>
 
   </div>
 </div>
@@ -1150,10 +1233,10 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <div class="wrap">
       <div class="sec-head">
         <h2 class="display">Player</h2>
-        <p class="sec-sub">Your XP, stickers and best scores across all four games.</p>
+        <p class="sec-sub">Your XP, achievements and best scores across all four games.</p>
       </div>
       <div id="player-signedout" class="empty-card" hidden>
-        <p>Sign in to open your player page, and your XP and stickers will follow you on any device.</p>
+        <p>Sign in to open your player page, and your XP and achievements will follow you on any device.</p>
         <button class="btn btn-primary" type="button" data-signin-open>Sign in</button>
       </div>
       <div id="player-main" hidden>
@@ -1166,10 +1249,10 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         </div>
         <div class="pstats">
           <div class="pstat"><b id="player-xp">0</b><span>Total XP</span></div>
-          <div class="pstat"><b id="player-stickers">0 / 20</b><span>Stickers collected</span></div>
+          <div class="pstat"><b id="player-stickers">0 / 20</b><span>Achievements</span></div>
           <div class="pstat"><b id="player-chaldays">0</b><span>Challenge days</span></div>
         </div>
-        <h3 class="view-subh">Your stickers</h3>
+        <h3 class="view-subh">Your achievements</h3>
         <div class="badge-row" id="player-badges"></div>
         <h3 class="view-subh">Close to earning</h3>
         <div class="close-list" id="player-close"></div>
@@ -1186,10 +1269,10 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   <div class="view" id="view-stickers" hidden>
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="display">Stickerbook</h2>
-        <p class="sec-sub">All 20 stickers, five in each game. Earn them in the games and they land here.</p>
+        <h2 class="display">Achievements</h2>
+        <p class="sec-sub">All 20 achievements, five in each game. Earn them in the games and they land here.</p>
       </div>
-      <div class="chips" id="sticker-filters" role="group" aria-label="Filter stickers">
+      <div class="chips" id="sticker-filters" role="group" aria-label="Filter achievements">
         <button class="chip active" type="button" data-filter="all">All</button>
         <button class="chip" type="button" data-filter="progress">In progress</button>
         <button class="chip" type="button" data-filter="ready">Ready to claim</button>
@@ -1283,7 +1366,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <div class="wrap">
       <div class="sec-head">
         <h2 class="display">Help</h2>
-        <p class="sec-sub">Sign in to keep your XP, stickers and daily challenges together in one player account.</p>
+        <p class="sec-sub">Sign in to keep your XP, achievements and daily challenges together in one player account.</p>
       </div>
       <div class="doc-list">
         <article class="doc-card">
@@ -1297,8 +1380,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
           <p>A local best belongs to the browser it was set in. Clearing this site's browser data removes local bests and on-device saves, but anything already synced to your player account stays. <a href="#/your-data">Your data</a> explains what is kept where.</p>
         </article>
         <article class="doc-card">
-          <h3>Stickers, XP and daily challenges</h3>
-          <p>There are 20 achievement stickers, five in each game. Each game also awards XP for completing its 10 levels, so your total XP has no cap. Open the <a href="#/stickers">Stickerbook</a> to see every sticker, what it takes to earn it, and how close you are. When a sticker unlocks in a game, its XP is added to your player account.</p>
+          <h3>Achievements, XP and daily challenges</h3>
+          <p>There are 20 achievements, five in each game. Each game also awards XP for completing its 10 levels, so your total XP has no cap. Open <a href="#/stickers">Achievements</a> to see every achievement, what it takes to earn it, and how close you are. When an achievement unlocks in a game, its XP is added to your player account.</p>
           <p>Three daily challenges arrive every day and reset at 22:00 (10 PM) Asia/Dhaka time. Challenges count toward Challenge Days only; they award no XP. Finishing all three in one day banks a Challenge Day on your player page.</p>
         </article>
         <article class="doc-card">
@@ -1330,13 +1413,13 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         </article>
         <article class="doc-card">
           <h3>Your player account</h3>
-          <p>A signed-in player has one shared player record, kept in Firebase: your public username, your chosen avatar, your XP, the stickers you have collected, your challenge days, and your synced best scores across the four games. That record is what lets the same progress follow you between devices.</p>
-          <p>Your player page shows your totals, and the <a href="#/stickers">Stickerbook</a> shows each sticker's state: collected, ready to claim, or in progress.</p>
+          <p>A signed-in player has one shared player record, kept in Firebase: your public username, your chosen avatar, your XP, the achievements you have collected, your challenge days, and your synced best scores across the four games. That record is what lets the same progress follow you between devices.</p>
+          <p>Your player page shows your totals, and <a href="#/stickers">Achievements</a> shows each achievement's state: collected, ready to claim, or in progress.</p>
         </article>
         <article class="doc-card">
           <h3>Sign-in and optional connections</h3>
           <p>Sign-in runs through Firebase Authentication, with the method you choose on the sign-in screen: Google, email and password, or a SUI Wallet. Linking another method in <a href="#/settings">Profile &amp; settings</a> attaches it to the same player, so no second account is created.</p>
-          <p>A SUI Wallet connection is optional and separate: only your public wallet address is stored on your profile, and Lofi never asks for a seed phrase or a wallet password. Signing out ends your Lofi session on this site only; it does not sign you out of Google, and it does not delete saved scores or stickers.</p>
+          <p>A SUI Wallet connection is optional and separate: only your public wallet address is stored on your profile, and Lofi never asks for a seed phrase or a wallet password. Signing out ends your Lofi session on this site only; it does not sign you out of Google, and it does not delete saved scores or achievements.</p>
         </article>
         <article class="doc-card">
           <h3>Public names and reports</h3>
@@ -1345,8 +1428,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         </article>
         <article class="doc-card">
           <h3>Questions and account controls</h3>
-          <p>You can review your player, your linked accounts and your saved stickers from <a href="#/player">Your player</a> and <a href="#/settings">Profile &amp; settings</a>. There you can change your username, switch between your Google photo and the preset avatars, link or disconnect accounts, and sign out.</p>
-          <p><a href="#/help">Help</a> explains how the games, stickers and daily challenges work, and what to include when you report a problem.</p>
+          <p>You can review your player, your linked accounts and your saved achievements from <a href="#/player">Your player</a> and <a href="#/settings">Profile &amp; settings</a>. There you can change your username, switch between your Google photo and the preset avatars, link or disconnect accounts, and sign out.</p>
+          <p><a href="#/help">Help</a> explains how the games, achievements and daily challenges work, and what to include when you report a problem.</p>
         </article>
       </div>
     </div>
@@ -1484,15 +1567,15 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       <div class="foot-col">
         <h3>Hub</h3>
         <nav aria-label="Footer hub">
-          <a href="#games" title="Games">Games</a>
-          <a href="#/player" title="Your player page">Player</a>
-          <a href="#/stickers" title="Achievement stickers">Stickers</a>
-          <a href="#/challenges" title="Daily challenges">Challenges</a>
-          <a href="#/leaderboard" title="Leaderboard">Leaderboard</a>
-          <a href="#/settings" title="Profile and settings">Profile</a>
-          <a href="#/help" title="Help">Help</a>
-          <a href="#/your-data" title="Your data">Your data</a>
-          <a href="#/take-stickers" title="Downloadable stickers">Take stickers</a>
+          <a href="#games" title="Games" data-tip="Games — all four Lofi games">Games</a>
+          <a href="#/player" title="Your player page" data-tip="Player — your XP, achievements and best scores">Player</a>
+          <a href="#/take-stickers" title="Lofi stickers" data-tip="Stickers — save and share Lofi stickers">Stickers</a>
+          <a href="#/stickers" title="Achievements" data-tip="Achievements — all 20 game achievements">Achievements</a>
+          <a href="#/challenges" title="Daily challenges" data-tip="Challenges — three new challenges every day">Challenges</a>
+          <a href="#/leaderboard" title="Leaderboard" data-tip="Leaderboard — the top 25 players by XP">Leaderboard</a>
+          <a href="#/settings" title="Profile and settings" data-tip="Profile — name, avatar and linked accounts">Profile</a>
+          <a href="#/help" title="Help" data-tip="Help — how the hub works">Help</a>
+          <a href="#/your-data" title="Your data" data-tip="Your data — what is kept and where">Your data</a>
         </nav>
       </div>
       <div class="foot-col">
@@ -1508,6 +1591,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <div class="foot-bar">© 2026 Lofi Games · Play like a yeti.</div>
   </footer>
 
+  <div class="ach-toast" id="ach-toast" role="status" aria-live="polite" hidden><span class="ach-toast-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="ach-toast-text">Achievement unlocked</span></div>
+
   <!-- SIGN IN -->
   <div class="signin-overlay" id="signin-overlay">
     <div class="signin-card" role="dialog" aria-modal="true" aria-labelledby="signin-h">
@@ -1520,7 +1605,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
 
       <button class="sui-btn" id="sui-connect" type="button">
         <span class="sui-ic"><img src="assets/sui-logo-427d941f.png" alt=""></span>
-        <span><b id="sui-btn-title">Connect free wallet</b></span>
+        <span><b id="sui-btn-title">Connect SUI Wallet</b></span><span class="soon-badge">Soon</span>
         <span class="chev" aria-hidden="true">›</span>
       </button>
       <p class="signin-status" id="sui-status" aria-live="polite"></p>
@@ -1580,6 +1665,11 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   "use strict";
 
   /* ---------- sign-in: SUI Wallet first (Wallet Standard), Google + email marked coming soon ---------- */
+  /* SUI Wallet is not live yet: while this flag is false the SUI button
+     only shows "SUI Wallet is coming soon." and never polls for wallets.
+     Set it to true to enable the full Wallet Standard connect flow below
+     unchanged. */
+  var SUI_ENABLED = false;
   var overlay = document.getElementById("signin-overlay");
   var suiBtn = document.getElementById("sui-connect");
   var suiTitle = document.getElementById("sui-btn-title");
@@ -1620,18 +1710,22 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   function registerWallet(wallet){
     if (wallet && suiWallets.indexOf(wallet) === -1) suiWallets.push(wallet);
   }
-  /* Wallet discovery runs continuously, not once: wallets that finish
-     injecting after this script loads announce themselves with
-     "wallet-standard:app-ready", and detectWallets() re-asks every
-     installed wallet to register, so a late-registering wallet is still
-     picked up the next time Connect is tapped. */
+  /* Wallet discovery runs continuously, not once, and follows the
+     official Wallet Standard handshake: the app announces itself by
+     dispatching "wallet-standard:app-ready" with { register }, and
+     wallets answer by dispatching "wallet-standard:register-wallet"
+     whose detail.register the app calls with its own register callback.
+     (The two event names were previously swapped, which is why no
+     wallet was ever detected.) detectWallets() re-announces the app so
+     a late-registering wallet is still picked up the next time Connect
+     is tapped. */
   function detectWallets(){
     try {
-      window.dispatchEvent(new CustomEvent("wallet-standard:register-wallet", { detail: registerWallet }));
+      window.dispatchEvent(new CustomEvent("wallet-standard:app-ready", { detail: { register: registerWallet } }));
     } catch (e) { /* wallet discovery is best-effort */ }
   }
   try {
-    window.addEventListener("wallet-standard:app-ready", function(e){
+    window.addEventListener("wallet-standard:register-wallet", function(e){
       if (e && e.detail && typeof e.detail.register === "function") e.detail.register(registerWallet);
     });
     detectWallets();
@@ -1705,12 +1799,12 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       pill.classList.remove("show");
       addrBox.classList.remove("show");
       addrFull.textContent = "";
-      suiTitle.textContent = "Connect free wallet";
+      suiTitle.textContent = "Connect SUI Wallet";
     }
   }
 
   function openSignin(){
-    detectWallets();
+    if (SUI_ENABLED) detectWallets();
     overlay.classList.add("open");
     document.body.classList.add("modal-open");
     var c = document.getElementById("signin-close");
@@ -1731,7 +1825,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
      the sign-in sheet is open, so a wallet that appeared in the meantime
      is found by the next Connect tap without reopening the sheet. */
   document.addEventListener("visibilitychange", function(){
-    if (document.visibilityState === "visible" && overlay.classList.contains("open") && !session.address) detectWallets();
+    if (SUI_ENABLED && document.visibilityState === "visible" && overlay.classList.contains("open") && !session.address) detectWallets();
   });
 
   function setSuiError(html){
@@ -1740,6 +1834,15 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   }
 
   suiBtn.addEventListener("click", function(){
+    if (!SUI_ENABLED) {
+      /* Coming soon: show only the short status, nothing else. No wallet
+         polling, no picker, no address box, no error styling. */
+      hideWalletChoices();
+      addrBox.classList.remove("show");
+      suiStatus.className = "signin-status";
+      suiStatus.textContent = "SUI Wallet is coming soon.";
+      return;
+    }
     if (session.address) { renderSession(); return; }
     suiBtn.disabled = true;
     hideWalletChoices();
@@ -1782,6 +1885,33 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         session.account = acct;
         session.address = acct.address;
         saveSession();
+        /* Follow account changes in the wallet itself, when it supports
+           the Wallet Standard events feature; a wallet without it (or
+           one whose .on throws) must never break the connect. */
+        try {
+          var evFeature = wallet.features && wallet.features["standard:events"];
+          if (evFeature && typeof evFeature.on === "function") {
+            evFeature.on("change", function(props){
+              try {
+                var accs = (props && props.accounts) || wallet.accounts || [];
+                var next = accs.filter(function(a){ return a && a.address; })[0];
+                if (next && next.address !== session.address) {
+                  session.account = next;
+                  session.address = next.address;
+                  saveSession();
+                  renderSession();
+                  notifySui();
+                } else if (!next && session.address) {
+                  session.account = null;
+                  session.address = "";
+                  saveSession();
+                  renderSession();
+                  notifySui();
+                }
+              } catch (e) { /* account-change handling is best-effort */ }
+            });
+          }
+        } catch (e) { /* events feature is optional */ }
         renderSession();
         notifySui();
       } catch (err) {
@@ -1873,7 +2003,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       }).catch(function(){ /* wallet did not silently reconnect: stay signed out */ });
     }, 150);
   }
-  tryRestoreSession();
+  if (SUI_ENABLED) tryRestoreSession();
 })();
 </script>
 
@@ -2011,6 +2141,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   function currentRoute(){
     var h = (location.hash || "").replace(/^#\/?/, "");
     if (h === "settings") h = "profile"; /* #/settings is the canonical name for the profile & settings view */
+    if (h === "achievements") h = "stickers"; /* #/achievements is an alias for the achievements (stickerbook) view */
     return ROUTES[h] ? h : "home";
   }
   var lastRoute = null;
@@ -2290,6 +2421,31 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     renderAuthUI(); renderProfile();
   });
 
+  /* ================= Achievement toast (spark burst on unlock) ================= */
+  var prevAchIds = null, achToastTimer = null;
+  function showAchToast(item){
+    var toast = $("ach-toast"); if (!toast) return;
+    var txt = $("ach-toast-text");
+    if (txt) txt.textContent = "Achievement unlocked: " + item.name + " · +" + item.xp + " XP";
+    toast.hidden = false;
+    toast.classList.remove("show");
+    void toast.offsetWidth; /* restart the spark animation */
+    toast.classList.add("show");
+    clearTimeout(achToastTimer);
+    achToastTimer = setTimeout(function(){
+      toast.classList.remove("show");
+      setTimeout(function(){ toast.hidden = true; }, 350);
+    }, 3400);
+  }
+  function watchAchievements(){
+    var ids = {};
+    CATALOG.forEach(function(x){ if (getStickerState(x).status === "collected") ids[x.id] = x; });
+    if (prevAchIds === null) { prevAchIds = ids; return; }
+    var fresh = Object.keys(ids).filter(function(id){ return !prevAchIds[id]; });
+    prevAchIds = ids;
+    if (fresh.length && state.user) showAchToast(ids[fresh[fresh.length - 1]]);
+  }
+
   /* ================= Player page ================= */
   function renderPlayer(){
     var signedOut = $("player-signedout"), main = $("player-main");
@@ -2310,7 +2466,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     if (badgeBox) {
       var collected = CATALOG.filter(function(s){ return getStickerState(s).status === "collected"; });
       if (!collected.length) {
-        badgeBox.innerHTML = '<p class="badge-empty">No stickers collected yet — play a game to earn your first one.</p>';
+        badgeBox.innerHTML = '<p class="badge-empty">No achievements collected yet — play a game to earn your first one.</p>';
       } else {
         badgeBox.innerHTML = collected.map(function(s){
           return '<span class="badge"><span class="sticker-medal">' + stickerIcon(s.id) + '</span>' + esc(s.name) + '</span>';
@@ -2333,7 +2489,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
           return (b.st.progress.val / b.st.progress.target) - (a.st.progress.val / a.st.progress.target);
         });
       if (!inProg.length) {
-        closeBox.innerHTML = '<p class="empty-note" style="text-align:left;padding:6px 0">Nothing is part-way there yet. Play any game and the stickers you are closest to finishing will show up here.</p>';
+        closeBox.innerHTML = '<p class="empty-note" style="text-align:left;padding:6px 0">Nothing is part-way there yet. Play any game and the achievements you are closest to finishing will show up here.</p>';
       } else {
         closeBox.innerHTML = inProg.map(function(x){
           var pct = Math.min(100, Math.round(x.st.progress.val / x.st.progress.target * 100));
@@ -2345,6 +2501,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         }).join("");
       }
     }
+    watchAchievements();
   }
 
   /* ================= Stickerbook ================= */
@@ -2405,8 +2562,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     var groups = $("sticker-groups"); if (!groups) return;
     var f = state.stickerFilter;
     var note = $("sticker-note");
-    if (!state.user) note.textContent = "You are not signed in, so this book reads this device only. Stickers earned here show as Ready to claim until they sync to an account.";
-    else if (f === "ready") note.textContent = "Ready to claim means the sticker is earned in a game on this device but has not synced to your account yet. Open that game while signed in and it syncs on its own.";
+    if (!state.user) note.textContent = "You are not signed in, so this book reads this device only. Achievements earned here show as Ready to claim until they sync to an account.";
+    else if (f === "ready") note.textContent = "Ready to claim means the achievement is earned in a game on this device but has not synced to your account yet. Open that game while signed in and it syncs on its own.";
     else note.textContent = "";
     var html = "";
     GAME_SLUGS.forEach(function(slug){
@@ -2422,7 +2579,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       }).join("");
       if (items) html += '<h3 class="view-subh">' + GAME_NAMES[slug] + '</h3><div class="stickers">' + items + '</div>';
     });
-    groups.innerHTML = html || '<p class="empty-note">No stickers in this group yet. Play the games to earn some.</p>';
+    groups.innerHTML = html || '<p class="empty-note">No achievements in this group yet. Play the games to earn some.</p>';
   }
   $("sticker-filters").addEventListener("click", function(e){
     var btn = e.target.closest ? e.target.closest("[data-filter]") : null;
@@ -2558,7 +2715,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     if (!FB) { box.innerHTML = '<p class="empty-note">The leaderboard needs the sign-in service, which could not load in this browser.</p>'; return; }
     box.innerHTML = '<p class="empty-note">Loading the leaderboard…</p>';
     db.collection("users").where("xp", ">", 0).orderBy("xp", "desc").limit(25).get().then(function(snap){
-      if (snap.empty) { box.innerHTML = '<p class="empty-note">No players on the board yet. Earn a sticker and you could be the first name here.</p>'; return; }
+      if (snap.empty) { box.innerHTML = '<p class="empty-note">No players on the board yet. Earn an achievement and you could be the first name here.</p>'; return; }
       var html = "", rank = 0;
       snap.forEach(function(doc){
         rank++;
@@ -2603,7 +2760,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
       '<div class="linked-row"><b>Google</b><span class="lstate">' + (hasGoogle ? '<span>Linked</span>' : '<button class="mini-btn" type="button" id="link-google-btn">Link Google</button>') + '</span></div>' +
       '<div class="linked-row"><b>Email</b><span>' + (hasEmail ? esc(state.user.email || "") : '') + '</span><span class="lstate">' + (hasEmail ? '<span>Linked</span>' : '<button class="mini-btn" type="button" id="link-email-btn">Link email</button>') + '</span></div>' +
       '<div class="linked-row"><b>SUI Wallet</b><span class="lstate">' + (addr ? '<button class="mini-btn red" type="button" id="sui-disconnect-btn">Disconnect</button>' : '<button class="mini-btn" type="button" id="sui-connect-btn">Connect</button>') + '</span>' + (addr ? '<span class="linked-addr">' + esc(addr) + '</span>' : '') + '</div>' +
-      '<p class="signin-note" style="text-align:left;margin-top:12px">Link another account above and the same player, XP and stickers carry over.</p>';
+      '<p class="signin-note" style="text-align:left;margin-top:12px">Link another account above and the same player, XP and achievements carry over.</p>';
     var lg = $("link-google-btn");
     if (lg) lg.addEventListener("click", linkGoogle);
     var le = $("link-email-btn");
@@ -2767,6 +2924,31 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   if (iceBtn) iceBtn.addEventListener("click", function(){ setTheme("ice"); });
   if (nightBtn) nightBtn.addEventListener("click", function(){ setTheme("night"); });
   syncThemeButtons();
+
+  /* ---------- header sticker folder: same open/close pattern as the
+     user menu (click toggles, outside click or Escape closes) ---------- */
+  var folderBtn = document.getElementById("sticker-folder-btn");
+  var folderPanel = document.getElementById("sticker-folder-panel");
+  function closeFolder(){
+    if (folderPanel) folderPanel.hidden = true;
+    if (folderBtn) folderBtn.setAttribute("aria-expanded", "false");
+  }
+  if (folderBtn && folderPanel) {
+    folderBtn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var open = folderPanel.hidden;
+      folderPanel.hidden = !open;
+      folderBtn.setAttribute("aria-expanded", String(open));
+    });
+    folderPanel.addEventListener("click", function(e){ e.stopPropagation(); });
+    document.addEventListener("click", function(e){
+      if (!folderPanel.hidden && !folderPanel.contains(e.target)) closeFolder();
+    });
+    document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeFolder(); });
+    folderPanel.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click", function(){ closeFolder(); });
+    });
+  }
 
   /* ---------- sign-in sheet: email section expands on demand ---------- */
   var reveal = document.getElementById("email-reveal");

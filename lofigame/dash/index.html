@@ -163,6 +163,9 @@
     font-variant-numeric:tabular-nums; color:var(--ink); white-space:nowrap;
   }
   .chip .unit{ font-size:11px; font-weight:700; color:var(--muted); }
+  /* polish: soft glow on HUD chips */
+  .chip{ box-shadow:0 3px 0 var(--blue-dark), 0 0 10px rgba(89,216,255,.45), 0 0 18px rgba(0,183,255,.18); }
+  .hud-in .chip{ text-shadow:0 0 6px rgba(255,255,255,.55); }
   /* Stage */
   .stage{
     position:relative; z-index:2;
@@ -778,6 +781,26 @@
   .site-foot a{ color:#cfe6ff; text-decoration:none; }
   .site-foot a:hover, .site-foot a:focus-visible{ color:#fff; text-decoration:underline; }
   @media (min-width:761px){ .site-foot{ max-width:1456px; } }
+  /* ---- polish: cute hover lifts + micro-animations ---- */
+  @media (hover:hover) and (prefers-reduced-motion: no-preference){
+    .pix,.btn,.icon-btn,.cube-btn,.back-btn,.profile-pill,.touch button,.set-connect,.set-ok,.switch,.play-pill{ transition:transform .16s ease, box-shadow .16s ease, filter .16s ease; }
+    .pix:hover,.btn:hover{ transform:translateY(-2px); filter:brightness(1.06); box-shadow:0 7px 0 var(--blue-dark), 0 0 16px rgba(89,216,255,.55), inset 0 3px 0 rgba(255,255,255,.9), inset 0 -7px 0 rgba(0,42,122,.28); }
+    .icon-btn:hover,.cube-btn:hover{ transform:translateY(-2px) rotate(-2deg); box-shadow:0 7px 0 var(--blue-dark), 0 0 14px rgba(89,216,255,.6), inset 0 3px 0 rgba(255,255,255,.9); }
+    .back-btn:hover{ transform:translateY(-2px); }
+    .profile-pill:hover{ transform:translateY(-1px); box-shadow:0 4px 0 var(--blue-dark), 0 0 14px rgba(89,216,255,.45); }
+    .touch button:hover{ transform:translateY(-2px); }
+    .play-pill:hover{ transform:translateY(-3px) scale(1.02); }
+    .guide,.ach{ transition:transform .18s ease, box-shadow .18s ease; }
+    .guide:hover,.ach:hover{ transform:translateY(-2px); box-shadow:0 8px 0 var(--blue-dark), 0 0 20px rgba(89,216,255,.22); }
+    .ach li{ transition:transform .15s ease, box-shadow .15s ease; }
+    .ach li:hover{ transform:translateY(-1px) translateX(2px); box-shadow:0 2px 8px rgba(0,87,255,.14); }
+    .settings-panel{ animation:settingsPop .22s ease; }
+    @keyframes settingsPop{ from{ transform:scale(.97) translateY(6px); opacity:.6; } to{ transform:scale(1) translateY(0); opacity:1; } }
+    .set-connect:hover,.set-ok:hover{ transform:translateY(-2px); filter:brightness(1.05); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .settings-panel{ animation:none !important; }
+  }
   @media (max-width:560px){
     .site-bar{ gap:9px; margin-bottom:14px; }
     .site-brand{ font-size:16px; }
@@ -1424,7 +1447,8 @@ body{animation:lofi-fade-in .45s ease-out both}
     renderAch();
     var a = ACH.filter(function(x){ return x.id===id; })[0];
     if(a) toast('Achievement unlocked: <b>' + a.name + '</b> · +' + a.xp + ' XP');
-    sfx.unlock();
+    try{ if(typeof sfx !== 'undefined' && sfx){ if(sfx.chime) sfx.chime(); else if(sfx.unlock) sfx.unlock(); } }catch(e){ try{ sfx.unlock(); }catch(e2){} }
+    try{ spawnAchievementBurst(); }catch(e){}
     /* Firebase sync: after the existing local flow, write
        unlocked[id]=true, earnedAt[id]=serverTimestamp(),
        updatedAt=serverTimestamp() to Firestore (debounced ~500 ms
@@ -1570,6 +1594,17 @@ body{animation:lofi-fade-in .45s ease-out both}
 
   /* Lofi: the user's own yeti art, kept whole in its original shape */
   var yetiSticker = loadSticker('/lofigame/assets/yeti-ca776e9d.webp');
+  /* pre-rendered soft glow for coins (no per-frame shadowBlur) */
+  var coinGlowCanvas = (function(){
+    var c = document.createElement('canvas'); c.width = 64; c.height = 64;
+    var g = c.getContext('2d');
+    var grad = g.createRadialGradient(32,32,2,32,32,30);
+    grad.addColorStop(0,'rgba(255,220,90,0.55)');
+    grad.addColorStop(0.45,'rgba(255,195,40,0.26)');
+    grad.addColorStop(1,'rgba(255,195,40,0)');
+    g.fillStyle = grad; g.fillRect(0,0,64,64);
+    return c;
+  })();
 
   /* road blockers: the user's own pictures, shrunk into small stickers
      that sit flat on the road surface and must be jumped over */
@@ -1651,7 +1686,8 @@ body{animation:lofi-fade-in .45s ease-out both}
       tone(262, 262, 0.2, 'triangle', 0.15, 0.5);
       tone(196, 165, 0.46, 'sine', 0.17, 0.7);
     },
-    unlock: function(){ tone(660, 660, 0.1, 'triangle', 0.14); tone(880, 880, 0.1, 'triangle', 0.14, 0.09); tone(1100, 1100, 0.18, 'triangle', 0.15, 0.18); }
+    unlock: function(){ tone(660, 660, 0.1, 'triangle', 0.14); tone(880, 880, 0.1, 'triangle', 0.14, 0.09); tone(1100, 1100, 0.18, 'triangle', 0.15, 0.18); },
+    chime: function(){ tone(880, 880, 0.09, 'sine', 0.12); tone(1174, 1174, 0.1, 'sine', 0.12, 0.07); tone(1568, 1568, 0.16, 'triangle', 0.11, 0.14); }
   };
   var soundBtn = document.getElementById('soundBtn');
   function setMuted(m){
@@ -1987,12 +2023,14 @@ body{animation:lofi-fade-in .45s ease-out both}
     }, 2100);
   }
   var SPARK_COLORS = ['#ffc21f', '#00b7ff', '#ff5c8a', '#59d8ff', '#ffffff'];
+  var CONFETTI_COLORS = ['#ffc21f', '#ff5c8a', '#00b7ff', '#7ccb85', '#ff8fb8', '#59d8ff'];
   function spawnSparks(){
     var cx = playerX() + player.w/2;
     var cy = GROUND + player.y - playerH()/2;
     var count = reduced ? 10 : 26;
     for(var i=0;i<count;i++){
       sparks.push({
+        type:'spark',
         x: cx, y: cy,
         vx: (Math.random() - 0.5) * 430,
         vy: -Math.random() * 380 - 60,
@@ -2003,15 +2041,68 @@ body{animation:lofi-fade-in .45s ease-out both}
       });
     }
   }
+  function spawnSnowBurst(){
+    var cx = playerX() + player.w/2;
+    var cy = GROUND + player.y - playerH() - 6;
+    var count = reduced ? 6 : 16;
+    for(var i=0;i<count;i++){
+      sparks.push({
+        type:'snow',
+        x: cx + (Math.random()-0.5)*90, y: cy + (Math.random()-0.5)*30,
+        vx: (Math.random()-0.5)*90, vy: -20 - Math.random()*50,
+        t:0, life:0.9 + Math.random()*0.6,
+        c:'#ffffff', s:2 + Math.random()*3.2,
+        rot:0, vr:0
+      });
+    }
+  }
+  function spawnConfettiBurst(){
+    var cx = playerX() + player.w/2;
+    var cy = GROUND + player.y - playerH()/2;
+    var count = reduced ? 6 : 14;
+    for(var i=0;i<count;i++){
+      sparks.push({
+        type:'confetti',
+        x: cx, y: cy,
+        vx: (Math.random()-0.5)*360, vy: -Math.random()*320 - 80,
+        t:0, life:0.8 + Math.random()*0.5,
+        c: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+        s:4 + Math.random()*4,
+        rot: Math.random()*6.28, vr:(Math.random()-0.5)*16
+      });
+    }
+  }
+  function spawnAchievementBurst(){
+    /* small spark burst at Lofi when an achievement unlocks; reuses sparks */
+    if(typeof sparks === 'undefined' || typeof playerX !== 'function') return;
+    var cx, cy;
+    try{ cx = playerX() + player.w/2; cy = GROUND + player.y - playerH() - 4; }catch(e){ cx = 160; cy = GROUND - 110; }
+    var count = reduced ? 6 : 14;
+    for(var i=0;i<count;i++){
+      var ang = (i / count) * 6.283 + Math.random()*0.4;
+      var sp = 90 + Math.random()*130;
+      sparks.push({
+        type:'spark',
+        x: cx, y: cy,
+        vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp - 60,
+        t:0, life:0.55 + Math.random()*0.35,
+        c: SPARK_COLORS[i % SPARK_COLORS.length],
+        s:2.6 + Math.random()*3,
+        rot: Math.random()*6.28, vr:(Math.random()-0.5)*10
+      });
+    }
+  }
   function tickSparks(dt){
     for(var i=sparks.length-1;i>=0;i--){
       var p = sparks[i];
       p.t += dt;
       if(p.t >= p.life){ sparks.splice(i,1); continue; }
-      p.vy += 900 * dt;
+      if(p.type === 'snow'){ p.vy += 55 * dt; p.vx *= (1 - 0.6*dt); }
+      else if(p.type === 'confetti'){ p.vy += 760 * dt; p.vx *= (1 - 0.8*dt); }
+      else { p.vy += 900 * dt; }
       p.x += p.vx * dt;
       p.y += p.vy * dt;
-      p.rot += p.vr * dt;
+      p.rot += (p.vr || 0) * dt;
     }
   }
   function drawSparks(){
@@ -2020,9 +2111,17 @@ body{animation:lofi-fade-in .45s ease-out both}
       ctx.save();
       ctx.globalAlpha = a;
       ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.c;
-      ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s * 0.7);
+      if(p.type === 'snow'){
+        ctx.fillStyle = p.c;
+        ctx.beginPath(); ctx.arc(0,0,p.s,0,6.29); ctx.fill();
+        ctx.globalAlpha = a * 0.55;
+        ctx.beginPath(); ctx.arc(0,0,p.s*1.9,0,6.29); ctx.fillStyle='rgba(180,230,255,0.5)'; ctx.fill();
+      } else {
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        if(p.type === 'confetti') ctx.fillRect(-p.s/2, -p.s*0.28, p.s, p.s*0.56);
+        else ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s * 0.7);
+      }
       ctx.restore();
     });
     ctx.globalAlpha = 1;
@@ -2040,8 +2139,10 @@ body{animation:lofi-fade-in .45s ease-out both}
       renderAch();
       renderLevels();
       showLevelBanner(n, xp);
-      sfx.unlock();
+      if(sfx.chime) sfx.chime(); else sfx.unlock();
       spawnSparks();
+      spawnSnowBurst();
+      spawnConfettiBurst();
     }
   }
 
@@ -2327,6 +2428,8 @@ body{animation:lofi-fade-in .45s ease-out both}
   function drawCoin(cn, t){
     var bob = reduced ? 0 : Math.sin(t*3 + cn.ph)*2;
     var y = cn.y + bob;
+    /* soft pre-rendered glow under the coin */
+    ctx.drawImage(coinGlowCanvas, cn.x - cn.r*1.9, y - cn.r*1.9, cn.r*3.8, cn.r*3.8);
     ctx.beginPath(); ctx.arc(cn.x, y, cn.r, 0, 6.29);
     ctx.fillStyle = '#ffc93c'; ctx.fill();
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#e09c00'; ctx.stroke();
@@ -2438,6 +2541,21 @@ body{animation:lofi-fade-in .45s ease-out both}
       drawScene(t, th.next);
       ctx.restore();
     }
+    /* polish: smooth per-level hue shift + very subtle day-night drift.
+       Hue moves continuously with distance (so per level it shifts
+       smoothly, never jumps); dusk overlay peaks at only 7% so
+       readability is never hurt. Applied once, above sky/hills only. */
+    (function(){
+      var hue = ((distPx/50) * 0.04) % 360;
+      ctx.fillStyle = 'hsla(' + hue.toFixed(1) + ',85%,62%,0.05)';
+      ctx.fillRect(0,0,W,GROUND);
+      var cyc = ((distPx/50) % 2400) / 2400;
+      var duskA = (Math.sin(cyc * Math.PI * 2 - Math.PI/2) * 0.5 + 0.5) * 0.07;
+      if(duskA > 0.004){
+        ctx.fillStyle = 'rgba(24,28,82,' + duskA.toFixed(3) + ')';
+        ctx.fillRect(0,0,W,GROUND);
+      }
+    })();
     coinsArr.forEach(function(cn){ drawCoin(cn, t); });
     obstacles.forEach(drawObstacle);
     drawHeadPops();
@@ -2482,6 +2600,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     last = t;
     elapsed = t;
     if(state === 'playing') update(dt);
+    else if(state === 'over' || state === 'paused'){ tickSparks(dt); }
     else if(state === 'ready'){
       /* gentle idle scroll on the start screen */
       if(!reduced){ distPx += 22*dt; player.runPhase += dt*5; }
