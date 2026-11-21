@@ -102,9 +102,10 @@
     background:#fff;color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
   .notice-close:hover{background:var(--accent-soft)}
   .hero-visual{position:relative;display:flex;justify-content:center}
-  .hero-arch{width:min(560px,100%);border-radius:280px 280px 28px 28px;overflow:hidden;position:relative;
-    background:#E8F7EE;box-shadow:0 24px 48px rgba(12,12,12,.10)}
-  .hero-arch img{width:100%;height:auto}
+  .hero-cycle{position:relative;width:min(560px,100%);aspect-ratio:1/1;border-radius:28px;overflow:hidden;background:#fff;
+    box-shadow:0 24px 48px rgba(12,12,12,.10)}
+  .hero-cycle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+  .hero-cycle img.active{opacity:1}
 
   /* ---------- tasks ---------- */
   .progress{margin-bottom:32px}
@@ -373,8 +374,17 @@
         </div>
       </div>
       <div class="hero-visual">
-        <div class="hero-arch">
-          <img src="assets/hero.webp" alt="Muse, a soft blue fluffy creature with a flower crown and a pink butterfly on its head" width="720" height="720" fetchpriority="high">
+        <div class="hero-cycle" id="heroCycle">
+          <img src="assets/hero.webp" alt="Muse, a soft blue fluffy creature with a flower crown and a pink butterfly on its head" width="720" height="720" fetchpriority="high" class="active">
+          <img src="assets/muse-01.webp" alt="Blue Muse with a rainbow butterfly, heart glasses and a flower crown" width="480" height="480">
+          <img src="assets/muse-02.webp" alt="Golden Muse with a rainbow butterfly, sunglasses and a flower crown" width="480" height="480">
+          <img src="assets/muse-03.webp" alt="Lavender Muse with a blue butterfly, goggles and a gold crown" width="480" height="480">
+          <img src="assets/muse-05.webp" alt="Peach Muse with a blue butterfly, sunglasses and a flower crown" width="480" height="480">
+          <img src="assets/muse-07.webp" alt="Golden Muse with a blue butterfly, cat-eye glasses and a gold crown" width="480" height="480">
+          <img src="assets/muse-09.webp" alt="White Muse with a rainbow butterfly, goggles and a tiara" width="480" height="480">
+          <img src="assets/hero-0002.webp" alt="Pink Muse with a gold crown and sunglasses" width="480" height="480">
+          <img src="assets/hero-0011.webp" alt="Green Muse in a pink kimono with round glasses" width="480" height="480">
+          <img src="assets/hero-0044.webp" alt="Mint Muse with a flower crown and sunglasses" width="480" height="480">
         </div>
       </div>
     </div>
@@ -1116,6 +1126,21 @@
     banner.classList.add("show");
     document.body.style.overflow = "hidden";
   }, 600);
+})();
+
+// Hero: cycle through 10 Muse designs.
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var cycle = document.getElementById("heroCycle");
+  if (!cycle) return;
+  var imgs = cycle.getElementsByTagName("img");
+  if (imgs.length < 2) return;
+  var i = 0;
+  setInterval(function () {
+    imgs[i].classList.remove("active");
+    i = (i + 1) % imgs.length;
+    imgs[i].classList.add("active");
+  }, 1500);
 })();
 </script>
 </body>
