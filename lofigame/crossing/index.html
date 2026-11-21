@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet" />
-<link rel="icon" href="data:," />
+<link rel="icon" type="image/png" href="/lofigame/assets/favicon.png" />
 <title>Frozen Crossing</title>
 <style>
   :root{
@@ -811,18 +811,98 @@
       min-height:max(42px, 3.2cqw); font-size:max(15px, 1.15cqw); padding:max(8px, .8cqw) max(18px, 1.9cqw);
     }
   }
-</style>
-<style>
-/* light entrance: content fades/slides in gently on load; disabled for reduced motion */
-@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-main.wrap{animation:lofi-fade-in .45s ease both}
-@media (prefers-reduced-motion:reduce){main.wrap{animation:none}}
+  /* ---------- site chrome: a compact hub-style header (back button,
+     brand, profile pill) above the game header, and a slim footer
+     below the achievements. Both live outside the stage and never
+     touch the canvas, its size, or the controls. ---------- */
+  .site-head{
+    position:relative; z-index:2;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-bottom:16px;
+  }
+  .site-head-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .back-btn{
+    flex:none; display:inline-flex; align-items:center; gap:7px;
+    min-height:40px; padding:8px 16px 8px 12px; border-radius:999px;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px;
+    text-decoration:none; cursor:pointer;
+  }
+  .back-btn svg{ width:17px; height:17px; display:block; flex:none; }
+  .back-btn:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--blue-dark), inset 0 3px 0 rgba(255,255,255,.9), inset 0 -7px 0 rgba(0,42,122,.28); }
+  .back-btn:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .brand{ display:inline-flex; align-items:center; gap:9px; text-decoration:none; min-width:0; }
+  .brand img{
+    width:34px; height:34px; flex:none; border-radius:50%;
+    object-fit:cover; object-position:top center;
+    background:#e8f6ff; border:2px solid var(--ice);
+    box-shadow:0 2px 0 rgba(0,42,122,.5);
+  }
+  .brand span{
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:19px;
+    color:#fff; letter-spacing:.01em; white-space:nowrap;
+    text-shadow:0 2px 0 rgba(0,42,122,.55);
+  }
+  .brand:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; border-radius:999px; }
+  .profile-pill{
+    flex:none; display:inline-flex; align-items:center; gap:8px;
+    max-width:46vw; min-height:40px; padding:4px 14px 4px 5px; border-radius:999px;
+    background:rgba(255,255,255,.96); border:2px solid var(--blue-dark);
+    box-shadow:0 3px 0 var(--blue-dark);
+    color:var(--ink); text-decoration:none;
+    font-size:14px; font-weight:800;
+  }
+  .profile-pill img{
+    width:30px; height:30px; flex:none; border-radius:50%;
+    object-fit:cover; object-position:top center;
+    background:var(--ice-soft); border:1.5px solid #8fd0ff;
+  }
+  .profile-pill span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .profile-pill:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--blue-dark); }
+  .profile-pill:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .site-foot{
+    position:relative; z-index:1; margin-top:30px; padding-top:16px;
+    border-top:1.5px solid rgba(201,241,252,.35);
+    display:flex; align-items:center; justify-content:space-between; gap:8px 18px; flex-wrap:wrap;
+    color:#d6e9ff; font-size:13.5px;
+  }
+  .site-foot .foot-brand{
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px; color:#fff;
+    text-shadow:0 1px 0 rgba(0,42,122,.55);
+  }
+  .site-foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
+  .site-foot a{ color:#d6e9ff; text-decoration:none; font-weight:600; }
+  .site-foot a:hover{ color:#fff; text-decoration:underline; }
+  .site-foot a:focus-visible{ outline:2px solid var(--ice); outline-offset:2px; border-radius:4px; }
+  @media (max-width:560px){
+    .site-head{ margin-bottom:12px; }
+    .brand span{ font-size:17px; }
+    .brand img{ width:30px; height:30px; }
+    .back-btn{ min-height:38px; padding:7px 13px 7px 10px; font-size:14px; }
+    .profile-pill{ font-size:13px; padding-right:11px; }
+  }
 </style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <main class="wrap">
+  <header class="site-head">
+    <div class="site-head-left">
+      <a class="back-btn pix" href="/lofigame/">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 4.5 7 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </a>
+      <a class="brand" href="/lofigame/">
+        <img src="../assets/yeti-ca776e9d.webp" alt="" />
+        <span>Lofi Games</span>
+      </a>
+    </div>
+    <a class="profile-pill" id="profilePill" href="/lofigame/">
+      <img id="pillAvatar" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <span id="pillLabel">Loading</span>
+    </a>
+  </header>
+
   <div class="head">
     <div>
       <h1><img class="logo" src="../assets/logo-e5636014.webp" alt="Frozen Crossing" /></h1>
@@ -939,7 +1019,7 @@ main.wrap{animation:lofi-fade-in .45s ease both}
     <button type="button" class="pix" id="pauseBtn">Pause</button>
   </div>
 
-  <section class="guide" aria-label="How to play">
+  <section class="guide" id="howto" aria-label="How to play">
     <h2>How to play</h2>
     <p class="goal">Ride the ice floes and boats across ten frozen rivers to the far bank and its gold. Ships are hazards: never touch one. You have three lives.</p>
     <ul>
@@ -957,12 +1037,21 @@ main.wrap{animation:lofi-fade-in .45s ease both}
     </ul>
   </section>
 
-  <section class="ach" aria-label="Achievements">
+  <section class="ach" id="achievements" aria-label="Achievements">
     <div class="ach-head">
       <h2>🏆 Achievements</h2>
     </div>
     <ul id="achList"></ul>
   </section>
+
+  <footer class="site-foot">
+    <span class="foot-brand">Lofi Games</span>
+    <nav aria-label="Footer">
+      <a href="/lofigame/">All games</a>
+      <a href="#howto">How to play</a>
+      <a href="#achievements">Achievements</a>
+    </nav>
+  </footer>
 </main>
 
 <div class="settings-overlay" id="settingsOverlay" hidden>
@@ -2995,6 +3084,52 @@ main.wrap{animation:lofi-fade-in .45s ease both}
   document.addEventListener('visibilitychange', function(){
     if(document.hidden && state === 'playing') togglePause();
   });
+})();
+</script>
+<script>
+/* Header profile pill: reads the same Firebase auth state the save
+   sync above uses (the app is already initialized there; this only
+   listens). Signed in: the pill shows the account's photo and name
+   and links to the hub player page. Signed out: it offers Sign in
+   and links to the hub, where sign-in lives. If Firebase never
+   loads, the pill simply stays a Sign in link to the hub. */
+(function(){
+  "use strict";
+  var pill = document.getElementById('profilePill');
+  var avatar = document.getElementById('pillAvatar');
+  var label = document.getElementById('pillLabel');
+  if(!pill || !avatar || !label) return;
+  function setSignedOut(){
+    label.textContent = 'Sign in';
+    avatar.src = '../assets/yeti-ca776e9d.webp';
+    pill.href = '/lofigame/';
+    pill.setAttribute('aria-label', 'Sign in at Lofi Games');
+  }
+  function setUser(user){
+    var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
+    label.textContent = name;
+    avatar.src = user.photoURL || '../assets/yeti-ca776e9d.webp';
+    pill.href = '/lofigame/#/profile';
+    pill.setAttribute('aria-label', 'Signed in as ' + name + '. Open your player page.');
+  }
+  avatar.addEventListener('error', function(){
+    if(avatar.src.indexOf('../assets/yeti-ca776e9d.webp') === -1) avatar.src = '../assets/yeti-ca776e9d.webp';
+  });
+  var tries = 0;
+  (function hook(){
+    if(window.firebase && firebase.auth && firebase.apps && firebase.apps.length){
+      try{
+        firebase.auth().onAuthStateChanged(function(user){
+          if(user) setUser(user); else setSignedOut();
+        });
+        return;
+      }catch(e){ /* fall through to the signed-out pill */ }
+      setSignedOut();
+      return;
+    }
+    if(tries++ < 50){ setTimeout(hook, 200); return; }
+    setSignedOut();
+  })();
 })();
 </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/png" href="/lofigame/assets/favicon.png">
 <title>Lofi Games — Play like a yeti</title>
 <meta name="description" content="Four free mini games starring Lofi the Yeti, all live now and playable right in your browser. Sign in with your SUI Wallet, Google or email. No downloads.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,8 +103,8 @@
     padding:5px 12px 5px 8px;border-radius:980px;min-height:32px;margin-left:auto;white-space:nowrap;
   }
   .wallet-pill.show{display:inline-flex}
-  .wallet-pill .dot{width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#2b9bf0,#0b5fa5);display:inline-flex;align-items:center;justify-content:center;flex:none}
-  .wallet-pill .dot svg{width:11px;height:11px}
+  .wallet-pill .dot{width:20px;height:20px;border-radius:50%;overflow:hidden;display:inline-flex;flex:none}
+  .wallet-pill .dot img{width:100%;height:100%;object-fit:cover;display:block}
   /* ---------- nav auth pending state: shown until Firebase confirms the session,
        so a signed-in user never sees the signed-out "Sign in" button flash on reload ---------- */
   .nav-pending{
@@ -136,36 +136,61 @@
   .signin-overlay.open{display:flex}
   @media (min-width:641px){ .signin-overlay{align-items:center;padding:22px} }
   .signin-card{
-    position:relative;width:100%;max-width:420px;max-height:92vh;overflow-y:auto;
+    position:relative;width:100%;max-width:360px;max-height:88vh;overflow-y:auto;
     background:linear-gradient(180deg,#f7fcff,#eef8ff 55%,#ffffff);
-    border:1.5px solid var(--border);border-radius:22px 22px 0 0;
-    padding:26px 24px 24px;text-align:left;
+    border:1.5px solid var(--border);border-radius:20px 20px 0 0;
+    padding:20px 20px 18px;text-align:left;
+    box-shadow:0 24px 60px rgba(12,42,68,.28);
   }
-  @media (min-width:641px){ .signin-card{border-radius:22px} }
+  @media (min-width:641px){ .signin-card{border-radius:20px} }
   .signin-close{
-    position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;
+    position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;
     border:1.5px solid var(--border-light);background:#fff;color:var(--ink-soft);
-    font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
   }
   .signin-close:hover{color:var(--blue-dark);border-color:var(--border)}
-  .signin-head{text-align:center;padding:2px 10px 0}
-  .signin-head img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--border-light)}
-  .signin-head h2{font-size:26px;margin-top:8px}
-  .signin-head p{margin-top:6px;font-size:14.5px;line-height:1.5;color:var(--ink-soft)}
-  .signin-label{margin:20px 0 8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-deep)}
+  .signin-head{text-align:center;padding:0 8px}
+  .signin-head img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--border-light)}
+  .signin-head h2{font-size:22px;margin-top:6px}
+  .signin-head p{margin-top:3px;font-size:13px;line-height:1.45;color:var(--ink-soft)}
   .sui-btn{
-    width:100%;display:flex;align-items:center;gap:12px;cursor:pointer;font:inherit;text-align:left;
+    width:100%;display:flex;align-items:center;gap:11px;cursor:pointer;font:inherit;text-align:left;
     background:linear-gradient(180deg,#2b9bf0,#0f7fd0);color:#fff;border:1.5px solid #0f7fd0;
-    border-radius:14px;padding:13px 15px;min-height:54px;
+    border-radius:13px;padding:11px 13px;min-height:50px;margin-top:16px;
   }
   .sui-btn:hover{background:linear-gradient(180deg,#1c8fe8,#0b6cb8)}
   .sui-btn:disabled{opacity:.65;cursor:wait}
-  .sui-btn .sui-ic{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex:none}
-  .sui-btn .sui-ic svg{width:16px;height:16px}
-  .sui-btn b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
-  .sui-btn span{display:block;font-size:12.5px;color:#d8efff;line-height:1.35}
+  .sui-btn .sui-ic{width:28px;height:28px;border-radius:50%;overflow:hidden;display:flex;flex:none}
+  .sui-btn .sui-ic img{width:100%;height:100%;object-fit:cover;display:block}
+  /* wallet chooser: shown when more than one SUI wallet is installed, so
+     Connect never silently picks the wrong one */
+  .sui-wallets{display:none;flex-direction:column;gap:8px;margin-top:10px}
+  .sui-wallets.show{display:flex}
+  .sui-wallet-opt{
+    width:100%;display:flex;align-items:center;gap:11px;cursor:pointer;font:inherit;text-align:left;
+    background:#fff;color:var(--ink);border:1.5px solid var(--border);border-radius:12px;padding:10px 13px;min-height:48px;
+  }
+  .sui-wallet-opt:hover{border-color:var(--blue)}
+  .sui-wallet-opt:disabled{opacity:.65;cursor:wait}
+  .sui-wallet-opt img{width:26px;height:26px;border-radius:7px;flex:none;display:block}
+  .sui-wallet-opt b{font-size:14.5px;font-weight:700}
+  .sui-wallet-opt .chev{margin-left:auto;font-size:18px;color:var(--ink-faint);flex:none}
+  /* no-wallet box: the working next step when no wallet can be detected */
+  .sui-get{display:none;margin-top:10px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:13px}
+  .sui-get.show{display:block}
+  .sui-get p{font-size:13.5px;line-height:1.55;color:var(--ink-soft)}
+  .sui-get .wallet-actions{margin-top:11px}
+  .sui-get .wallet-actions a{
+    flex:1;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+    font-size:13.5px;font-weight:600;min-height:38px;border-radius:980px;padding:7px 12px;
+  }
+  .sui-get .btn-slush{background:linear-gradient(180deg,#2b9bf0,#0f7fd0);color:#fff;border:1.5px solid #0f7fd0}
+  .sui-get .btn-get{background:#fff;color:var(--blue-deep);border:1.5px solid var(--border)}
+  .sui-btn b{display:block;font-size:15px;font-weight:700;line-height:1.25}
+  .sui-btn span{display:block;font-size:12px;color:#d8efff;line-height:1.35}
   .sui-btn .chev{margin-left:auto;font-size:18px;color:#cfeaff;flex:none}
-  .signin-status{margin-top:10px;font-size:13.5px;line-height:1.5;color:var(--ink-soft);min-height:20px}
+  .signin-status{margin-top:8px;font-size:13px;line-height:1.5;color:var(--ink-soft);min-height:0}
+  .signin-status:empty{margin-top:0}
   .signin-status.err{color:#b3261e}
   .signin-status.ok{color:var(--green);font-weight:600}
   .signin-status a{font-weight:600}
@@ -181,50 +206,50 @@
   }
   .btn-copy{background:#fff;color:var(--blue-deep);border:1.5px solid var(--border)}
   .btn-disconnect{background:#fff;color:#b3261e;border:1.5px solid #eec9c6}
-  .signin-divider{display:flex;align-items:center;gap:12px;margin:20px 0 2px;color:var(--ink-faint);font-size:12.5px;font-weight:600}
+  .signin-divider{display:flex;align-items:center;gap:12px;margin:14px 0 10px;color:var(--ink-faint);font-size:12px;font-weight:600}
   .signin-divider::before,.signin-divider::after{content:"";flex:1;height:1px;background:var(--border-light)}
   .google-btn{
     width:100%;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font:inherit;
     background:#fff;color:var(--ink);border:1.5px solid var(--border);
-    border-radius:14px;padding:12px 15px;min-height:50px;font-size:15px;font-weight:600;
+    border-radius:13px;padding:10px 13px;min-height:47px;font-size:14.5px;font-weight:600;margin-top:10px;
   }
   .google-btn:hover{border-color:var(--blue)}
-  .google-btn svg{width:19px;height:19px;flex:none}
+  .google-btn svg{width:18px;height:18px;flex:none}
   .soon-tag{font-size:11px;font-weight:700;color:var(--blue-deep);background:var(--ice);border:1px solid var(--border);border-radius:980px;padding:2px 8px;white-space:nowrap}
-  .email-form{display:flex;flex-direction:column;gap:8px}
+  /* email sign-in lives behind one quiet row until it is needed, so the
+     sheet opens short: wallet, Google, then email on demand */
+  .email-reveal{
+    width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font:inherit;
+    background:transparent;color:var(--blue-deep);border:1.5px solid var(--border-light);
+    border-radius:13px;padding:9px 13px;min-height:44px;font-size:14px;font-weight:600;
+  }
+  .email-reveal:hover{border-color:var(--blue)}
+  .email-reveal svg{width:17px;height:17px;flex:none}
+  .email-reveal .chev{width:14px;height:14px;color:var(--ink-faint);transition:transform .2s}
+  .email-reveal.open .chev{transform:rotate(180deg)}
+  .email-section{margin-top:10px}
+  .email-section[hidden]{display:none}
+  .guest-row{text-align:center;margin-top:12px}
+  .guest-btn{
+    cursor:pointer;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-soft);
+    background:none;border:none;padding:6px 10px;min-height:32px;
+    text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border);
+  }
+  .guest-btn:hover{color:var(--blue-deep)}
+  .email-form{display:flex;flex-direction:column;gap:7px}
   .email-form label{font-size:13px;font-weight:600;color:var(--ink)}
   .email-form input{
     font:inherit;font-size:15px;color:var(--ink);background:#fff;
-    border:1.5px solid var(--border);border-radius:12px;padding:11px 13px;min-height:48px;width:100%;
+    border:1.5px solid var(--border);border-radius:12px;padding:9px 12px;min-height:44px;width:100%;
   }
   .email-form input:focus{outline:2px solid rgba(15,127,208,.35);border-color:var(--blue)}
   .email-btn{
-    width:100%;cursor:pointer;font:inherit;font-size:15px;font-weight:600;color:var(--blue-deep);
-    background:#fff;border:1.5px solid var(--border);border-radius:980px;padding:10px 18px;min-height:46px;
+    width:100%;cursor:pointer;font:inherit;font-size:14.5px;font-weight:600;color:var(--blue-deep);
+    background:#fff;border:1.5px solid var(--border);border-radius:980px;padding:9px 18px;min-height:43px;
   }
   .email-btn:hover{border-color:var(--blue)}
-  .signin-note{margin-top:16px;font-size:12.5px;line-height:1.55;color:var(--ink-faint);text-align:center}
+  .signin-note{margin-top:12px;font-size:12px;line-height:1.55;color:var(--ink-faint);text-align:center}
   body.modal-open{overflow:hidden}
-
-  /* ---------- side rail: game covers, like the reference event rail ---------- */
-  .rail{
-    position:fixed;left:12px;top:50%;transform:translateY(-50%);z-index:45;
-    display:none;flex-direction:column;gap:8px;
-  }
-  @media (min-width:1240px){ .rail{display:flex} }
-  .rail a{
-    display:block;width:62px;border-radius:10px;overflow:hidden;
-    border:2px solid rgba(255,255,255,.9);
-    box-shadow:0 4px 14px rgba(30,110,170,.25);
-    transition:transform .2s;
-  }
-  .rail a:hover{transform:translateX(3px)}
-  .rail img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
-  .rail span{
-    display:block;background:var(--navy);color:#eaf6ff;
-    font-size:9.5px;font-weight:700;letter-spacing:.02em;text-align:center;
-    padding:3px 2px;line-height:1.25;
-  }
 
   /* ---------- water vapour over the whole site ---------- */
   .vapor{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
@@ -549,7 +574,7 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
-    .btn,.ach-chev,.rail a{transition:none}
+    .btn,.ach-chev{transition:none}
     .mist,.vapor i{animation:none}
     .nav-pending .spin{animation:none}
     .anim-in > *{animation:none}
@@ -564,13 +589,6 @@
 
 <div class="vapor" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
-<nav class="rail" aria-label="Games quick links">
-  <a href="/lofigame/dash/" aria-label="Lofi Dash"><img src="assets/banner-6a93c876.webp" alt=""><span>Lofi Dash</span></a>
-  <a href="/lofigame/crossing/" aria-label="Frozen Crossing"><img src="assets/banner-crossing-732e2db5.webp" alt=""><span>Frozen Crossing</span></a>
-  <a href="/lofigame/rush/" aria-label="Lofi Rush"><img src="assets/banner-rush-414cab74.webp" alt=""><span>Lofi Rush</span></a>
-  <a href="/lofigame/climb/" aria-label="Lofi Climb"><img src="assets/banner-climb-e6cb52da.webp" alt=""><span>Lofi Climb</span></a>
-</nav>
-
 <header>
   <nav class="nav" aria-label="Main">
     <a class="brand" href="#top">
@@ -583,7 +601,7 @@
       Sign in
     </button>
     <button class="wallet-pill" id="wallet-pill" type="button" aria-haspopup="dialog">
-      <span class="dot"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c2.8 3.6 5.5 6.9 5.5 10.1A5.5 5.5 0 0 1 12 18.6a5.5 5.5 0 0 1-5.5-5.5C6.5 9.9 9.2 6.6 12 3Z" fill="#fff"/></svg></span>
+      <span class="dot"><img src="assets/sui-logo-427d941f.png" alt=""></span>
       <span id="wallet-pill-addr">0x…</span>
     </button>
     <button class="wallet-pill" id="user-pill" type="button" aria-label="Open your player page">
@@ -1035,13 +1053,20 @@
         <p>One account for all four games, your scores and your achievements.</p>
       </div>
 
-      <p class="signin-label">Start here</p>
       <button class="sui-btn" id="sui-connect" type="button">
-        <span class="sui-ic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c2.8 3.6 5.5 6.9 5.5 10.1A5.5 5.5 0 0 1 12 18.6a5.5 5.5 0 0 1-5.5-5.5C6.5 9.9 9.2 6.6 12 3Z" fill="#fff"/></svg></span>
+        <span class="sui-ic"><img src="assets/sui-logo-427d941f.png" alt=""></span>
         <span><b id="sui-btn-title">Connect SUI Wallet</b><span id="sui-btn-sub">Slush, Sui Wallet, Suiet and other Sui wallets</span></span>
         <span class="chev" aria-hidden="true">›</span>
       </button>
       <p class="signin-status" id="sui-status" aria-live="polite"></p>
+      <div class="sui-wallets" id="sui-wallet-list" role="group" aria-label="Choose a wallet"></div>
+      <div class="sui-get" id="sui-get">
+        <p>No SUI wallet can reach this page here. On a phone, open this hub inside the Slush app and Connect works there. On a computer, install the Slush browser extension, then come back and tap Connect. Wallet extensions also cannot reach this page while it is shown inside another app's preview.</p>
+        <div class="wallet-actions">
+          <a class="btn-slush" href="https://my.slush.app/browse/https://winterplay.online/lofigame/" target="_blank" rel="noopener">Open in Slush</a>
+          <a class="btn-get" href="https://slush.app" target="_blank" rel="noopener">Get Slush</a>
+        </div>
+      </div>
       <div class="wallet-addr" id="wallet-addr-box">
         <small>Connected wallet</small>
         <code id="wallet-addr-full"></code>
@@ -1051,29 +1076,35 @@
         </div>
       </div>
 
-      <div class="signin-divider" aria-hidden="true"><span>or</span></div>
-
-      <p class="signin-label">More ways to sign in</p>
       <button class="google-btn" id="google-btn" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.3h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.7 2.9c2.3-2.1 3.7-5.2 3.7-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-5.9-2.1-6.8-5.1L1.3 17.2C3.3 21.2 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3L1.3 6.8C.5 8.4 0 10.1 0 12s.5 3.6 1.3 5.2l3.9-2.9z"/><path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.3 0 3.3 2.8 1.3 6.8l3.9 2.9c.9-2.9 3.6-5 6.8-5z"/></svg>
         Continue with Google
       </button>
       <p class="signin-status" id="google-status" aria-live="polite"></p>
 
-      <form class="email-form" id="email-form" novalidate>
-        <label for="signin-email">Email address</label>
-        <input id="signin-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com">
-        <label for="signin-password">Password</label>
-        <input id="signin-password" name="password" type="password" autocomplete="current-password" placeholder="At least 6 characters">
-        <button class="email-btn" type="submit" id="email-submit">Sign in with email</button>
-      </form>
-      <button class="link-toggle" id="email-toggle" type="button">New here? Create an account</button>
-      <p class="signin-status" id="email-status" aria-live="polite"></p>
-
       <div class="signin-divider" aria-hidden="true"><span>or</span></div>
 
-      <button class="google-btn" id="guest-btn" type="button">Continue as guest</button>
-      <p class="signin-status" id="guest-status" aria-live="polite"></p>
+      <button class="email-reveal" id="email-reveal" type="button" aria-expanded="false" aria-controls="email-section">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 7.5L12 13l7.5-5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Continue with email
+        <svg class="chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="email-section" id="email-section" hidden>
+        <form class="email-form" id="email-form" novalidate>
+          <label for="signin-email">Email address</label>
+          <input id="signin-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com">
+          <label for="signin-password">Password</label>
+          <input id="signin-password" name="password" type="password" autocomplete="current-password" placeholder="At least 6 characters">
+          <button class="email-btn" type="submit" id="email-submit">Sign in with email</button>
+        </form>
+        <button class="link-toggle" id="email-toggle" type="button">New here? Create an account</button>
+        <p class="signin-status" id="email-status" aria-live="polite"></p>
+      </div>
+
+      <div class="guest-row">
+        <button class="guest-btn" id="guest-btn" type="button">Continue as guest</button>
+        <p class="signin-status" id="guest-status" aria-live="polite"></p>
+      </div>
 
       <div class="wallet-addr" id="account-box">
         <small>Signed in</small>
@@ -1085,7 +1116,7 @@
         </div>
       </div>
 
-      <p class="signin-note">Sign in with Google, email or your SUI Wallet, or play as a guest and link an account later, your progress comes with you. Nothing here ever asks for a seed phrase or a wallet password.</p>
+      <p class="signin-note">Guests can link an account later and keep their progress. Nothing here ever asks for a seed phrase or a wallet password.</p>
     </div>
   </div>
 
@@ -1103,6 +1134,8 @@
   var suiStatus = document.getElementById("sui-status");
   var addrBox = document.getElementById("wallet-addr-box");
   var addrFull = document.getElementById("wallet-addr-full");
+  var walletList = document.getElementById("sui-wallet-list");
+  var getBox = document.getElementById("sui-get");
   var navSignin = document.getElementById("signin-open");
   var pill = document.getElementById("wallet-pill");
   var pillAddr = document.getElementById("wallet-pill-addr");
@@ -1161,7 +1194,55 @@
   }
   function shortAddr(a){ return a ? a.slice(0, 6) + "…" + a.slice(-4) : ""; }
 
+  /* Every detected SUI-capable wallet, de-duplicated by name: a wallet
+     that registers twice (or under two wrappers) is still one choice. */
+  function capableWallets(){
+    var out = [], seen = {};
+    suiWallets.filter(suiCapable).forEach(function(w){
+      var key = w.name || "SUI Wallet";
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(w);
+    });
+    return out;
+  }
+  function hideWalletChoices(){ walletList.classList.remove("show"); walletList.innerHTML = ""; }
+  function hideGetBox(){ getBox.classList.remove("show"); }
+  /* When several SUI wallets are installed, the player picks one instead
+     of the hub silently connecting whichever registered first. */
+  function renderWalletChoices(list){
+    hideGetBox();
+    walletList.innerHTML = "";
+    list.forEach(function(w){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sui-wallet-opt";
+      if (w.icon) {
+        var img = document.createElement("img");
+        img.src = w.icon;
+        img.alt = "";
+        b.appendChild(img);
+      }
+      var label = document.createElement("b");
+      label.textContent = w.name || "SUI Wallet";
+      b.appendChild(label);
+      var chev = document.createElement("span");
+      chev.className = "chev";
+      chev.setAttribute("aria-hidden", "true");
+      chev.textContent = "›";
+      b.appendChild(chev);
+      b.addEventListener("click", function(){
+        walletList.querySelectorAll("button").forEach(function(x){ x.disabled = true; });
+        connectTo(w);
+      });
+      walletList.appendChild(b);
+    });
+    walletList.classList.add("show");
+  }
+
   function renderSession(){
+    hideWalletChoices();
+    hideGetBox();
     if (session.address) {
       navSignin.style.display = "none";
       pill.classList.add("show");
@@ -1199,6 +1280,13 @@
   document.getElementById("signin-close").addEventListener("click", closeSignin);
   overlay.addEventListener("click", function(e){ if (e.target === overlay) closeSignin(); });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape" && overlay.classList.contains("open")) closeSignin(); });
+  /* Coming back to this tab (for example after installing a wallet, or
+     after the wallet app hands the page back) re-runs discovery while
+     the sign-in sheet is open, so a wallet that appeared in the meantime
+     is found by the next Connect tap without reopening the sheet. */
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "visible" && overlay.classList.contains("open") && !session.address) detectWallets();
+  });
 
   function setSuiError(html){
     suiStatus.className = "signin-status err";
@@ -1208,6 +1296,8 @@
   suiBtn.addEventListener("click", function(){
     if (session.address) { renderSession(); return; }
     suiBtn.disabled = true;
+    hideWalletChoices();
+    hideGetBox();
     suiStatus.className = "signin-status";
     suiStatus.textContent = "Looking for a SUI wallet…";
     /* Re-run detection on every Connect tap, then keep checking briefly:
@@ -1217,19 +1307,34 @@
     var tries = 0;
     var poll = setInterval(function(){
       tries++;
-      var wallet = suiWallets.filter(suiCapable)[0] || null;
-      if (!wallet && tries < 10) { if (tries % 3 === 0) detectWallets(); return; }
+      var list = capableWallets();
+      if (!list.length && tries < 10) { if (tries % 3 === 0) detectWallets(); return; }
       clearInterval(poll);
-      if (!wallet) {
-        suiBtn.disabled = false;
-        setSuiError("No SUI wallet found in this browser. Wallet extensions cannot reach this page when it is shown inside another app's preview (like the Muse app), so the wallet installed in your browser stays invisible here. Open this hub in your own browser, in a separate tab, with your Sui wallet installed, then tap Connect again. No wallet yet? Install <a href=\"https://slush.app\" target=\"_blank\" rel=\"noopener\">Slush</a> or another Sui wallet first, then come back and tap Connect.");
+      suiBtn.disabled = false;
+      if (!list.length) {
+        /* No wallet can be detected here: the usual cause is a phone
+           browser (wallet apps cannot inject into it) or an in-app
+           preview. Show the working next step instead of a dead end:
+           the get box offers "Open in Slush", which loads this hub in
+           the Slush app's own browser, where its wallet registers with
+           the page and Connect works. */
+        suiStatus.className = "signin-status err";
+        suiStatus.textContent = "No SUI wallet found in this browser.";
+        getBox.classList.add("show");
         return;
       }
-      connectTo(wallet);
+      if (list.length > 1) {
+        suiStatus.className = "signin-status";
+        suiStatus.textContent = "More than one SUI wallet is installed. Pick the one to sign in with:";
+        renderWalletChoices(list);
+        return;
+      }
+      connectTo(list[0]);
     }, 150);
   });
 
   async function connectTo(wallet){
+      hideGetBox();
       try {
         suiStatus.textContent = "Approve the connection in your " + (wallet.name || "wallet") + " pop-up…";
         var result = await wallet.features["standard:connect"].connect();
@@ -1244,6 +1349,7 @@
         notifySui();
       } catch (err) {
         setSuiError("Connection was cancelled or failed in the wallet. Nothing was signed and no funds moved. Tap Connect to try again.");
+        walletList.querySelectorAll("button").forEach(function(x){ x.disabled = false; });
       } finally {
         suiBtn.disabled = false;
       }
@@ -1305,7 +1411,7 @@
     var tries = 0;
     var poll = setInterval(function(){
       tries++;
-      var wallet = suiWallets.filter(suiCapable)[0] || null;
+      var wallet = capableWallets()[0] || null;
       if (!wallet) {
         if (tries % 3 === 0) detectWallets();
         if (tries >= 14) clearInterval(poll);
@@ -1602,7 +1708,13 @@
     if (FB && auth) auth.signOut().catch(function(){});
     $("signin-overlay").classList.remove("open");
     document.body.classList.remove("modal-open");
-    location.hash = "#top";
+    /* Back home with a clean URL: clear the route hash without leaving
+       a stray "#" behind, then let the router show the home view. */
+    try {
+      history.pushState(null, "", location.pathname + location.search);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    } catch (e) { location.hash = ""; }
+    window.scrollTo(0, 0);
   }
 
   /* ================= Plain-word Firebase errors ================= */
@@ -2045,6 +2157,61 @@
     renderPlayer(); renderStickers(); renderProfile(); renderChallenges();
   }
   applyRoute();
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- in-page anchors scroll without touching the URL ----------
+     Links like #games, #how, #about, #yeti and #top scroll to their
+     section with scrollIntoView and never set location.hash, so the
+     address stays clean (…/lofigame/). Hash routes for the real views
+     (#/player, #/stickers, #/challenges, #/leaderboard, #/settings)
+     are left alone and keep working through the router. */
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function scrollToId(id){
+    if (!id || id === "top") { window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); return; }
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var href = a.getAttribute("href") || "";
+    if (href.charAt(1) === "/") return; /* a view route, not an in-page anchor */
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      var id = href.slice(1);
+      var home = document.getElementById("view-home");
+      if (home && home.hidden) {
+        /* Coming from a sub-view: return home first (clean URL, no
+           hash), then scroll once the home view is shown. */
+        try {
+          history.pushState(null, "", location.pathname + location.search);
+          window.dispatchEvent(new HashChangeEvent("hashchange"));
+        } catch (err) { location.hash = ""; }
+        setTimeout(function(){ scrollToId(id); }, 80);
+      } else {
+        scrollToId(id);
+      }
+    });
+  });
+
+  /* ---------- sign-in sheet: email section expands on demand ---------- */
+  var reveal = document.getElementById("email-reveal");
+  var section = document.getElementById("email-section");
+  if (reveal && section) {
+    reveal.addEventListener("click", function(){
+      var open = section.hidden;
+      section.hidden = !open;
+      reveal.setAttribute("aria-expanded", String(open));
+      reveal.classList.toggle("open", open);
+      if (open) {
+        var input = document.getElementById("signin-email");
+        if (input) input.focus();
+      }
+    });
+  }
 })();
 </script>
 

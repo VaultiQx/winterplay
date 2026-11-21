@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet" />
-<link rel="icon" href="data:," />
+<link rel="icon" type="image/png" href="/lofigame/assets/favicon.png" />
 <title>Lofi Climb</title>
 <style>
   :root{
@@ -70,6 +70,65 @@
   .logo{ width:min(430px,92vw); height:auto; display:block; filter:drop-shadow(0 4px 0 rgba(0,42,122,.45)) drop-shadow(0 12px 20px rgba(0,10,40,.4)); }
   .head p{ margin:8px 0 0; color:#d6e9ff; font-size:16px; font-weight:600; line-height:1.45; max-width:560px; text-shadow:0 1px 3px rgba(0,20,70,.5); }
   .head-actions{ flex:none; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  /* ---------- site chrome: a compact hub-matching header (back,
+     brand, profile pill) and a slim footer, both outside the stage.
+     White ice pills on the navy sky, same family as the HUD chips. */
+  .site-head{
+    position:relative; z-index:2;
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:18px;
+  }
+  .back-btn{
+    flex:none; display:inline-flex; align-items:center; gap:7px;
+    min-height:40px; padding:8px 16px 8px 12px;
+    background:rgba(255,255,255,.96); border:2.5px solid var(--blue-dark); border-radius:999px;
+    box-shadow:0 3px 0 var(--blue-dark);
+    color:var(--ink); font-weight:800; font-size:15px; line-height:1; text-decoration:none;
+  }
+  .back-btn svg{ width:17px; height:17px; display:block; }
+  .back-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--blue-dark); }
+  .back-btn:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .site-brand{
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:20px;
+    color:#fff; text-decoration:none; letter-spacing:.01em; line-height:1;
+    text-shadow:0 2px 0 rgba(0,42,122,.55);
+  }
+  .site-brand:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; border-radius:6px; }
+  .profile-pill{
+    margin-left:auto; flex:none; display:inline-flex; align-items:center; gap:8px;
+    max-width:48vw; min-height:40px; padding:5px 14px 5px 6px;
+    background:rgba(255,255,255,.96); border:2.5px solid var(--blue-dark); border-radius:999px;
+    box-shadow:0 3px 0 var(--blue-dark);
+    color:var(--ink); font-weight:800; font-size:14px; line-height:1; text-decoration:none;
+  }
+  .profile-pill img{
+    width:28px; height:28px; flex:none; border-radius:50%; object-fit:cover; display:block;
+    background:var(--ice-soft); border:1.5px solid #8fd0ff;
+  }
+  .profile-pill span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .profile-pill:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--blue-dark); }
+  .profile-pill:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .site-foot{
+    position:relative; z-index:1; margin-top:30px; padding-top:16px;
+    border-top:2px solid rgba(201,241,252,.35);
+    display:flex; align-items:center; justify-content:space-between; gap:10px 18px; flex-wrap:wrap;
+    color:#d6e9ff; font-size:13.5px;
+  }
+  .site-foot .foot-name{
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px; color:#fff;
+    text-shadow:0 1px 0 rgba(0,42,122,.5);
+  }
+  .site-foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
+  .site-foot a{ color:#d6e9ff; text-decoration:none; font-weight:600; }
+  .site-foot a:hover{ color:#fff; text-decoration:underline; }
+  .site-foot a:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; border-radius:4px; }
+  @media (max-width:560px){
+    .site-head{ gap:9px; margin-bottom:14px; }
+    .back-btn{ min-height:38px; padding:7px 13px 7px 10px; font-size:14px; }
+    .site-brand{ font-size:17px; }
+    .profile-pill{ max-width:44vw; min-height:38px; font-size:13px; padding-right:11px; }
+    .profile-pill img{ width:25px; height:25px; }
+  }
   /* ---------- pixel-ice buttons: saturated ice gradient, chunky pixel
      facets, a blocky bevel and a hard offset shadow in outline blue.
      Shared by every button on the page so the whole UI is one family. */
@@ -741,17 +800,23 @@
     .mm-track{ height:9px; }
   }
 </style>
-<style>
-/* light entrance: content fades/slides in gently on load; disabled for reduced motion */
-@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-main.wrap{animation:lofi-fade-in .45s ease both}
-@media (prefers-reduced-motion:reduce){main.wrap{animation:none}}
-</style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <main class="wrap">
+  <header class="site-head">
+    <a class="back-btn" href="/lofigame/" aria-label="Back to Lofi Games">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 4.5 7 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+    <a class="site-brand" href="/lofigame/">Lofi Games</a>
+    <a class="profile-pill" id="profilePill" href="/lofigame/" aria-label="Your Lofi Games profile">
+      <img id="profilePillImg" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <span id="profilePillLabel">Loading</span>
+    </a>
+  </header>
+
   <div class="head">
     <div>
       <h1><img class="logo" src="../assets/logo-d92c727c.webp" alt="Lofi Climb" /></h1>
@@ -882,6 +947,15 @@ main.wrap{animation:lofi-fade-in .45s ease both}
     </div>
     <ul id="achList"></ul>
   </section>
+
+  <footer class="site-foot">
+    <span class="foot-name">Lofi Games</span>
+    <nav aria-label="Site">
+      <a href="/lofigame/">All games</a>
+      <a href="/lofigame/#/profile">Profile</a>
+      <a href="/lofigame/#/settings">Settings</a>
+    </nav>
+  </footer>
 </main>
 
 <div class="settings-overlay" id="settingsOverlay" hidden>
@@ -1197,11 +1271,35 @@ main.wrap{animation:lofi-fade-in .45s ease both}
       fbFlushPendingUnlocks();
     });
   }
+  /* ---------- header profile pill: mirrors the hub header, driven by
+     the same Firebase auth state. Signed in shows the account's photo
+     and name and links to the player page; signed out shows the yeti
+     and "Sign in" and links to the hub, where sign-in lives. Until
+     auth resolves the pill reads "Loading", never a wrong state. */
+  var pillEl = document.getElementById('profilePill');
+  var pillImg = document.getElementById('profilePillImg');
+  var pillLabel = document.getElementById('profilePillLabel');
+  function updateAuthPill(user){
+    if(!pillEl || !pillImg || !pillLabel) return;
+    if(user){
+      var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
+      pillLabel.textContent = name;
+      pillImg.src = user.photoURL ? user.photoURL : '../assets/yeti-ca776e9d.webp';
+      pillEl.setAttribute('href', '/lofigame/#/profile');
+      pillEl.setAttribute('aria-label', 'Signed in as ' + name + '. Open your player page.');
+    } else {
+      pillLabel.textContent = 'Sign in';
+      pillImg.src = '../assets/yeti-ca776e9d.webp';
+      pillEl.setAttribute('href', '/lofigame/');
+      pillEl.setAttribute('aria-label', 'Sign in on Lofi Games');
+    }
+  }
   try{
     if(typeof firebase !== 'undefined' && firebase){
       var fbApp = (firebase.apps && firebase.apps.length) ? firebase.app() : firebase.initializeApp(firebaseConfig);
       fbDb = firebase.firestore();
       firebase.auth().onAuthStateChanged(function(user){
+        updateAuthPill(user);
         if(user){
           fbUser = user;
           fbMergeOnSignIn();
@@ -1214,8 +1312,10 @@ main.wrap{animation:lofi-fade-in .45s ease both}
           fbPendingUnlocks = {};
         }
       });
+    } else {
+      updateAuthPill(null);
     }
-  }catch(e){ fbUser = null; fbDb = null; }
+  }catch(e){ fbUser = null; fbDb = null; updateAuthPill(null); }
 
   function persistSave(){
     try{

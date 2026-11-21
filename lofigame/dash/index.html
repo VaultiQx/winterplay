@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet" />
-<link rel="icon" href="data:," />
+<link rel="icon" type="image/png" href="/lofigame/assets/favicon.png" />
 <title>Lofi Dash</title>
 <style>
   :root{
@@ -685,18 +685,89 @@
       min-height:3.7cqw; font-size:1.3cqw; padding:.9cqw 2.1cqw;
     }
   }
-</style>
-<style>
-/* light entrance: content fades/slides in gently on load; disabled for reduced motion */
-@keyframes lofi-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-main.wrap{animation:lofi-fade-in .45s ease both}
-@media (prefers-reduced-motion:reduce){main.wrap{animation:none}}
+  /* ---------- Site chrome: a compact header bar (Back button, brand,
+     profile / sign-in pill) and a slim footer, matching the Lofi Games
+     hub. Both sit outside the game stage; the canvas, gameplay and
+     controls are untouched. ---------- */
+  .site-bar{
+    position:relative; z-index:2;
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:18px;
+  }
+  .back-btn{
+    flex:none; display:inline-flex; align-items:center; gap:7px;
+    min-height:42px; padding:8px 16px 8px 12px; border-radius:11px;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15.5px;
+    text-decoration:none;
+  }
+  .back-btn svg{ width:17px; height:17px; display:block; }
+  .back-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--blue-dark), inset 0 3px 0 rgba(255,255,255,.9), inset 0 -7px 0 rgba(0,42,122,.28); }
+  .back-btn:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .site-brand{
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800;
+    font-size:19px; letter-spacing:.02em; color:#fff;
+    text-shadow:0 2px 0 rgba(0,42,122,.55);
+  }
+  .site-brand img{
+    width:34px; height:34px; border-radius:50%; object-fit:cover;
+    background:#fff; border:2px solid var(--blue-dark); box-shadow:0 2px 0 var(--blue-dark);
+  }
+  .site-brand:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; border-radius:999px; }
+  .site-bar .spacer{ flex:1; }
+  .profile-pill{
+    flex:none; display:inline-flex; align-items:center; gap:8px;
+    max-width:48vw; min-height:42px; padding:5px 15px 5px 6px; border-radius:999px;
+    background:rgba(255,255,255,.96); border:2.5px solid var(--blue-dark);
+    box-shadow:0 3px 0 var(--blue-dark);
+    color:var(--ink); text-decoration:none;
+    font-size:14px; font-weight:800;
+  }
+  .profile-pill img{ width:30px; height:30px; border-radius:50%; object-fit:cover; flex:none; background:var(--ice-soft); }
+  .profile-pill .pill-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .profile-pill:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--blue-dark); }
+  .profile-pill:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
+  .site-foot{
+    position:relative; z-index:1;
+    max-width:992px; margin:0 auto; padding:2px 16px 30px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px 18px; flex-wrap:wrap;
+    color:#cfe6ff; font-size:13.5px; font-weight:600;
+  }
+  .site-foot .foot-name{
+    font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px;
+    color:#fff; text-shadow:0 1px 0 rgba(0,42,122,.5);
+  }
+  .site-foot nav{ display:flex; gap:20px; flex-wrap:wrap; }
+  .site-foot a{ color:#cfe6ff; text-decoration:none; }
+  .site-foot a:hover, .site-foot a:focus-visible{ color:#fff; text-decoration:underline; }
+  @media (min-width:761px){ .site-foot{ max-width:1456px; } }
+  @media (max-width:560px){
+    .site-bar{ gap:9px; margin-bottom:14px; }
+    .site-brand{ font-size:16px; }
+    .site-brand img{ width:30px; height:30px; }
+    .back-btn{ min-height:38px; padding:7px 13px 7px 10px; font-size:14.5px; }
+    .profile-pill{ min-height:38px; font-size:13px; padding-right:12px; }
+    .profile-pill img{ width:27px; height:27px; }
+  }
 </style>
 </head>
 <body>
 <div class="vapour" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <main class="wrap">
+  <header class="site-bar">
+    <a class="back-btn pix" href="/lofigame/" aria-label="Back to all Lofi games">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 4.5 7 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+    <a class="site-brand" href="/lofigame/"><img src="../assets/yeti-ca776e9d.webp" alt="" /><span>Lofi Games</span></a>
+    <span class="spacer" aria-hidden="true"></span>
+    <a class="profile-pill" id="profilePill" href="/lofigame/" aria-label="Sign in on Lofi Games">
+      <img id="pillAvatar" src="../assets/yeti-ca776e9d.webp" alt="" />
+      <span class="pill-name" id="pillName">Sign in</span>
+    </a>
+  </header>
+
   <div class="head">
     <div>
       <h1><img class="logo" src="../assets/logo-89908ca7.webp" alt="Lofi Dash" /></h1>
@@ -816,6 +887,14 @@ main.wrap{animation:lofi-fade-in .45s ease both}
   </section>
 </main>
 
+<footer class="site-foot">
+  <span class="foot-name">Lofi Games</span>
+  <nav aria-label="Footer">
+    <a href="/lofigame/">All games</a>
+    <a href="/lofigame/#/settings">Profile</a>
+  </nav>
+</footer>
+
 <div class="settings-overlay" id="settingsOverlay" hidden>
   <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <h2 id="settingsTitle">SETTINGS</h2>
@@ -880,6 +959,26 @@ main.wrap{animation:lofi-fade-in .45s ease both}
   var hudBest = document.getElementById('hudBest');
   var hudSpeed = document.getElementById('hudSpeed');
   var hudIn = document.getElementById('hudIn');
+  /* ---------- header profile pill: mirrors the hub header. It reads
+     the same Firebase auth state (wired in initFirebaseSync below):
+     signed in shows the player's avatar + name, signed out shows the
+     yeti icon + "Sign in". The pill links back to the hub either way. */
+  var profilePill = document.getElementById('profilePill');
+  var pillAvatar = document.getElementById('pillAvatar');
+  var pillName = document.getElementById('pillName');
+  function updateProfilePill(user){
+    if(!profilePill || !pillName || !pillAvatar) return;
+    if(user){
+      var name = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
+      pillName.textContent = name;
+      pillAvatar.src = user.photoURL || '../assets/yeti-ca776e9d.webp';
+      profilePill.setAttribute('aria-label', 'Signed in as ' + name + '. Go to Lofi Games.');
+    }else{
+      pillName.textContent = 'Sign in';
+      pillAvatar.src = '../assets/yeti-ca776e9d.webp';
+      profilePill.setAttribute('aria-label', 'Sign in on Lofi Games');
+    }
+  }
   var startOverlay = document.getElementById('startOverlay');
   var pauseOverlay = document.getElementById('pauseOverlay');
   var overOverlay = document.getElementById('overOverlay');
@@ -1139,6 +1238,7 @@ main.wrap{animation:lofi-fade-in .45s ease both}
       fbAuth = firebase.auth();
       fbDb = firebase.firestore();
       fbAuth.onAuthStateChanged(function(user){
+        updateProfilePill(user || null);
         if(user){
           fbUser = user;
           handleSignInMerge(user);
