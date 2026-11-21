@@ -542,10 +542,10 @@
 
   /* ---------- light entrance: content rises in gently on load and on view change ---------- */
   @keyframes rise-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .anim-in > *{animation:rise-in .45s ease backwards}
-  .anim-in > *:nth-child(2){animation-delay:.05s}
-  .anim-in > *:nth-child(3){animation-delay:.1s}
-  .anim-in > *:nth-child(4){animation-delay:.15s}
+  .anim-in > *{animation:rise-in .7s ease backwards}
+  .anim-in > *:nth-child(2){animation-delay:.09s}
+  .anim-in > *:nth-child(3){animation-delay:.18s}
+  .anim-in > *:nth-child(4){animation-delay:.27s}
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
@@ -1009,7 +1009,7 @@
           <a href="#/stickers">Stickers</a>
           <a href="#/challenges">Challenges</a>
           <a href="#/leaderboard">Leaderboard</a>
-          <a href="#/profile">Profile</a>
+          <a href="#/settings">Profile</a>
         </nav>
       </div>
       <div class="foot-col">
@@ -1441,6 +1441,7 @@
   var ROUTES = { "player":"view-player", "stickers":"view-stickers", "challenges":"view-challenges", "leaderboard":"view-leaderboard", "profile":"view-profile" };
   function currentRoute(){
     var h = (location.hash || "").replace(/^#\/?/, "");
+    if (h === "settings") h = "profile"; /* #/settings is the canonical name for the profile & settings view */
     return ROUTES[h] ? h : "home";
   }
   var lastRoute = null;
