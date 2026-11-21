@@ -6,7 +6,7 @@ Archer's brief: the icon must be a W. One geometry source -> logo.svg (site)
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-PINK = (194, 24, 91)
+PINK = (22, 163, 74)
 BG = (250, 249, 246)
 INK = (12, 12, 12)
 WHITE = (255, 255, 255)
@@ -24,7 +24,7 @@ def f(v):
 
 pts_str = " ".join(f"{f(x)},{f(y)}" for x, y in W_PTS)
 svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">']
-svg.append('<rect x="10" y="10" width="100" height="100" rx="24" fill="#C2185B"/>')
+svg.append('<rect x="10" y="10" width="100" height="100" rx="24" fill="#16A34A"/>')
 svg.append(f'<polyline points="{pts_str}" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>')
 svg.append('</svg>')
 

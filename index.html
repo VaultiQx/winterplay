@@ -12,7 +12,7 @@
 <style>
   :root{
     --bg:#FAF9F6; --ink:#0C0C0C; --body:#3A3A3A; --muted:#6B6B6B; --line:#E8E5DF;
-    --accent:#C2185B; --accent-dark:#A8124B;
+    --accent:#16A34A; --accent-dark:#15803D;
     --success:#2E9E7B; --success-soft:#E3F4EE;
     --err:#B42318; --err-bg:#FEF3F2;
   }
@@ -45,19 +45,19 @@
     background:#fff;border:1.5px solid var(--line);border-radius:999px;
     transition:border-color .15s ease,box-shadow .15s ease}
   .row input::placeholder{color:#9A9AAC}
-  .row input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(194,24,91,.12);outline:none}
+  .row input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(22,163,74,.12);outline:none}
   .row input.invalid{border-color:var(--err);background:var(--err-bg)}
   .row input:disabled{opacity:.6}
   .btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:13px 30px;
     border-radius:999px;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:16px;text-decoration:none;
-    background:var(--accent);color:#fff;box-shadow:0 10px 24px rgba(194,24,91,.22);
+    background:var(--accent);color:#fff;box-shadow:0 10px 24px rgba(22,163,74,.22);
     transition:transform .18s ease,box-shadow .18s ease,background .18s ease,opacity .18s ease;white-space:nowrap}
-  .btn:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 14px 30px rgba(194,24,91,.28)}
-  .btn:focus-visible{outline:3px solid rgba(194,24,91,.45);outline-offset:2px}
+  .btn:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 14px 30px rgba(22,163,74,.28)}
+  .btn:focus-visible{outline:3px solid rgba(22,163,74,.45);outline-offset:2px}
   .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
   .err-msg{display:none;font-size:14px;color:var(--err);margin-top:12px;font-weight:600}
   .err-msg.show{display:block}
-  .spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid #E6C6D6;border-top-color:#fff;
+  .spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid #BBF7D0;border-top-color:#fff;
     animation:spin .8s linear infinite;flex:none}
   @keyframes spin{to{transform:rotate(360deg)}}
 
