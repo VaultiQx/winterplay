@@ -89,9 +89,14 @@
   .back-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--blue-dark); }
   .back-btn:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; }
   .site-brand{
+    display:inline-flex; align-items:center; gap:9px;
     font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:20px;
     color:#fff; text-decoration:none; letter-spacing:.01em; line-height:1;
     text-shadow:0 2px 0 rgba(0,42,122,.55);
+  }
+  .site-brand img{
+    width:34px; height:34px; border-radius:50%; object-fit:cover;
+    background:#fff; border:2px solid var(--blue-dark); box-shadow:0 2px 0 var(--blue-dark);
   }
   .site-brand:focus-visible{ outline:3px solid var(--ice); outline-offset:2px; border-radius:6px; }
   .profile-pill{
