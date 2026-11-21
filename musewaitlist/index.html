@@ -36,6 +36,9 @@
   h3{font-size:20px;line-height:1.3;font-weight:700}
   .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.02em;
     color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:7px 14px}
+  .giveaway-banner{background:var(--accent-soft);border-bottom:1px solid var(--accent-line);padding:13px 0;text-align:center}
+  .giveaway-banner p{font-size:15.5px;color:var(--body)}
+  .giveaway-banner a{color:var(--accent);font-weight:700}
   .section-head{max-width:640px;margin-bottom:48px}
   .section-head p{color:var(--muted);margin-top:12px;font-size:18px}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:13px 26px;
@@ -328,6 +331,13 @@
 </header>
 
 <main id="top">
+  <!-- Foxora giveaway -->
+  <div class="giveaway-banner" role="note">
+    <div class="wrap">
+      <p><strong>Foxora giveaway is live.</strong> Join the waitlist below and you're in. <a href="#giveaway">How to enter</a></p>
+    </div>
+  </div>
+
   <!-- Hero -->
   <section class="hero">
     <div class="wrap hero-grid">
@@ -350,6 +360,22 @@
         <div class="hero-arch">
           <img src="assets/hero.webp" alt="Muse, a soft blue fluffy creature with a flower crown and a pink butterfly on its head" width="1000" height="1000" fetchpriority="high">
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Foxora giveaway -->
+  <section id="giveaway" style="padding-top:24px;padding-bottom:0">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Foxora giveaway</span>
+        <h2 style="margin-top:16px">Join the waitlist and you're in</h2>
+        <p>The Foxora giveaway is live. Complete the 4 steps below and submit the form, that is your entry. No time limit. Winners are picked at random.</p>
+        <p>Want better odds? Buy a fox on OpenSea during the giveaway and reply to the giveaway post with proof, that is 10 entries.</p>
+      </div>
+      <div class="hero-actions" style="margin-top:0">
+        <a class="btn btn-primary join-link" href="#steps">Join the Waitlist</a>
+        <a class="btn btn-ghost" href="https://opensea.io/collection/foxora" target="_blank" rel="noopener">Foxora on OpenSea</a>
       </div>
     </div>
   </section>
