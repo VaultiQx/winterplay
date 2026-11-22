@@ -291,8 +291,50 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   }
   h1 .accent{color:var(--blue)}
   .hero-sub{margin:14px 0 0;font-size:17px;line-height:1.55;color:var(--ink-soft);max-width:520px}
-  .hero-official{margin:14px 0 0;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;line-height:1.4;color:var(--blue-deep);background:rgba(255,255,255,.88);border:1.5px solid var(--border);border-radius:980px;padding:7px 14px;max-width:520px}
-  .hero-official::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none;box-shadow:0 0 0 3px var(--ice)}
+  /* hero pill: hand-finished frosted ice — a 2px ice-blue rim with a bright
+     inset highlight line just inside it, soft frost blooms in the corners,
+     a few uneven snow dots, and tiny melt drips hanging off the bottom edge
+     at hand-picked spots. The corner radii deliberately do not match, so it
+     reads drawn by a designer rather than generated. */
+  .hero-official{
+    position:relative;
+    margin:14px 0 0;display:inline-flex;align-items:center;gap:8px;
+    font-size:13.5px;font-weight:700;line-height:1.4;color:var(--blue-deep);
+    background:
+      radial-gradient(70px 16px at 16% -2px,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),
+      radial-gradient(54px 14px at 88% 108%,rgba(190,225,248,.55),rgba(190,225,248,0) 70%),
+      radial-gradient(2.2px 2.2px at calc(100% - 26px) 32%,rgba(127,195,238,.85) 98%,rgba(127,195,238,0)),
+      radial-gradient(1.8px 1.8px at calc(100% - 15px) 62%,rgba(127,195,238,.7) 98%,rgba(127,195,238,0)),
+      radial-gradient(1.6px 1.6px at 30px 68%,rgba(127,195,238,.6) 98%,rgba(127,195,238,0)),
+      linear-gradient(180deg,#ffffff,#f0f8fe);
+    border:2px solid #79bde9;
+    border-radius:28px 33px 30px 26px / 31px 27px 32px 29px;
+    padding:7px 15px 8px;max-width:520px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      inset 0 0 0 1px rgba(255,255,255,.55),
+      inset 0 -7px 11px rgba(140,205,250,.20),
+      inset 3px 0 8px rgba(255,255,255,.65),
+      0 2px 5px rgba(35,115,180,.10),
+      0 9px 20px rgba(35,115,180,.09);
+  }
+  .hero-official::before{
+    content:"";width:8px;height:8px;border-radius:50%;flex:none;
+    background:radial-gradient(circle at 35% 30%,#ffffff 0%,#bfe1f6 55%,#79bde9 100%);
+    border:1.5px solid #79bde9;
+    box-shadow:0 0 0 3px rgba(217,238,251,.9);
+  }
+  /* melt drips: five uneven droplets along the bottom edge, longest near the middle */
+  .hero-official::after{
+    content:"";position:absolute;left:6px;right:6px;bottom:-6px;height:8px;pointer-events:none;
+    background:
+      radial-gradient(2.6px 6.5px at 11% 0,#a9d7f4 96%,rgba(169,215,244,0)),
+      radial-gradient(2px 4.5px at 31% 0,#c4e4f8 96%,rgba(196,228,248,0)),
+      radial-gradient(3px 7.5px at 55% 0,#9fd0f1 96%,rgba(159,208,241,0)),
+      radial-gradient(1.8px 4px at 74% 0,#cfeafb 96%,rgba(207,234,251,0)),
+      radial-gradient(2.4px 5.5px at 90% 0,#a9d7f4 96%,rgba(169,215,244,0));
+    background-repeat:no-repeat;
+  }
   .hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start;margin-top:24px}
   @media (min-width:900px){
     .hero-top{flex-direction:row;align-items:center;gap:44px}
@@ -336,7 +378,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     .hero-kicker{font-size:14px}
     h1{font-size:clamp(30px,8.6vw,44px);line-height:1.08}
     .hero-sub{font-size:14px;line-height:1.5;margin-top:10px}
-    .hero-official{font-size:12.5px;margin-top:10px;padding:6px 11px}
+    .hero-official{font-size:12.5px;margin-top:10px;padding:7px 13px 8px}
     .hero-cta{gap:8px;margin-top:16px}
     .hero-cta .btn{padding:8px 16px;font-size:14px;min-height:36px}
   }
@@ -804,7 +846,13 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   html[data-theme="night"] .ring{background:radial-gradient(circle at 34% 28%,#1d4066 0%,#14304f 52%,#0f2743 100%);border-color:#3f7fb8;box-shadow:0 0 0 7px rgba(10,28,48,.6),0 0 30px rgba(40,110,180,.4),inset 0 0 18px rgba(80,150,220,.35)}
   html[data-theme="night"] .take-card img,
   html[data-theme="night"] .showcase-item img{background:#fff;border-radius:12px}
-  html[data-theme="night"] .hero-official{background:#10263f}
+  html[data-theme="night"] .hero-official{
+    background:
+      radial-gradient(70px 16px at 16% -2px,rgba(124,196,248,.28),rgba(124,196,248,0) 70%),
+      radial-gradient(54px 14px at 88% 108%,rgba(70,140,200,.35),rgba(70,140,200,0) 70%),
+      linear-gradient(180deg,#16324f,#10263f);
+    border-color:#3f7fb8;
+  }
 
 
   /* ---------- header sticker folder (frosted glass, Apple style) ---------- */
