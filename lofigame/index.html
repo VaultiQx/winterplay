@@ -291,6 +291,8 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   }
   h1 .accent{color:var(--blue)}
   .hero-sub{margin:14px 0 0;font-size:17px;line-height:1.55;color:var(--ink-soft);max-width:520px}
+  .hero-official{margin:14px 0 0;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;line-height:1.4;color:var(--blue-deep);background:rgba(255,255,255,.88);border:1.5px solid var(--border);border-radius:980px;padding:7px 14px;max-width:520px}
+  .hero-official::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none;box-shadow:0 0 0 3px var(--ice)}
   .hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start;margin-top:24px}
   @media (min-width:900px){
     .hero-top{flex-direction:row;align-items:center;gap:44px}
@@ -334,6 +336,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     .hero-kicker{font-size:14px}
     h1{font-size:clamp(30px,8.6vw,44px);line-height:1.08}
     .hero-sub{font-size:14px;line-height:1.5;margin-top:10px}
+    .hero-official{font-size:12.5px;margin-top:10px;padding:6px 11px}
     .hero-cta{gap:8px;margin-top:16px}
     .hero-cta .btn{padding:8px 16px;font-size:14px;min-height:36px}
   }
@@ -492,7 +495,12 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   footer .f-brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;color:#fff;font-size:18px;text-decoration:none}
   footer .f-brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 50%;border:2px solid rgba(255,255,255,.6)}
   .f-tag{margin-top:12px;font-size:14px;line-height:1.6;color:#9dbfd6;max-width:320px}
+  .f-tag a{color:#cfe6f5;text-decoration:underline;text-underline-offset:3px}
+  .f-tag a:hover{color:#fff}
   .f-meta{margin-top:14px;font-size:13px;font-weight:600;color:#7fb8dd;letter-spacing:.02em}
+  .f-lofi-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .f-lofi-links a{display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:#eaf6ff;text-decoration:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:980px;padding:6px 13px;min-height:32px}
+  .f-lofi-links a:hover{background:rgba(255,255,255,.18);color:#fff}
   .foot-col h3{
     font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.12em;
     text-transform:uppercase;color:#7fb8dd;margin-bottom:12px;
@@ -796,6 +804,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   html[data-theme="night"] .ring{background:radial-gradient(circle at 34% 28%,#1d4066 0%,#14304f 52%,#0f2743 100%);border-color:#3f7fb8;box-shadow:0 0 0 7px rgba(10,28,48,.6),0 0 30px rgba(40,110,180,.4),inset 0 0 18px rgba(80,150,220,.35)}
   html[data-theme="night"] .take-card img,
   html[data-theme="night"] .showcase-item img{background:#fff;border-radius:12px}
+  html[data-theme="night"] .hero-official{background:#10263f}
 
 
   /* ---------- header sticker folder (frosted glass, Apple style) ---------- */
@@ -981,6 +990,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
           <p class="hero-kicker display">Lofi Games</p>
           <h1 class="display">Play like a <span class="accent">yeti</span>.</h1>
           <p class="hero-sub">Four free mini games starring Lofi the Yeti, up on the ice. All four are live now, tap Play on any card and play right in your browser.</p>
+          <p class="hero-official">Made for Lofi the Yeti and the Lofi community.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#games">Browse games</a>
             <a class="btn btn-ghost" href="#how">How to play</a>
@@ -1213,7 +1223,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <section id="about" aria-labelledby="about-h">
       <div class="sec-head">
         <h2 id="about-h" class="display">About the hub</h2>
-        <p class="sec-sub">One small arcade on the ice. Every game stars Lofi, runs in the browser, and takes a minute to learn.</p>
+        <p class="sec-sub">One small arcade on the ice. Every game stars Lofi, runs in the browser, and takes a minute to learn. We made this hub for Lofi and the Lofi community — games built for them by us, not Lofi's own official game.</p>
       </div>
       <div class="cards3">
         <div class="info-card">
@@ -1570,7 +1580,11 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
     <div class="foot-main">
       <div class="foot-brand-col">
         <a class="f-brand" href="#top" title="Back to top"><img src="assets/brand-d42d1948.webp" alt=""> Lofi Games</a>
-        <p class="f-tag">Four free mini games starring Lofi the Yeti, played right in your browser. Sign in with your SUI Wallet. No downloads.</p>
+        <p class="f-tag">Four free mini games starring Lofi the Yeti, made for Lofi and the Lofi community, played right in your browser. Sign in with your SUI Wallet. No downloads.</p>
+        <div class="f-lofi-links" aria-label="Official Lofi links">
+          <a href="https://x.com/lofitheyeti" target="_blank" rel="noopener">Lofi on X</a>
+          <a href="https://hackathon.lofitheyeti.com" target="_blank" rel="noopener">Lofi's site</a>
+        </div>
         <p class="f-meta">4 games · 20 achievements · Free, always</p>
       </div>
       <div class="foot-col">
@@ -1606,7 +1620,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
         </nav>
       </div>
     </div>
-    <div class="foot-bar">© 2026 Lofi Games · Play like a yeti.</div>
+    <div class="foot-bar">© 2026 Lofi Games · Made for Lofi the Yeti · Play like a yeti.</div>
   </footer>
 
   <div class="ach-toast" id="ach-toast" role="status" aria-live="polite" hidden><span class="ach-toast-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="ach-toast-text">Achievement unlocked</span></div>
