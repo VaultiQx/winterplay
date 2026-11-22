@@ -308,18 +308,23 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
   /* ---------- hero sticker folder: Archer's finalized folder artwork, shown
      exactly as supplied — the frosted folder, the three fanned cards and the
      dotted background are all baked into the one image. It links to the
-     stickers page and floats gently up and down, with no rotation. On
-     narrow screens it sits centred under the hero buttons; on wide screens
-     it is the hero's right column, close to the headline. ---------- */
+     stickers page, sits tilted about 6 degrees, and floats gently up and
+     down while keeping the tilt. The artwork's dotted background has rounded
+     corners with plain white outside them, so the image is clipped with a
+     matching border-radius (about 9.5% of its width, scaling with size) to
+     hide the white corners against the pale hero. On narrow screens it sits
+     centred under the hero buttons; on wide screens it is the hero's right
+     column, close to the headline. ---------- */
   .hero-folder{
     display:block;position:relative;width:160px;margin:28px auto 0;
     cursor:pointer;
+    transform:rotate(6deg);
     animation:hero-folder-float 3.6s ease-in-out infinite;
   }
-  .hero-folder img{width:100%;height:auto;display:block}
+  .hero-folder img{width:100%;height:auto;display:block;border-radius:9.5%}
   @keyframes hero-folder-float{
-    0%,100%{transform:translateY(-6px)}
-    50%{transform:translateY(6px)}
+    0%,100%{transform:rotate(6deg) translateY(-6px)}
+    50%{transform:rotate(6deg) translateY(6px)}
   }
   @media (min-width:900px){
     .hero-folder{flex:none;margin:0;width:320px}
@@ -975,7 +980,7 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
           </div>
         </div>
         <a class="hero-folder" href="#/take-stickers" aria-label="Take some stickers">
-          <img src="assets/img-display-2e00f397.webp" alt="Frosted Lofi sticker folder with three fanned sticker cards">
+          <img src="assets/img-display-74299bce.webp" alt="Frosted Lofi sticker folder with three fanned sticker cards">
         </a>
       </div>
       <div class="hero-banner">
