@@ -952,8 +952,14 @@
     color:#d6e9ff; font-size:13.5px;
   }
   .site-foot .foot-brand{
+    display:inline-flex; align-items:center; gap:8px;
     font-family:'Baloo 2','Arial Black',Arial,sans-serif; font-weight:800; font-size:15px; color:#fff;
     text-shadow:0 1px 0 rgba(0,42,122,.55);
+  }
+  .site-foot .foot-brand img{
+    width:24px; height:24px; flex:none; border-radius:50%;
+    object-fit:cover; object-position:top center;
+    background:#e8f6ff; border:1.5px solid var(--ice);
   }
   .site-foot nav{ display:flex; gap:18px; flex-wrap:wrap; }
   .site-foot a{ color:#d6e9ff; text-decoration:none; font-weight:600; }
@@ -984,12 +990,12 @@ body{animation:lofi-fade-in .45s ease-out both}
         Back
       </a>
       <a class="brand" href="/lofigame/">
-        <img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" />
+        <img src="/lofigame/assets/lofi-face-a1b88584.webp" alt="" />
         <span>Lofi Games</span>
       </a>
     </div>
     <a class="profile-pill" id="profilePill" href="/lofigame/">
-      <img id="pillAvatar" src="/lofigame/assets/yeti-ca776e9d.webp" alt="" referrerpolicy="no-referrer" />
+      <img id="pillAvatar" src="/lofigame/assets/lofi-face-a1b88584.webp" alt="" referrerpolicy="no-referrer" />
       <span id="pillLabel">Loading</span>
     </a>
   </header>
@@ -1024,7 +1030,7 @@ body{animation:lofi-fade-in .45s ease-out both}
   </div>
 
   <div class="stage-wrap">
-  <div class="peek" aria-hidden="true"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" /></div>
+  <div class="peek" aria-hidden="true"><img src="/lofigame/assets/lofi-face-a1b88584.webp" alt="" /></div>
   <div class="snow-edge snow-edge-top" aria-hidden="true"></div>
   <div class="stage">
     <canvas id="game" width="1280" height="572" aria-label="Frozen Crossing game. Lofi the yeti hops one step at a time across a frozen river, riding drifting ice floes and boats to the far bank and its gold. Ships are hazards that must never be touched, and open water with no floe underfoot costs a life. Control with the arrow keys or W A S D, or swipe. Three lives, fifty crossings."></canvas>
@@ -1080,7 +1086,7 @@ body{animation:lofi-fade-in .45s ease-out both}
     <div class="overlay" id="overOverlay" hidden>
       <div class="panel over-panel ice-panel">
         <div class="panel-snow" aria-hidden="true"></div>
-        <div class="over-avatar" aria-hidden="true"><img src="/lofigame/assets/yeti-ca776e9d.webp" alt="" /></div>
+        <div class="over-avatar" aria-hidden="true"><img src="/lofigame/assets/lofi-face-a1b88584.webp" alt="" /></div>
         <h2 id="overTitle">Game Over</h2>
         <p class="over-sub" id="overSub">Lofi went under in the Calm Canal.</p>
         <p class="newbest" id="newBest">🏆 New best score!</p>
@@ -1148,7 +1154,7 @@ body{animation:lofi-fade-in .45s ease-out both}
   </section>
 
   <footer class="site-foot">
-    <span class="foot-brand">Lofi Games</span>
+    <span class="foot-brand"><img src="/lofigame/assets/lofi-face-a1b88584.webp" alt="" />Lofi Games</span>
     <nav aria-label="Footer">
       <a href="/lofigame/">All games</a>
       <a href="#howto">How to play</a>
@@ -3445,7 +3451,7 @@ body{animation:lofi-fade-in .45s ease-out both}
   if(!pill || !avatar || !label) return;
   function setSignedOut(){
     label.textContent = 'Sign in';
-    avatar.src = '/lofigame/assets/yeti-ca776e9d.webp';
+    avatar.src = '/lofigame/assets/lofi-face-a1b88584.webp';
     pill.href = '/lofigame/';
     pill.setAttribute('aria-label', 'Sign in at Lofi Games');
   }
@@ -3466,13 +3472,13 @@ body{animation:lofi-fade-in .45s ease-out both}
       avatar.referrerPolicy = 'no-referrer';
       avatar.src = photo;
     } else {
-      avatar.src = '/lofigame/assets/yeti-ca776e9d.webp';
+      avatar.src = '/lofigame/assets/lofi-face-a1b88584.webp';
     }
     pill.href = '/lofigame/#/profile';
     pill.setAttribute('aria-label', 'Signed in as ' + name + '. Open your player page.');
   }
   avatar.addEventListener('error', function(){
-    if(avatar.src.indexOf('/lofigame/assets/yeti-ca776e9d.webp') === -1) avatar.src = '/lofigame/assets/yeti-ca776e9d.webp';
+    if(avatar.src.indexOf('/lofigame/assets/lofi-face-a1b88584.webp') === -1) avatar.src = '/lofigame/assets/lofi-face-a1b88584.webp';
   });
   var tries = 0;
   (function hook(){
