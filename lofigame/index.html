@@ -307,18 +307,25 @@ try { if (localStorage.getItem("lofi_theme") === "night") document.documentEleme
 
   /* ---------- hero sticker folder: layered folder, links to the stickers page.
      The folder body is a transparent PNG (empty blue-gradient folder) sitting
-     directly on the hero background, no tile or box. Three white sticker
+     on a light-grey (#dedede) rounded background, the colour the original
+     folder artwork shipped with. Three white sticker
      cards rest BEHIND it, nestled low so only their tops peek over the
      folder's top edge; on hover they fan out of the folder, and slide back
      in when the mouse leaves. The container keeps headroom above the folder
-     image for the cards to rise into. On narrow screens it sits centred
+     image for the cards to rise into, and its overflow stays visible so the
+     cards fan out ABOVE the grey background box instead of being clipped
+     by it. On narrow screens it sits centred
      under the hero buttons; on wide screens it is the hero's right column,
      close to the headline. ---------- */
   .hero-folder{
     display:block;position:relative;width:160px;aspect-ratio:1047/990;margin:28px auto 0;
-    cursor:pointer;
+    cursor:pointer;overflow:visible;
     transform:rotate(6deg);
     animation:hero-folder-float 3.6s ease-in-out infinite;
+  }
+  .hero-folder::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:#dedede;border-radius:18px;
   }
   .hf-folder-img{
     position:absolute;left:0;bottom:0;width:100%;height:auto;display:block;z-index:2;
