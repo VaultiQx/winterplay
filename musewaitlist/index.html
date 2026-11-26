@@ -474,8 +474,8 @@
       <div class="form-card">
         <div class="section-head">
           <span class="eyebrow">Waitlist</span>
-          <h2 style="margin-top:16px">Save your spot</h2>
-          <p>We check your address on-chain.</p>
+          <h2 style="margin-top:16px">The waitlist is closed</h2>
+          <p>Mint opens Saturday 28 November. GTD 7 PM, FCFS 8 PM, Public 9 PM, Dhaka time.</p>
         </div>
         <form id="waitlist-form" novalidate>
           <div class="field">
@@ -494,6 +494,10 @@
           <button class="btn btn-primary" type="submit" id="submit-btn">Join the waitlist</button>
           <p class="form-note">One entry per wallet.</p>
         </form>
+        <div class="success" id="waitlist-closed" role="status">
+          <h3>Entries are closed</h3>
+          <p>The waitlist closed on 27 November. If you joined, your spot is saved. Watch @musenftxyz for the mint link.</p>
+        </div>
         <div class="success" id="success" role="status">
           <div class="ok"><svg aria-hidden="true"><use href="#check"/></svg></div>
           <h3>You are on the list</h3>
@@ -676,6 +680,11 @@
      "Muse World Waitlist" Google Sheet. */
   var FORM_CONFIG = { formId: "1FAIpQLSeN59M8I1lTFPBC2qhNG81tBE_VzGV3fIRIYZUdrFOQDVc8Zw", entryX: "1816006058", entryAddress: "1595471255" };
 
+  /* Waitlist closed 2026-11-27 (the day before the 28 Nov mint). The form
+     can no longer be submitted; visitors who already joined still see
+     their saved spot. Set to false to reopen. */
+  var WAITLIST_CLOSED = true;
+
   /* ---------- mobile menu ---------- */
   var menuBtn = document.getElementById("menu-btn");
   var nav = document.getElementById("main-nav");
@@ -734,11 +743,19 @@
     progressFill.style.width = (done * 25) + "%";
     progressLabel.textContent = done === 0 ? "Follow first to begin"
       : done < 4 ? "Step " + (done + 1) + " is open"
-      : "All steps done, the form is open";
+      : WAITLIST_CLOSED ? "All steps done" : "All steps done, the form is open";
     var formOpen = done === 4;
     joinLinks.forEach(function (a) { a.setAttribute("href", formOpen ? "#waitlist" : "#steps"); });
     if (formOpen) {
       waitlistSection.hidden = false;
+      if (WAITLIST_CLOSED) {
+        var wlForm = document.getElementById("waitlist-form");
+        var wlClosed = document.getElementById("waitlist-closed");
+        var wlSuccess = document.getElementById("success");
+        var successShown = wlSuccess && wlSuccess.classList.contains("show");
+        if (wlForm && !successShown) wlForm.style.display = "none";
+        if (wlClosed && !successShown) wlClosed.classList.add("show");
+      }
     } else {
       waitlistSection.hidden = true;
       waitlistSection.classList.remove("revealed");
@@ -969,6 +986,8 @@
     // Shown only while the sheet endpoint is not connected yet.
     document.getElementById("preview-note").hidden = !!FORM_CONFIG.formId;
     form.style.display = "none";
+    var closedPanel = document.getElementById("waitlist-closed");
+    if (closedPanel) closedPanel.classList.remove("show");
     successBox.classList.add("show");
     if (scroll !== false) successBox.scrollIntoView({ behavior: "smooth", block: "center" });
   }
@@ -987,6 +1006,7 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (WAITLIST_CLOSED) return;
     var user = xInput.value.trim().replace(/^@/, "");
     var addr = addrInput.value.trim();
     var ok = true;
