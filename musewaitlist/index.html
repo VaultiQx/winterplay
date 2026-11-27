@@ -170,6 +170,7 @@
   .badge{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14px;border-radius:999px;padding:6px 13px}
   .badge.gtd{background:var(--gold-bg);border:1px solid var(--gold-line);color:var(--gold-text)}
   .badge.wl{background:#EDE9FE;border:1px solid #D5C9F5;color:#5B21B6}
+.badge.fcfs{background:#E8F1FD;border:1px solid #BCD7FA;color:#1756B8}
   .badge .b-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
   .check-note{color:var(--muted)}
   .form-card .btn-primary{width:100%;min-height:56px;font-size:17px}
@@ -387,6 +388,27 @@
           <img src="assets/hero-0011.webp" alt="Green Muse in a pink kimono with round glasses" width="480" height="480">
           <img src="assets/hero-0044.webp" alt="Mint Muse with a flower crown and sunglasses" width="480" height="480">
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mint spot checker -->
+  <section id="spotcheck">
+    <div class="wrap">
+      <div class="form-card">
+        <div class="section-head">
+          <span class="eyebrow">Mint today</span>
+          <h2 style="margin-top:16px">Check your mint spot</h2>
+          <p>The mint lists are final. Paste your wallet address to see your spot for today, Saturday 28 November.</p>
+        </div>
+        <div class="field">
+          <label for="spot-addr">Your EVM address</label>
+          <input id="spot-addr" type="text" placeholder="0x..." autocomplete="off" spellcheck="false">
+          <p class="err-msg" id="spot-err">That address does not look right. It must start with 0x and be 42 characters long.</p>
+        </div>
+        <div class="check-line" id="spot-result" aria-live="polite"></div>
+        <button class="btn btn-primary" type="button" id="spot-btn">Check my spot</button>
+        <p class="form-note">Mint on OpenSea: <a href="https://opensea.io/collection/muse-world-745585662" target="_blank" rel="noopener">Muse World</a>. 1 per wallet, free, gas only.</p>
       </div>
     </div>
   </section>
@@ -666,6 +688,7 @@
     </div>
   </div>
 
+<script src="assets/allowlist.js"></script>
 <script>
 (function () {
   "use strict";
@@ -965,6 +988,73 @@
 
   // Run the check immediately if the address field is already filled (restore).
   if (validAddr(addrInput.value)) runCheck(addrInput.value.trim());
+
+  /* ---------- Final mint spot checker (standalone section) ----------
+     Looks the address up in the final allowlists (assets/allowlist.js,
+     GTD 2,741 + FCFS 2,825, generated from the winner masters on
+     2026-11-28). Wallets not on either list fall back to the Foxora
+     on-chain check (a holder is GTD), then to the Public stage. */
+  var spotInput = document.getElementById("spot-addr");
+  var spotBtn = document.getElementById("spot-btn");
+  var spotResult = document.getElementById("spot-result");
+  var spotErr = document.getElementById("spot-err");
+  var TEAM_WALLET = "0x11d5622de638163daa1bf88918cca8da11e670f6";
+  var GTD_SET = {}, FCFS_SET = {};
+  (window.MUSE_GTD || []).forEach(function (a) { GTD_SET[a] = 1; });
+  (window.MUSE_FCFS || []).forEach(function (a) { FCFS_SET[a] = 1; });
+
+  function setSpot(html) { spotResult.innerHTML = html; }
+
+  function runSpotCheck() {
+    var v = spotInput.value.trim().toLowerCase();
+    spotErr.classList.remove("show");
+    spotInput.classList.remove("invalid");
+    if (!ADDR_RE.test(v)) {
+      spotErr.classList.add("show");
+      spotInput.classList.add("invalid");
+      setSpot("");
+      return;
+    }
+    if (v === TEAM_WALLET) {
+      setSpot('<span class="badge gtd"><span class="b-dot"></span>Team</span>' +
+        '<span class="check-note">This is the team wallet. The Team stage opens today at 12:00 PM UTC (6 PM Dhaka).</span>');
+      return;
+    }
+    if (GTD_SET[v]) {
+      setSpot('<span class="badge gtd"><span class="b-dot"></span>GTD</span>' +
+        '<span class="check-note">You are on the GTD list. Your mint opens today at 1:00 PM UTC (7 PM Dhaka).</span>');
+      return;
+    }
+    if (FCFS_SET[v]) {
+      setSpot('<span class="badge fcfs"><span class="b-dot"></span>FCFS</span>' +
+        '<span class="check-note">You are on the FCFS list. Your mint opens today at 2:00 PM UTC (8 PM Dhaka). Be ready, FCFS spots go first come, first served.</span>');
+      return;
+    }
+    setSpot('<span class="spinner" aria-hidden="true"></span><span class="check-note">Not on the lists. Checking your Foxora on-chain...</span>');
+    checkFoxora(v)
+      .then(function (count) {
+        if (count > 0) {
+          setSpot('<span class="badge gtd"><span class="b-dot"></span>GTD</span>' +
+            '<span class="check-note">You hold ' + count + (count === 1 ? ' Foxora' : ' Foxora foxes') + ', so you are GTD. Your mint opens today at 1:00 PM UTC (7 PM Dhaka).</span>');
+        } else {
+          setSpot('<span class="badge wl"><span class="b-dot"></span>Public</span>' +
+            '<span class="check-note">This wallet is not on the GTD or FCFS list. You can still mint in the Public stage today at 3:00 PM UTC (9 PM Dhaka), 1 per wallet.</span>');
+        }
+      })
+      .catch(function () {
+        setSpot('<span class="badge wl"><span class="b-dot"></span>Public</span>' +
+          '<span class="check-note">This wallet is not on the GTD or FCFS list. You can still mint in the Public stage today at 3:00 PM UTC (9 PM Dhaka), 1 per wallet.</span>');
+      });
+  }
+
+  if (spotBtn && spotInput) {
+    spotBtn.addEventListener("click", runSpotCheck);
+    spotInput.addEventListener("keydown", function (e) { if (e.key === "Enter") runSpotCheck(); });
+    spotInput.addEventListener("input", function () {
+      spotErr.classList.remove("show");
+      spotInput.classList.remove("invalid");
+    });
+  }
 
   function showSuccess(user, addr, scroll) {
     document.getElementById("success-user").textContent = "@" + user;
